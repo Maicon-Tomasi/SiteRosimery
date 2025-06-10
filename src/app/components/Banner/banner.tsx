@@ -2,6 +2,7 @@
 
 import React from "react";
 import Slider from "react-slick";
+import { Autoplay } from "swiper/modules";
 
 export default function Banner(){
     var settings = {
@@ -10,6 +11,8 @@ export default function Banner(){
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 1000,
     };
 
     return (
