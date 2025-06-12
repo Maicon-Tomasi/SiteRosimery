@@ -16,7 +16,7 @@ const Sobre = () =>{
     }, []);
 
     return(
-        <div data-aos="fade-up" className="flex py-20 px-36">
+        <div data-aos="fade-up" className="w-full flex py-20 px-36">
             <div className="w-full">
                 <h2 className="text-5xl font-bold mb-5"><span className="text-[#1f2937]">Este texto é um texto para teste</span><span className="text-[#d49f43]">x e será trocado</span></h2>
 
@@ -29,7 +29,7 @@ const Sobre = () =>{
                     </Button>
                 </div>
 
-                <div className="flex gap-[250px] mt-10 justify-center ">
+                <div className="flex gap-[250px] mt-10 justify-center 2xl:gap-[250px]">
                     <div data-aos="fade-right" className="text-center flex flex-col items-center">
                         <div className="rounded-full bg-[#e5a9b3] items-center p-4">
                             <Heart size={30} color="white"/>
