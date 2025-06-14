@@ -17,10 +17,10 @@ const Especializacoes: FC = () => {
     <section className="py-16 px-4 bg-gradient-to-b from-pink-50 to-white">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2">
-          Professional Specializations & Education
+          Especializações Profissionais e Educação
         </h2>
         <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
-          Continuous learning and specialized training to provide the highest quality care for expectant mothers and families.
+          Aprendizado contínuo e treinamento especializado para oferecer cuidados da mais alta qualidade para gestantes e famílias.
         </p>
 
         <div className="grid md:grid-cols-2 gap-10">
@@ -28,35 +28,29 @@ const Especializacoes: FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <BadgeCheck className="text-yellow-600" />
-              <h3 className="font-semibold text-lg">Certifications & Specializations</h3>
+              <h3 className="font-semibold text-lg">Especializações</h3>
             </div>
 
             <ul className="space-y-4">
               {[
                 {
                   icon: <Heart className="text-pink-500" />,
-                  title: "Perinatal Mental Health Certificate",
-                  subtitle: "Postpartum Support International (PSI) · 2018",
+                  title: "Psicologia Perinatal e Obstétrica",
+                  subtitle: "Instituto Suassuna-GO - (xxxx)",
                   desc: "Advanced certification in perinatal mood and anxiety disorders",
                 },
                 {
                   icon: <Brain className="text-pink-500" />,
-                  title: "EMDR Therapy Training",
-                  subtitle: "EMDR International Association · 2019",
+                  title: "Terapia Cognitiva Comportamental",
+                  subtitle: "Faculdade Anhanguera-MT · 2019",
                   desc: "Specialized training for birth trauma and PTSD treatment",
                 },
                 {
                   icon: <Users className="text-pink-500" />,
-                  title: "Family Systems Therapy",
-                  subtitle: "Bowen Center · 2020",
+                  title: "Gestão de Pessoas por Competências ",
+                  subtitle: "IPOG-MT 2020",
                   desc: "Advanced training in family dynamics during life transitions",
-                },
-                {
-                  icon: <Users className="text-pink-500" />,
-                  title: "Mindfulness-Based Interventions",
-                  subtitle: "Center for Mindfulness · 2021",
-                  desc: "Certified in prenatal and postnatal anxiety management",
-                },
+                }
               ].map((item, i) => (
                 <li data-aos="fade-right"
                     data-aos-offset="300"
@@ -80,25 +74,25 @@ const Especializacoes: FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <GraduationCap className="text-yellow-600" />
-              <h3 className="font-semibold text-lg">Education & Training</h3>
+              <h3 className="font-semibold text-lg">Formações</h3>
             </div>
 
             <ul className="space-y-4">
               {[
                 {
-                  title: "Ph.D. in Clinical Psychology",
-                  subtitle: "University of California, Los Angeles (UCLA) · 2012",
-                  desc: "Reproductive and Maternal Psychology",
+                  title: "Bacharelado em Psicologia",
+                  subtitle: "ANHANGUERA UNIC - (xxxx)",
+                  desc: "Primavera Do Leste, MT",
                 },
                 {
-                  title: "M.A. in Psychology",
-                  subtitle: "University of California, Los Angeles (UCLA) · 2009",
-                  desc: "Developmental Psychology",
+                  title: "Bacharelado em Recursos Humanos",
+                  subtitle: "ANHANGUERA UNIC - (xxxx)",
+                  desc: "Primavera Do Leste, MT",
                 },
                 {
-                  title: "B.A. in Psychology",
-                  subtitle: "Stanford University · 2007",
-                  desc: "Magna Cum Laude",
+                  title: "Pós-Graduada Em Terapia Cognitiva Comportamental e Psicologia Positiva",
+                  subtitle: "ANHANGUERA UNIC - (xxxx)",
+                  desc: "Primavera Do Leste, MT",
                 },
               ].map((item, i) => (
                 <li data-aos="fade-left"
@@ -117,7 +111,7 @@ const Especializacoes: FC = () => {
                 </li>
               ))}
 
-              {/* Licença */}
+              {/* Licença
               <li 
                 data-aos="fade-left"
                 data-aos-offset="300"
@@ -132,7 +126,7 @@ const Especializacoes: FC = () => {
                 </div>
                 <p className="text-sm text-rose-900">State of California • License #PSY12345</p>
                 <p className="text-sm text-rose-800 mt-1">In good standing since 2012 · Continuing education current</p>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

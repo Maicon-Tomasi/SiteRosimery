@@ -10,8 +10,8 @@ const Banner: FC = () => {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        // autoplay: true,
-        // autoplaySpeed: 1000,
+        autoplay: true,
+        autoplaySpeed: 3000,
     };
 
     return (
@@ -25,19 +25,7 @@ const Banner: FC = () => {
                 </button>
             </div>
             <div>
-                <h3>2</h3>
-            </div>
-            <div>
-                <h3>3</h3>
-            </div>
-            <div>
-                <h3>4</h3>
-            </div>
-            <div>
-                <h3>5</h3>
-            </div>
-            <div>
-                <h3>6</h3>
+                <img src="/imagensSite/banner/banner2.jpg" alt="" className="w-full h-auto" />
             </div>
             </Slider>
 
