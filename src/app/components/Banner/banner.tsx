@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, { FC } from "react";
 import Slider from "react-slick";
 import { Autoplay } from "swiper/modules";
 
@@ -11,14 +11,19 @@ export default function Banner(){
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 1000,
+        // autoplay: true,
+        // autoplaySpeed: 1000,
     };
 
     return (
         <Slider {...settings}>
-            <div className="max-h-[500px]">
-                <img src="/imagensSite/gravidez-img.jpg" alt="" />
+             <div className="max-h-[800px] relative">
+                <img src="/imagensSite/banner/banner1.jpg" alt="" className="w-full h-auto" />
+                <button
+                    className="absolute 2xl:bottom-58 left-83 px-6 py-2 bg-transparent text-[#d49f43] rounded-4xl border-2 border-[#d49f43] shadow-lg cursor-pointer hover:bg-[#d49f43] hover:text-white transition-colors duration-300"
+                >
+                    Saiba Mais
+                </button>
             </div>
             <div>
                 <h3>2</h3>

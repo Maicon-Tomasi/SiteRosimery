@@ -1,4 +1,6 @@
 import Banner from "./components/Banner/banner";
+import Especializacoes from "./components/Especializacoes/Especializacoes";
+import Servico from "./components/Servicos/servicos";
 import Sobre from "./components/Sobre/sobre";
 
 export default function Home() {
@@ -8,6 +10,8 @@ export default function Home() {
     <div className="min-h-screen overflow-x-hidden">
       <Banner />
       <Sobre />
+      <Servico/>
+      <Especializacoes />
     </div>
     </>
   );

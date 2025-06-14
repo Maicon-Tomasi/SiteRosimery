@@ -1,11 +1,11 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { Heart, Shield, Users } from "lucide-react"
-import { useEffect } from "react";
+import { FC, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const Sobre = () => {
+const Sobre: FC = () => {
 
     useEffect(() => {
         AOS.init({
@@ -44,13 +44,13 @@ const Sobre = () => {
                         <div className="rounded-full bg-[#e5a9b3] p-4">
                             <Heart size={30} color="white" />
                         </div>
-                        <span>oiie</span>
+                        <span>Compaixão</span>
                     </div>
                     <div data-aos="fade-up" className="text-center flex flex-col items-center">
                         <div className="rounded-full bg-[#dba952] p-4">
                             <Shield size={30} color="white" />
                         </div>
-                        <span>oiie</span>
+                        <span>Espaço Seguro</span>
                     </div>
                     <div data-aos="fade-left" className="text-center flex flex-col items-center">
                         <div className="rounded-full bg-white p-4 border-[#e5a9b3] border-2">
