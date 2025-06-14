@@ -25,7 +25,7 @@ export const Footer = () => {
 
         {/* Middle Section */}
         <div>
-          <h4 className="font-semibold text-sm mb-3">Quick Links</h4>
+          <h4 className="font-semibold text-sm mb-3">Links Rápidos</h4>
           <ul className="space-y-2 text-sm text-gray-400">
             <li><a href="#">Ínicio</a></li>
             <li><a href="#">Serviços</a></li>
@@ -37,7 +37,7 @@ export const Footer = () => {
 
         {/* Right Section */}
         <div>
-          <h4 className="font-semibold text-sm mb-3">Contact Info</h4>
+          <h4 className="font-semibold text-sm mb-3">Informações De Contato</h4>
           <ul className="space-y-2 text-sm text-gray-400">
             <li className="flex items-center"><Phone className="w-4 h-4 mr-2" /> (66) 9 9698-9912</li>
             <li className="flex items-center"><Mail className="w-4 h-4 mr-2" /> rosimery@gmail.com</li>
