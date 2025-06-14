@@ -19,8 +19,8 @@ const Sobre: FC = () => {
             {/* Texto à esquerda */}
             <div className="w-full xl:w-1/2">
                 <h2 className="text-4xl md:text-5xl font-bold mb-5 text-center xl:text-left">
-                    <span className="text-[#1f2937]">Este texto é um texto para teste</span>
-                    <span className="text-[#d49f43]">x e será trocado</span>
+                    <span className="text-[#1f2937]">Apoiando você na jornada </span>
+                    <span className="text-[#d49f43]">da maternidade</span>
                 </h2>
 
                 <p className="text-[#515a68] text-center xl:text-left">
@@ -67,7 +67,8 @@ const Sobre: FC = () => {
                     <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-lg">
                         <div className="flex flex-col items-center">
                             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#dba952] to-[#e5a9b3] rounded-full mb-4 flex items-center justify-center">
-                                <span className="text-white text-xl sm:text-2xl font-bold">RT</span>
+                                <img src="/imagensSite/img-contato.jpeg" alt="" className="rounded-[50%]"/>
+
                             </div>
 
                             <h3 className="text-xl sm:text-2xl font-bold text-gray-800 text-center">Dra. Rosiméry Tomasi</h3>

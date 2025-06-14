@@ -2,6 +2,7 @@ import Banner from "./components/Banner/banner";
 import Especializacoes from "./components/Especializacoes/Especializacoes";
 import Servico from "./components/Servicos/servicos";
 import Sobre from "./components/Sobre/sobre";
+import SobreDois from "./components/SobreDois/SobreDois";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Sobre />
       <Servico/>
       <Especializacoes />
+      <SobreDois />
     </div>
     </>
   );
