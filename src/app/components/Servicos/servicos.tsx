@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import {
   Heart,
   Baby,
@@ -15,7 +15,7 @@ import AOS from "aos";
 interface ServiceCard {
   title: string;
   description: string;
-  icon: JSX.Element;
+  icon: ReactElement;
   items: string[];
   image: string;
 }

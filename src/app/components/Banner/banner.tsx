@@ -2,17 +2,16 @@
 
 import React, { FC } from "react";
 import Slider from "react-slick";
-import { Autoplay } from "swiper/modules";
 
-export default function Banner(){
-    var settings = {
+const Banner: FC = () => {
+    const settings = {
         dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        // autoplay: true,
-        // autoplaySpeed: 1000,
+        autoplay: true,
+        autoplaySpeed: 1000,
     };
 
     return (
@@ -44,3 +43,5 @@ export default function Banner(){
 
     )
 }
+
+export default Banner;
