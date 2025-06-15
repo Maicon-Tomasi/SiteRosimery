@@ -16,10 +16,10 @@ export default function Navbar() {
         {/* Menu Desktop */}
         <nav className="hidden md:flex gap-6 text-[#dba952] font-medium">
           <Link href="/teste">Início</Link>
-          <Link href="#">Início</Link>
-          <Link href="#">Início</Link>
-          <Link href="#">Início</Link>
-          <Link href="#">Início</Link>
+          <Link href="#">Serviços</Link>
+          <Link href="#">Especializações</Link>
+          <Link href="#">Contato</Link>
+          <Link href="#">Agenda</Link>
         </nav>
 
         {/* Botão direito */}

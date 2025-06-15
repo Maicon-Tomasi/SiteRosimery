@@ -14,6 +14,10 @@ const Sobre: FC = () => {
         });
     }, []);
 
+    const onGoToPageMarcarConsulta = () => {
+         
+    };
+
     return (
         <div data-aos="fade-up" className="w-full flex flex-col xl:flex-row justify-around py-20 px-6 xl:px-36 gap-10">
             {/* Texto à esquerda */}
@@ -24,14 +28,14 @@ const Sobre: FC = () => {
                 </h2>
 
                 <p className="text-[#515a68] text-center xl:text-left">
-                    Veniam officia fugiat quis ex Lorem ad ullamco non aliquip aliqua proident. Enim eu fugiat nulla est ullamco ad et esse sit commodo eiusmod...
-                    Veniam officia fugiat quis ex Lorem ad ullamco non aliquip aliqua proident. Enim eu fugiat nulla est ullamco ad et esse sit commodo eiusmod...
-                    Veniam officia fugiat quis ex Lorem ad ullamco non aliquip aliqua proident. Enim eu fugiat nulla est ullamco ad et esse sit commodo eiusmod...
-                    Veniam officia fugiat quis ex Lorem ad ullamco non aliquip aliqua proident. Enim eu fugiat nulla est ullamco ad et esse sit commodo eiusmod...
+                    Sou Rosiméry, psicóloga dedicada a proporcionar apoio emocional no início da maternidade até o terceiro mês do puerpério. Nascida em 1977, Trago uma abordagem única ao Pré-Natal Psicológico, uma profilaxia referente a prevenção de transtornos psicológicos. Transformando-o em uma jornada envolvente de autoconhecimento e fortalecimento emocional para mamães e papais/ ou para futuro pais. <br></br>
+                    Recado para os papais. Ser pai é... a maior oportunidade que o homem recebe da natureza de evoluir de verdade.
+                    Acredito que a maternidade é um momento de descobertas profundas. Meu acompanhamento psicológico não se limita ao aspecto físico, mas busca ajudar as mulheres a explorar seus sentimentos mais íntimos, descobrindo uma força interior que muitas vezes passa despercebida. <br />
+                    Com empatia, calma, carinho e atenção, guio as mamães nesse caminho, oferecendo um suporte vital durante o período mais intenso da maternidade. Compreendo a importância de criar um ambiente acolhedor, onde as futuras mamães se sintam capacitadas e confiantes para enfrentar os desafios emocionais que podem surgir.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-5 justify-center xl:justify-start">
-                    <Button className="bg-[#dba952] text-[18px] h-11 hover:bg-[#a79b6b] cursor-pointer">
+                    <Button onClick={onGoToPageMarcarConsulta} className="bg-[#dba952] text-[18px] h-11 hover:bg-[#a79b6b] cursor-pointer">
                         Marque uma consulta
                     </Button>
                     <Button className="bg-transparent text-[18px] h-11 text-[#d49f43] border-2 border-[#dba952] hover:bg-[#a79b6b] hover:text-white cursor-pointer">
@@ -40,7 +44,7 @@ const Sobre: FC = () => {
                 </div>
 
                 <div className="flex justify-center xl:justify-start gap-10 sm:gap-[100px] mt-10 flex-wrap">
-                    <div data-aos="fade-right" className="text-center flex flex-col items-center hover:scale-150">
+                    <div data-aos="fade-right" className="text-center flex flex-col items-center hover:scale-150 transition-transform duration-300">
                         <div className="rounded-full bg-[#e5a9b3] p-4">
                             <Heart size={30} color="white" />
                         </div>
