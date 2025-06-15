@@ -2,12 +2,7 @@
 
 import { FC, ReactElement, useEffect } from 'react';
 import {
-  Heart,
   Baby,
-  Brain,
-  Users,
-  Calendar,
-  Phone,
   Stethoscope,
   Feather,
   Activity,
