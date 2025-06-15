@@ -23,8 +23,9 @@ const Sobre: FC = () => {
             {/* Texto à esquerda */}
             <div className="w-full xl:w-1/2">
                 <h2 className="text-4xl md:text-5xl font-bold mb-5 text-center xl:text-left">
-                    <span className="text-[#1f2937]">Apoiando você na jornada </span>
-                    <span className="text-[#d49f43]">da maternidade</span>
+                    <span className="text-[#1f2937]">Apoio Emocional para Cada Momento</span>
+                    <span className="text-[#d49f43]">da Sua Gestação</span>
+                     
                 </h2>
 
                 <p className="text-[#515a68] text-center xl:text-left">
@@ -44,7 +45,7 @@ const Sobre: FC = () => {
                 </div>
 
                 <div className="flex justify-center xl:justify-start gap-10 sm:gap-[100px] mt-10 flex-wrap">
-                    <div data-aos="fade-right" className="text-center flex flex-col items-center hover:scale-150 transition-transform duration-300">
+                    <div data-aos="fade-right" className="text-center flex flex-col items-center">
                         <div className="rounded-full bg-[#e5a9b3] p-4">
                             <Heart size={30} color="white" />
                         </div>
@@ -83,11 +84,11 @@ const Sobre: FC = () => {
                         <div className="py-5 flex flex-col gap-3">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Experiência</span>
-                                <span className="font-semibold text-[#dba952]">12+</span>
+                                <span className="font-semibold text-[#dba952]">5+</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Familias atendidas</span>
-                                <span className="font-semibold text-[#e5a9b3]">567+</span>
+                                <span className="font-semibold text-[#e5a9b3]">30+</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Avaliação</span>
