@@ -36,20 +36,20 @@ const Especializacoes: FC = () => {
                 {
                   icon: <Heart className="text-pink-500" />,
                   title: "Psicologia Perinatal e Obstétrica",
-                  subtitle: "Instituto Suassuna-GO - (xxxx)",
-                  desc: "Advanced certification in perinatal mood and anxiety disorders",
+                  subtitle: "Instituto Suassuna-GO - (2023)",
+                  desc: "Goiânia - GO",
                 },
                 {
                   icon: <Brain className="text-pink-500" />,
                   title: "Terapia Cognitiva Comportamental",
-                  subtitle: "Faculdade Anhanguera-MT · 2019",
-                  desc: "Specialized training for birth trauma and PTSD treatment",
+                  subtitle: "Faculdade Anhanguera-MT - (2019)",
+                  desc: "Primavera Do Leste, MT",
                 },
                 {
                   icon: <Users className="text-pink-500" />,
                   title: "Gestão de Pessoas por Competências ",
-                  subtitle: "IPOG-MT 2020",
-                  desc: "Advanced training in family dynamics during life transitions",
+                  subtitle: "IPOG-MT - (2016)",
+                  desc: "Primavera Do Leste, MT",
                 }
               ].map((item, i) => (
                 <li data-aos="fade-right"
@@ -80,18 +80,18 @@ const Especializacoes: FC = () => {
             <ul className="space-y-4">
               {[
                 {
-                  title: "Bacharelado em Psicologia",
-                  subtitle: "ANHANGUERA UNIC - (xxxx)",
+                  title: "Graduação em Psicologia",
+                  subtitle: "ANHANGUERA UNIC - (2021)",
                   desc: "Primavera Do Leste, MT",
                 },
                 {
-                  title: "Bacharelado em Recursos Humanos",
-                  subtitle: "ANHANGUERA UNIC - (xxxx)",
+                  title: "Graduação em Recursos Humanos",
+                  subtitle: "ANHANGUERA UNIDERP - (2013)",
                   desc: "Primavera Do Leste, MT",
                 },
                 {
                   title: "Pós-Graduada Em Terapia Cognitiva Comportamental e Psicologia Positiva",
-                  subtitle: "ANHANGUERA UNIC - (xxxx)",
+                  subtitle: "ANHANGUERA UNIC - (2019  )",
                   desc: "Primavera Do Leste, MT",
                 },
               ].map((item, i) => (

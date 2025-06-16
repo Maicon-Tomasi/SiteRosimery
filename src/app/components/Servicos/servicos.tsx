@@ -13,6 +13,7 @@ import {
   CloudRain,
 } from 'lucide-react';
 import AOS from "aos";
+import Slider from "react-slick";
 
 
 interface ServiceCard {
@@ -137,6 +138,34 @@ const services: ServiceCard[] = [
 
 const Servico: FC = () => {
 
+   const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    arrows: true,
+    responsive: [
+      {
+        breakpoint: 1024, // telas médias
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 640, // celulares
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
+
+
      useEffect(() => {
              AOS.init({
                  duration: 1000,
@@ -152,35 +181,40 @@ const Servico: FC = () => {
         Além disso, realizo atendimentos voltados à saúde mental de forma geral, acolhendo diferentes demandas emocionais com empatia e profissionalism
       </p>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <Slider
+        {...settings}
+        className="slider-container"
+      >
         {services.map((service, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-xl shadow-md overflow-hidden text-left hover:shadow-lg transition"
-            data-aos="zoom-in-up"
-          >
-            <div className="relative h-50">
-              <img
-                src={service.image}
-                alt={service.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-2 left-2 bg-amber-500 p-2 rounded-full">
-                {service.icon}
+          <div key={index} className="px-2">
+            <div
+              className="bg-white rounded-xl shadow-md overflow-hidden text-left hover:shadow-lg transition h-full"
+              data-aos="zoom-in-up"
+            >
+              <div className="relative h-50">
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 left-2 bg-amber-500 p-2 rounded-full">
+                  {service.icon}
+                </div>
               </div>
-            </div>
-            <div className="p-5">
-              <h3 className="text-lg font-semibold mb-1">{service.title}</h3>
-              <p className="text-sm text-gray-600 mb-3">{service.description}</p>
-              <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
-                {service.items.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
+              <div className="p-5">
+                <h3 className="text-lg font-semibold mb-1">{service.title}</h3>
+                <p className="text-sm text-gray-600 mb-3">{service.description}</p>
+                <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
+                  {service.items.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         ))}
-      </div>
+      </Slider>
+
     </section>
   );
 };
