@@ -18,11 +18,11 @@ const Banner: FC = () => {
         <Slider {...settings}>
              <div className="max-h-[800px] relative">
                 <img src="/imagensSite/banner/banner1.jpg" alt="" className="w-full h-auto" />
-                <button
+                {/* <button
                     className="absolute 2xl:bottom-58 left-83 px-6 py-2 bg-transparent text-[#d49f43] rounded-4xl border-2 border-[#d49f43] shadow-lg cursor-pointer hover:bg-[#d49f43] hover:text-white transition-colors duration-300"
                 >
                     Saiba Mais
-                </button>
+                </button> */}
             </div>
             <div>
                 <img src="/imagensSite/banner/banner2.jpg" alt="" className="w-full h-auto" />

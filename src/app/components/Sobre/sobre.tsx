@@ -23,7 +23,7 @@ const Sobre: FC = () => {
             {/* Texto à esquerda */}
             <div className="w-full xl:w-1/2">
                 <h2 className="text-4xl md:text-5xl font-bold mb-5 text-center xl:text-left">
-                    <span className="text-[#1f2937]">Apoio Emocional para Cada Momento</span>
+                    <span className="text-[#1f2937]">Apoio Emocional para Cada Momento&nbsp;</span>
                     <span className="text-[#d49f43]">da Sua Gestação</span>
                      
                 </h2>

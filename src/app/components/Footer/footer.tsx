@@ -1,5 +1,6 @@
 'use client'
 import { Mail, MapPin, Phone, Heart } from "lucide-react";
+import Link from "next/link";
 
 export const Footer = () => {
   return (
@@ -26,12 +27,13 @@ export const Footer = () => {
         {/* Middle Section */}
         <div>
           <h4 className="font-semibold text-sm mb-3">Links Rápidos</h4>
-          <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="#">Ínicio</a></li>
-            <li><a href="#">Serviços</a></li>
-            <li><a href="#">Especializações</a></li>
-            <li><a href="#">Sobre</a></li>
-            <li><a href="#">Agenda</a></li>
+          <ul className="space-y-2 text-sm text-gray-400 flex flex-col gap-1">
+            <Link href="/teste">Início</Link>
+            <Link href="#">Serviços</Link>
+            <Link href="#">Especializações</Link>
+            <Link href="#">Sobre</Link>
+            <Link href="#">Contato</Link>
+            <Link href="#">Agenda</Link>
           </ul>
         </div>
 

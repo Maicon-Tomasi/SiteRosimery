@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import AOS from "aos";
 import Slider from "react-slick";
+import { Element } from 'react-scroll';
+
 
 
 interface ServiceCard {
@@ -174,48 +176,50 @@ const Servico: FC = () => {
          }, []);
 
   return (
-    <section className="py-12 px-4 max-w-7xl mx-auto text-center">
-      <h2 className="text-3xl font-bold mb-2">Algumas formas de te ajudar</h2>
-      <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
-        Ofereço suporte psicológico especializado como psicóloga obstétrica, adaptado às necessidades específicas de futuros e novos pais, ajudando você a navegar pela jornada emocional da paternidade com confiança e tranquilidade.
-        Além disso, realizo atendimentos voltados à saúde mental de forma geral, acolhendo diferentes demandas emocionais com empatia e profissionalism
-      </p>
+    <Element name='servicos'>
+      <section className="py-12 px-4 max-w-7xl mx-auto text-center">
+        <h2 className="text-3xl font-bold mb-2">Algumas formas de te ajudar</h2>
+        <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
+          Ofereço suporte psicológico especializado como psicóloga obstétrica, adaptado às necessidades específicas de futuros e novos pais, ajudando você a navegar pela jornada emocional da paternidade com confiança e tranquilidade.
+          Além disso, realizo atendimentos voltados à saúde mental de forma geral, acolhendo diferentes demandas emocionais com empatia e profissionalism
+        </p>
 
-      <Slider
-        {...settings}
-        className="slider-container"
-      >
-        {services.map((service, index) => (
-          <div key={index} className="px-2">
-            <div
-              className="bg-white rounded-xl shadow-md overflow-hidden text-left hover:shadow-lg transition h-full"
-              data-aos="zoom-in-up"
-            >
-              <div className="relative h-50">
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-2 left-2 bg-amber-500 p-2 rounded-full">
-                  {service.icon}
+        <Slider
+          {...settings}
+          className="slider-container"
+        >
+          {services.map((service, index) => (
+            <div key={index} className="px-2">
+              <div
+                className="bg-white rounded-xl shadow-md overflow-hidden text-left hover:shadow-lg transition h-full"
+                data-aos="zoom-in-up"
+              >
+                <div className="relative h-50">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 left-2 bg-amber-500 p-2 rounded-full">
+                    {service.icon}
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold mb-1">{service.title}</h3>
+                  <p className="text-sm text-gray-600 mb-3">{service.description}</p>
+                  <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
+                    {service.items.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-              <div className="p-5">
-                <h3 className="text-lg font-semibold mb-1">{service.title}</h3>
-                <p className="text-sm text-gray-600 mb-3">{service.description}</p>
-                <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
-                  {service.items.map((item, idx) => (
-                    <li key={idx}>{item}</li>
-                  ))}
-                </ul>
-              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
 
-    </section>
+      </section>
+    </Element>
   );
 };
 

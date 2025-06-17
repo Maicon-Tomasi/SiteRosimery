@@ -1,9 +1,12 @@
 'use client'
 import Link from 'next/link';
 import { useState } from 'react';
+import { Link as ScrollLink } from 'react-scroll';
+
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  
 
   return (
     <header className="bg-white shadow-md px-4 py-2">
@@ -15,16 +18,19 @@ export default function Navbar() {
 
         {/* Menu Desktop */}
         <nav className="hidden md:flex gap-6 text-[#dba952] font-medium">
-          <Link href="/teste">Início</Link>
-          <Link href="#">Serviços</Link>
-          <Link href="#">Especializações</Link>
-          <Link href="#">Contato</Link>
-          <Link href="#">Agenda</Link>
+          <Link href="/">Início</Link>
+          <ScrollLink className='cursor-pointer' to="servicos" smooth={true} duration={500}>Serviços</ScrollLink>
+          <ScrollLink className='cursor-pointer' to="especializacoes" smooth={true} duration={500}>Especializações</ScrollLink>
+          <ScrollLink className='cursor-pointer' to="sobre" smooth={true} duration={500}>Sobre</ScrollLink>
+          <ScrollLink className='cursor-pointer' to="contato" smooth={true} duration={500}>Contato</ScrollLink>
+          <Link href="/Agenda">Agenda</Link>
         </nav>
 
         {/* Botão direito */}
         <div className="hidden md:block text-sm text-gray-900">
-          Marque um horário
+          <button className='bg-white border-2 border-[#dba952] text-[#dba952] px-4 py-2 rounded-full hover:bg-[#c9a34b] hover:text-white transition-colors duration-300'>
+            Marque um horário
+          </button>
         </div>
 
         {/* Menu mobile toggle */}
