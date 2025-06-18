@@ -19,7 +19,7 @@ const Sobre: FC = () => {
     };
 
     return (
-        <div data-aos="fade-up" className="w-full flex flex-col xl:flex-row justify-around py-20 px-6 xl:px-36 gap-10">
+        <div data-aos="fade-up" className="w-full flex flex-col items-center xl:flex-row justify-around py-20 px-6 xl:px-36 gap-10">
             {/* Texto à esquerda */}
             <div className="w-full xl:w-1/2">
                 <h2 className="text-4xl md:text-5xl font-bold mb-5 text-center xl:text-left">

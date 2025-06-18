@@ -1,4 +1,5 @@
 import Banner from "./components/Banner/banner";
+import Contato from "./components/Contato/Contato";
 import Especializacoes from "./components/Especializacoes/Especializacoes";
 import Servico from "./components/Servicos/servicos";
 import Sobre from "./components/Sobre/sobre";
@@ -14,6 +15,7 @@ export default function Home() {
       <Servico/>
       <Especializacoes />
       <SobreDois />
+      <Contato />
     </div>
     </>
   );

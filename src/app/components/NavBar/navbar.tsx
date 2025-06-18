@@ -49,12 +49,15 @@ export default function Navbar() {
       {/* Menu Mobile */}
       {isOpen && (
         <nav className="md:hidden flex flex-col gap-4 mt-2 text-[#dba952] font-medium px-4">
-          <Link href="#">Início</Link>
-          <Link href="#">Início</Link>
-          <Link href="#">Início</Link>
-          <Link href="#">Início</Link>
-          <Link href="#">Início</Link>
-          <span className="text-gray-900">Marque um horário</span>
+          <Link href="/">Início</Link>
+          <ScrollLink className='cursor-pointer' to="servicos" smooth={true} duration={500}>Serviços</ScrollLink>
+          <ScrollLink className='cursor-pointer' to="especializacoes" smooth={true} duration={500}>Especializações</ScrollLink>
+          <ScrollLink className='cursor-pointer' to="sobre" smooth={true} duration={500}>Sobre</ScrollLink>
+          <ScrollLink className='cursor-pointer' to="contato" smooth={true} duration={500}>Contato</ScrollLink>
+          <Link href="/Agenda">Agenda</Link>
+          <button className='bg-white border-2 border-[#dba952] text-[#dba952] px-4 py-2 rounded-full hover:bg-[#c9a34b] hover:text-white transition-colors duration-300'>
+            Marque um horário
+          </button>
         </nav>
       )}
     </header>
