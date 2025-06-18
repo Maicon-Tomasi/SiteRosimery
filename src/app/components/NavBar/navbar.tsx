@@ -7,6 +7,15 @@ import { Link as ScrollLink } from 'react-scroll';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   
+  const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+
+      const numeroWhatsApp = '5566996598423'; // Coloque o número da psicóloga aqui (sem + ou traços)
+      const texto = `Olá, queria marcar uma consulta. Vim pelo seu site.`;
+      const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
+
+      window.open(url, '_blank'); // Abre o WhatsApp em nova aba
+  };
 
   return (
     <header className="bg-white shadow-md px-4 py-2">
@@ -23,12 +32,12 @@ export default function Navbar() {
           <ScrollLink className='cursor-pointer' to="especializacoes" smooth={true} duration={500}>Especializações</ScrollLink>
           <ScrollLink className='cursor-pointer' to="sobre" smooth={true} duration={500}>Sobre</ScrollLink>
           <ScrollLink className='cursor-pointer' to="contato" smooth={true} duration={500}>Contato</ScrollLink>
-          <Link href="/Agenda">Agenda</Link>
+          {/* <Link href="/Agenda">Agenda</Link> */}
         </nav>
 
         {/* Botão direito */}
         <div className="hidden md:block text-sm text-gray-900">
-          <button className='bg-white border-2 border-[#dba952] text-[#dba952] px-4 py-2 rounded-full hover:bg-[#c9a34b] hover:text-white transition-colors duration-300'>
+          <button onClick={handleSubmit} className='bg-white border-2 border-[#dba952] text-[#dba952] px-4 py-2 rounded-full hover:bg-[#c9a34b] hover:text-white transition-colors duration-300'>
             Marque um horário
           </button>
         </div>
@@ -54,7 +63,7 @@ export default function Navbar() {
           <ScrollLink className='cursor-pointer' to="especializacoes" smooth={true} duration={500}>Especializações</ScrollLink>
           <ScrollLink className='cursor-pointer' to="sobre" smooth={true} duration={500}>Sobre</ScrollLink>
           <ScrollLink className='cursor-pointer' to="contato" smooth={true} duration={500}>Contato</ScrollLink>
-          <Link href="/Agenda">Agenda</Link>
+          {/* <Link href="/Agenda">Agenda</Link> */}
           <button className='bg-white border-2 border-[#dba952] text-[#dba952] px-4 py-2 rounded-full hover:bg-[#c9a34b] hover:text-white transition-colors duration-300'>
             Marque um horário
           </button>

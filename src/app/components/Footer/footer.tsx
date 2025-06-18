@@ -43,14 +43,14 @@ export const Footer = () => {
           <ul className="space-y-2 text-sm text-gray-400">
             <li className="flex items-center"><Phone className="w-4 h-4 mr-2" /> (66) 9 9698-9912</li>
             <li className="flex items-center"><Mail className="w-4 h-4 mr-2" /> rosimery@gmail.com</li>
-            <li className="flex items-start"><MapPin className="w-4 h-4 mr-2 mt-1" />Av. Paulo César Aranda, 814 - Jardim Riva, Primavera do Leste - MT, 78850-000<br />San Francisco, CA 94105</li>
+            <li className="flex items-start"><MapPin className="w-4 h-4 mr-2 mt-1" />Av. Paulo César Aranda, 814 - Jardim Riva, Primavera do Leste - MT, 78850-000</li>
           </ul>
         </div>
       </div>
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-700 mt-10 pt-6 text-sm text-gray-500 flex flex-col md:flex-row justify-between items-center">
-        <p>© 2024 Dr. Rosiméry A. S. Tomasi. Todos os direitos reservados.</p>
+        <p>© 2025 Dr. Rosiméry A. S. Tomasi. Todos os direitos reservados.</p>
         <div className="flex space-x-6 mt-4 md:mt-0">
           {/* <a href="#">Terms of Service</a>
           <a href="#">Privacy Policy</a>

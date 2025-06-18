@@ -4,6 +4,7 @@ import { Heart, Shield, Users } from "lucide-react"
 import { FC, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Link } from "react-scroll";
 
 const Sobre: FC = () => {
 
@@ -14,9 +15,15 @@ const Sobre: FC = () => {
         });
     }, []);
 
-    const onGoToPageMarcarConsulta = () => {
-         
-    };
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+
+      const numeroWhatsApp = '5566996598423'; // Coloque o número da psicóloga aqui (sem + ou traços)
+      const texto = `Olá, queria marcar uma consulta. Vim pelo seu site.`;
+      const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
+
+      window.open(url, '_blank'); // Abre o WhatsApp em nova aba
+  };
 
     return (
         <div data-aos="fade-up" className="w-full flex flex-col items-center xl:flex-row justify-around py-20 px-6 xl:px-36 gap-10">
@@ -36,11 +43,13 @@ const Sobre: FC = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-5 justify-center xl:justify-start">
-                    <Button onClick={onGoToPageMarcarConsulta} className="bg-[#dba952] text-[18px] h-11 hover:bg-[#a79b6b] cursor-pointer">
+                    <Button onClick={handleSubmit} className="bg-[#dba952] text-[18px] h-11 hover:bg-[#a79b6b] cursor-pointer">
                         Marque uma consulta
                     </Button>
                     <Button className="bg-transparent text-[18px] h-11 text-[#d49f43] border-2 border-[#dba952] hover:bg-[#a79b6b] hover:text-white cursor-pointer">
-                        Saiba Mais
+                        <Link to="sobre" smooth={true} duration={500}>
+                            Saiba Mais
+                        </Link>
                     </Button>
                 </div>
 
