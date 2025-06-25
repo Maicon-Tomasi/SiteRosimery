@@ -32,7 +32,7 @@ export default function LoginPage() {
       const resp = await postUsuarioLogin(form);
       if(resp.status === 'success') {
         document.cookie = `token=${resp.token}; path=/; max-age=3600; secure; SameSite=Strict`;
-        router.push("/Produtos");
+        router.push("/sistema/Dashboard");
       }
       else
       {

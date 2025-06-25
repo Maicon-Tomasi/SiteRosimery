@@ -114,8 +114,6 @@ export interface UpdatePacienteDto {
     cpf: string;
 }
 
-// Tipos auxiliares (ajuste conforme necessário)
-export type TipoConsulta = 'Tipo1' | 'Tipo2'; // Substitua pelos valores reais do enum
 export interface Paciente {
     id: number;
     nome: string;
@@ -123,4 +121,16 @@ export interface Paciente {
     telefone: string;
     email: string;
     cpf: string;
+}
+
+export enum TipoConsulta {
+  AvaliacaoPsicologica = 'Avaliação Psicológica',
+  PsicoterapiaIndividual = 'Psicoterapia Individual',
+  PsicoterapiaCasal = 'Psicoterapia de Casal',
+  PsicoterapiaFamiliar = 'Psicoterapia Familiar',
+  PsicoterapiaInfantil = 'Psicoterapia Infantil',
+  AcompanhamentoPsicologico = 'Acompanhamento Psicológico',
+  OrientacaoProfissional = 'Orientação Profissional',
+  Retorno = 'Retorno',
+  Teleatendimento = 'Teleatendimento'
 }
