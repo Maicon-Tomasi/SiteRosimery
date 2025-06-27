@@ -134,3 +134,15 @@ export enum TipoConsulta {
   Retorno = 'Retorno',
   Teleatendimento = 'Teleatendimento'
 }
+
+export const TipoConsultaLabel: Record<number, string> = {
+  1: TipoConsulta.AvaliacaoPsicologica,
+  2: TipoConsulta.PsicoterapiaIndividual,
+  3: TipoConsulta.PsicoterapiaCasal,
+  4: TipoConsulta.PsicoterapiaFamiliar,
+  5: TipoConsulta.PsicoterapiaInfantil,
+  6: TipoConsulta.AcompanhamentoPsicologico,
+  7: TipoConsulta.OrientacaoProfissional,
+  8: TipoConsulta.Retorno,
+  9: TipoConsulta.Teleatendimento,
+};

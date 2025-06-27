@@ -2,6 +2,9 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
+import { ReadAgendamentoDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { Trash } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 
 interface TableProps {
      atualizarTabela: number;
@@ -10,33 +13,42 @@ interface TableProps {
 
 const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const { getAgendamentos, deleteAgendamento } = useApi();
-  const [cidades, setCidades] = useState([]);
+  const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]);
   const [pesquisaNome, setPesquisaNome] = useState('');
+  const [mostrarModal, setMostrarModal] = useState(false); 
+  const [idParaExcluir, setIdParaExcluir] = useState<number>(0); // Armazena o ID da entrada a ser excluída
 
-//   const onDeletarCidade = async (id) => {
-//     if (confirm("Você tem certeza que deseja excluir este agendamento?")) {
-//       try {
-//         await deleteAgendamento(id);
 
-//         const carregarCidades = async () => {
-//           const dados = await getAgendamentos();
-//           setCidades(dados);
-//         };
-
-//         carregarCidades();
-//       } catch (error) {
-//         console.error("Erro ao excluir cidade:", error);
-//       }
-//     }
-//   };
-
-  useEffect(() => {
-    const carregarCidades = async () => {
+  const carregarAgendamentos = async () => {
       const dados = await getAgendamentos();
-      setCidades(dados);
+      setAgendamentos(dados);
+      console.log(dados);
     };
 
-    carregarCidades();
+  const onDeletarAgendamento = async () => {
+      try {
+        await deleteAgendamento(idParaExcluir);
+
+        carregarAgendamentos();
+        setMostrarModal(false); // Fecha a modal após a exclusão
+        setIdParaExcluir(0); // Reseta o ID após a exclusão
+      } catch (error) {
+        console.error("Erro ao excluir cidade:", error);
+      }
+  };
+
+  const abrirModalExclusao = (id: number) => {
+    setIdParaExcluir(id); // Define o ID da entrada a ser excluída
+    setMostrarModal(true); // Exibe a modal
+  };
+
+  const cancelarExclusao = () => {
+    setIdParaExcluir(0); // Reseta o ID
+    setMostrarModal(false); // Fecha a modal
+  };
+
+  useEffect(() => {
+    carregarAgendamentos();
   }, [atualizarTabela]);
 
 //   useEffect(() => {
@@ -67,8 +79,48 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
 //     carregarCidadesPorPesquisa();
 //   }, [pesquisaNome]);
 
+  const padZero = (num: number) => num.toString().padStart(2, '0');
+
+  const formatDate = (dateString: Date) => {
+    const data = new Date(dateString);
+    const dia = padZero(data.getDate());
+    const mes = padZero(data.getMonth() + 1);
+    const ano = data.getFullYear();
+    const horas = padZero(data.getHours());
+    const minutos = padZero(data.getMinutes());
+    const segundos = padZero(data.getSeconds());
+
+    return `${dia}-${mes}-${ano} ${horas}:${minutos}:${segundos}`;
+  };
+
   return (
     <div>
+
+      <Dialog open={mostrarModal} onOpenChange={setMostrarModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar Exclusão</DialogTitle>
+            <DialogDescription>
+              Tem certeza que deseja excluir esta entrada? Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-4 mt-4">
+            <button
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              onClick={onDeletarAgendamento}
+            >
+              Confirmar
+            </button>
+            <button
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+              onClick={cancelarExclusao}
+            >
+              Cancelar
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="flex gap-3 my-5">
         {/* <Input
           type="text"
@@ -84,39 +136,43 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
 
           <TableHeader className="bg-slate-100 dark:bg-slate-800">
             <TableRow>
-              <TableHead className="text-slate-700 dark:text-slate-300">Nome</TableHead>
-              <TableHead className="text-slate-700 dark:text-slate-300">Estado</TableHead>
+              <TableHead className="text-slate-700 dark:text-slate-300">Paciente</TableHead>
+              <TableHead className="text-slate-700 dark:text-slate-300">Telefone</TableHead>
+              <TableHead className="text-slate-700 dark:text-slate-300">Data E Hora Consulta</TableHead>
+              <TableHead className="text-slate-700 dark:text-slate-300">Tipo De Consulta</TableHead>
+              <TableHead className="text-slate-700 dark:text-slate-300">Valor Da Consulta</TableHead>
               <TableHead className="text-slate-700 dark:text-slate-300">Ações</TableHead>
             </TableRow>
           </TableHeader>
 
-          {/* <TableBody>
-            {cidades.map((cidade) => (
-              <TableRow key={cidade.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
-                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{cidade.nomeCidade}</TableCell>
-                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{cidade.estado}</TableCell>
+          <TableBody>
+            {agendamentos.map((agendamento) => (
+              <TableRow key={agendamento.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.paciente.nome}</TableCell>
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.paciente.telefone}</TableCell>
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{formatDate(agendamento.dataHoraConsulta)}</TableCell>
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{TipoConsultaLabel[Number(agendamento.tipoConsulta)]}</TableCell>
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">R$ 00,00</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <button
                       title="Editar"
                       className="p-2 rounded-md bg-green-100 text-green-700 hover:bg-green-200 transition cursor-pointer"
-                      onClick={() => onEditarCidade(cidade)}
                     >
-                      <FaPen />
                     </button>
 
                     <button
                       title="Excluir"
                       className="p-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 transition cursor-pointer"
-                      onClick={() => onDeletarCidade(cidade.id)}
+                      onClick={() => abrirModalExclusao(agendamento.id)}
                     >
-                      <FaTrash />
+                      <Trash />
                     </button>
                   </div>
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody> */}
+          </TableBody>
         </Table>
       </div>
     </div>
