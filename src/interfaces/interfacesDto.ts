@@ -1,6 +1,6 @@
 export interface CreateAgendamentoDto {
     dataHoraConsulta: Date;
-    tipoConsulta: TipoConsulta;
+    tipoConsulta: number;
     pacienteId: number;
 }
 

@@ -1,4 +1,4 @@
-import { LoginUsuarioDto, ReadAgendamentoDto, RespoLogin } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, LoginUsuarioDto, ReadAgendamentoDto, ReadPacienteDto, RespoLogin } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
@@ -36,6 +36,34 @@ export const useApi = () => {
 
     return agendamentoDto;
   };
+
+  const getPacientes = async () => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const response = await api.get('/api/Paciente', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
+
+
+    let pacientesDto: ReadPacienteDto[] = response.data.result.map((paciente: ReadPacienteDto) => ({
+      id: paciente.id,
+      nome: paciente.nome,
+      dataNascimento: paciente.dataNascimento,
+      telefone: paciente.telefone,
+      email: paciente.email,
+      cpf: paciente.cpf
+    }));
+
+    return pacientesDto;
+  }
   
 
   const postUsuarioLogin = async (login: LoginUsuarioDto) => {
@@ -45,6 +73,28 @@ export const useApi = () => {
       token: response.data.token
     };
     return resposta;
+  }
+
+  const postAgendamento = async (agendamento: CreateAgendamentoDto) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    let novoAgendamento: CreateAgendamentoDto[] = [{
+      dataHoraConsulta: agendamento.dataHoraConsulta,
+      tipoConsulta: agendamento.tipoConsulta,
+      pacienteId: agendamento.pacienteId
+    }];
+
+    const response = await api.post('/api/Paciente', novoAgendamento,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data; // Retorna a resposta completa do servidor
+
   }
 
 
@@ -85,8 +135,10 @@ export const useApi = () => {
   }
 
   return {
-    postUsuarioLogin,
     getAgendamentos,
+    getPacientes,
+    postUsuarioLogin,
+    postAgendamento,
     deleteAgendamento
   };
 };
