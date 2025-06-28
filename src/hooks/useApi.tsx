@@ -86,14 +86,14 @@ export const useApi = () => {
       pacienteId: agendamento.pacienteId
     }];
 
-    const response = await api.post('/api/Paciente', novoAgendamento,
+    const response = await api.post('/api/Agendamentos', novoAgendamento,
       {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    return response.data; // Retorna a resposta completa do servidor
+    return response; // Retorna a resposta completa do servidor
 
   }
 

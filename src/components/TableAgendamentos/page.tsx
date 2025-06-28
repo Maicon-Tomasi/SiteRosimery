@@ -2,9 +2,10 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
-import { ReadAgendamentoDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
-import { Trash } from "lucide-react";
+import { CreateConsultasRealizadasDto, ReadAgendamentoDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { Check, Pen, Trash, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Tooltip } from "@radix-ui/react-tooltip";
 
 interface TableProps {
      atualizarTabela: number;
@@ -16,7 +17,17 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]);
   const [pesquisaNome, setPesquisaNome] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false); 
-  const [idParaExcluir, setIdParaExcluir] = useState<number>(0); // Armazena o ID da entrada a ser excluída
+  const [mostrarModalSubirArquivos, setmostrarModalSubirArquivos] = useState(false); 
+  const [idParaExcluir, setIdParaExcluir] = useState<number>(0); 
+  const [arquivosSelecionados, setArquivosSelecionados] = useState<File[]>([]);
+  const [consultaRealizada, setConsultaRealizada] = useState<CreateConsultasRealizadasDto>(
+      {
+        dataHoraConsulta: new Date(),
+        pacienteId: 0,
+        descricao: "",
+        tipoConsulta: 0,
+      }
+  ); 
 
 
   const carregarAgendamentos = async () => {
@@ -37,15 +48,33 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
       }
   };
 
+  const onConfimarConsultaRealizada = () =>{
+
+  };
+
   const abrirModalExclusao = (id: number) => {
     setIdParaExcluir(id); // Define o ID da entrada a ser excluída
     setMostrarModal(true); // Exibe a modal
   };
+  
+  const abriModalConfirmarConsulta = (id: number) => {
+    setIdParaExcluir(id); // Define o ID da entrada a ser excluída
+    setmostrarModalSubirArquivos(true); // Exibe a modal
+  };
 
-  const cancelarExclusao = () => {
+  const cancelarModal = () => {
     setIdParaExcluir(0); // Reseta o ID
     setMostrarModal(false); // Fecha a modal
   };
+
+  const cancelarModalSubirArquivos = () =>{
+    setmostrarModalSubirArquivos(false);
+    setArquivosSelecionados([]);
+  }
+
+  const removerArquivo = (idx: number) => {
+    setArquivosSelecionados(arquivosSelecionados.filter((_, i) => i !== idx));
+  }
 
   useEffect(() => {
     carregarAgendamentos();
@@ -101,7 +130,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
           <DialogHeader>
             <DialogTitle>Confirmar Exclusão</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja excluir esta entrada? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-4 mt-4">
@@ -113,10 +142,79 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
             </button>
             <button
               className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-              onClick={cancelarExclusao}
+              onClick={cancelarModal}
             >
               Cancelar
             </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+
+      <Dialog open={mostrarModalSubirArquivos} onOpenChange={setmostrarModalSubirArquivos}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar Consulta</DialogTitle>
+            <DialogDescription>
+              Coloque uma descrição para esta consulta, e suba os arquivos se necessário!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col justify-end gap-4 mt-4">
+            <div>
+              <textarea
+              className="w-full border-2 border-yellow-600 outline-0 min-h-48 p-2"
+              placeholder="Digite aqui sua descricao"
+              name="descricao"
+              id="descricaoConsulta"
+              onChange={e => setConsultaRealizada({
+                ...consultaRealizada,
+                descricao: e.target.value
+              })}
+            />
+            </div>
+
+            <div>
+              <label htmlFor="arquivosConsulta" className="block mb-2 text-slate-700">Anexar arquivos</label>
+              <input
+                type="file"
+                id="arquivosConsulta"
+                name="arquivosConsulta"
+                multiple
+                className="block w-full text-slate-700 border border-yellow-600 rounded p-2"
+                onChange={e => {
+                  const files = Array.from(e.target.files ?? []);
+                  setArquivosSelecionados(files);
+                  // Se quiser salvar no estado principal:
+                  // setConsultaRealizada({ ...consultaRealizada, arquivos: files });
+                }}
+              />
+              {/* Lista dos arquivos selecionados */}
+              {arquivosSelecionados.length > 0 && (
+                <ul className="mt-2 list-disc list-inside text-slate-700">
+                  {arquivosSelecionados.map((file, idx) => (
+                    <div key={idx} className="flex justify-between mt-2 p-1 border-b-2 border-gray-300">
+                      <li>{file.name}</li>
+                      <button onClick={() => removerArquivo(idx)} className="cursor-pointer"><X color="red"/></button>
+                    </div>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="flex gap-4 justify-end">
+              <button
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                onClick={onConfimarConsultaRealizada}
+              >
+                Confirmar
+              </button>
+              <button
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                onClick={cancelarModalSubirArquivos}
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -155,19 +253,34 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">R$ 00,00</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <button
-                      title="Editar"
-                      className="p-2 rounded-md bg-green-100 text-green-700 hover:bg-green-200 transition cursor-pointer"
-                    >
-                    </button>
+                    <Tooltip>
+                      <button
+                        title="Editar"
+                        className="p-2 rounded-md bg-green-100 text-yellow-600 hover:bg-green-200 transition cursor-pointer"
+                      >
+                        <Pen />
+                      </button>
+                    </Tooltip>
 
-                    <button
-                      title="Excluir"
-                      className="p-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 transition cursor-pointer"
-                      onClick={() => abrirModalExclusao(agendamento.id)}
-                    >
-                      <Trash />
-                    </button>
+                    <Tooltip> 
+                      <button
+                        title="Excluir"
+                        className="p-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 transition cursor-pointer"
+                        onClick={() => abrirModalExclusao(agendamento.id)}
+                      >
+                        <Trash />
+                      </button>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <button
+                        title="Excluir"
+                        className="p-2 rounded-md bg-red-100 text-green-700 hover:bg-red-200 transition cursor-pointer"
+                        onClick={() => abriModalConfirmarConsulta(agendamento.id)}
+                      >
+                        <Check />
+                      </button>
+                    </Tooltip>
                   </div>
                 </TableCell>
               </TableRow>

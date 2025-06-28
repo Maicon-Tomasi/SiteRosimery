@@ -1,12 +1,16 @@
 "use client";
 import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
 import BotaoVermelho from "@/components/botaoVermelho/botaoAzul";
+import { DatePicker } from "@/components/DatePicker/DatePicker";
 import TabelaAgendamentos from "@/components/TableAgendamentos/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useApi } from "@/hooks/useApi";
-import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto } from "@/interfaces/interfacesDto";
-import { LoaderCircle, PlusCircle, X } from "lucide-react";
+import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { set } from "date-fns";
+import { is } from "date-fns/locale";
+import { LoaderCircle, PlusCircle, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
@@ -14,7 +18,12 @@ const Agendamento = () =>{
      const { getPacientes, postAgendamento} = useApi();
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
+     const [dataSelecionada, setDataSelecionada] = useState<Date | null>(null)
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
+     const [reloadTabela, setReloadTabela] = useState(0);
+     const [mostrarModal, setMostrarModal] = useState(false); 
+     const [mostrarModalErro, setMostrarModalErro] = useState(false); 
+     const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
      const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
           dataHoraConsulta: new Date(),
           tipoConsulta: 0,
@@ -32,14 +41,121 @@ const Agendamento = () =>{
 
       console.log(dados);
     };
-     const [reloadTabela, setReloadTabela] = useState(0);
+
+    const opcoesTipoConsulta = Object.entries(TipoConsultaLabel).map(([value, label]) => ({
+          value,
+          label,
+     }));
+
+     const confirmaCriacaoDeAgendamento = () => {
+          setCarregando(true);
+          setMostrarModal(true);
+     }
+
+     const onCloseModal = () => {
+          setCarregando(false);
+          setMostrarModal(false);
+          setMostrarModalErro(false);
+     }
+
+     const onCadastarAgendamento = async () => {
+          setCarregando(true);
+          try {
+               const response = await postAgendamento(novoAgendamento);
+               if (!response || response.status < 200 || response.status >= 300) {
+                    setMostrarModalErro(true);
+                    setCarregando(false);
+                    return;
+               }
+               setMostrarModalSucesso(true);
+               setMostrarModal(false);
+               setTimeout(() => {
+                    setMostrarModalSucesso(false);
+                    setReloadTabela(reloadTabela + 1);
+                    setCarregando(false);
+                    setNovoAgendamento({
+                         dataHoraConsulta: new Date(),
+                         tipoConsulta: 0,
+                         pacienteId: 0
+                    });
+               }, 3000);
+          } catch (error) {
+               // Aqui cai qualquer erro de rede ou exceção
+               setMostrarModal(false);
+               setMostrarModalErro(true);
+               setCarregando(false);
+               console.error("Erro ao cadastrar agendamento:", error);
+          }
+     };
 
     useEffect(() => {
         carregarPacientes();
      }, []);
 
+       useEffect(() => {
+        console.log("Agendamento:", novoAgendamento);
+     }, [novoAgendamento]);
+
      return (
      <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
+
+          <Dialog open={mostrarModal} onOpenChange={setMostrarModal}>
+               <DialogContent>
+                    <DialogHeader>
+                         <DialogTitle>Confirmar Exclusão</DialogTitle>
+                    <DialogDescription>
+                         Tem certeza que deseja realizar este agendamento?
+                    </DialogDescription>
+                    </DialogHeader>
+                         <div className="flex justify-end gap-4 mt-4">
+                              <button
+                              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                              onClick={onCadastarAgendamento}
+                              >
+                                   Confirmar
+                              </button>
+                              <button
+                              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                              onClick={onCloseModal}
+                              >
+                                   Cancelar
+                              </button>
+                         </div>
+                    </DialogContent>
+               </Dialog>
+
+               <Dialog open={mostrarModalErro} onOpenChange={setMostrarModalErro}>
+                    <DialogContent>
+                         <DialogHeader>
+                              <DialogTitle>Confirmar Exclusão</DialogTitle>
+                         <DialogDescription>
+                              Erro ao cadastrar agendamento. Por favor, verifique os dados e tente novamente.
+                         </DialogDescription>
+                         </DialogHeader>
+                              <div className="flex justify-end gap-4 mt-4">
+                                   <button
+                                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                                   onClick={onCloseModal}
+                                   >
+                                        Cancelar
+                                   </button>
+                              </div>
+                    </DialogContent>
+               </Dialog>
+
+                <Dialog open={mostrarModeSucesso} onOpenChange={setMostrarModalSucesso}>
+                    <DialogContent>
+                         <DialogHeader>
+                              <DialogTitle>Confirmar Exclusão</DialogTitle>
+                         <DialogDescription>
+                             Sucesso! Agendamento realizado com sucesso. <br />
+                              Está modal será fechada em 3 segundos.
+                         </DialogDescription>
+                         </DialogHeader>
+                    </DialogContent>
+               </Dialog>
+
+
           <header className="flex items-center justify-between">
                <h1 className="text-3xl font-bold text-yellow-600 tracking-tight">
                     Agendamentos
@@ -49,108 +165,62 @@ const Agendamento = () =>{
           <section className="bg-white p-4 rounded-md shadow-sm border border-slate-200">
                <div className="flex gap-4 flex-wrap">
                     <div>
-                         <label className="text-sm text-slate-600">Paciente</label>
+                         <label className="text-[16px] text-slate-600">Paciente</label>
                          <ComboboxDemo
                               opcoes={opcoesPaciente}
                               onSelectProp={(value) => setNovoAgendamento({ ...novoAgendamento, pacienteId:  Number(value) })}
                               value={novoAgendamento.pacienteId.toString()}
                          />
                     </div>
-                    {/* <div>
-                         <label className="text-sm text-slate-600">Endereço*</label>
-                         <Input
-                         type="text"
-                         placeholder="Endereço"
-                         classes="w-full border border-slate-300 rounded px-2 py-1"
-                         onChangeParam={(value) => setTransportadora({ ...transportadora, Endereco: value })}
-                         valueParam={transportadora.Endereco}
-                         />
+                    <div className="flex flex-col">
+                         <label className="text-[16px] text-slate-600">Data e hora do agendamento</label>
+                         <DatePicker onChange={(value) => setNovoAgendamento({ ...novoAgendamento, dataHoraConsulta: new Date(value)})}/>
                     </div>
-                    <div>
-                         <label className="text-sm text-slate-600">Número*</label>
-                         <Input
-                         type="text"
-                         placeholder="Número"
-                         classes="w-full border border-slate-300 rounded px-2 py-1"
-                         onChangeParam={(value) => setTransportadora({ ...transportadora, Numero: value })}
-                         valueParam={transportadora.Numero}
-                         />
-                    </div>
-                    <div>
-                         <label className="text-sm text-slate-600">Bairro*</label>
-                         <Input
-                         type="text"
-                         placeholder="Bairro"
-                         classes="w-full border border-slate-300 rounded px-2 py-1"
-                         onChangeParam={(value) => setTransportadora({ ...transportadora, Bairro: value })}
-                         valueParam={transportadora.Bairro}
-                         />
-                    </div>
-                    <div>
-                         <label className="text-sm text-slate-600">CEP*</label>
-                         <Input
-                         type="text"
-                         placeholder="CEP"
-                         classes="w-full border border-slate-300 rounded px-2 py-1"
-                         onChangeParam={(value) => setTransportadora({ ...transportadora, Cep: value })}
-                         valueParam={transportadora.Cep}
-                         maxLengthParam={9}
-                         />
-                    </div>
-                    <div>
-                         <label className="text-sm text-slate-600">Documento*</label>
-                         <Input
-                         type="text"
-                         placeholder="Documento"
-                         classes="w-full border border-slate-300 rounded px-2 py-1"
-                         onChangeParam={(value) => setTransportadora({ ...transportadora, Documento: value })}
-                         valueParam={transportadora.Documento}
-                    />
-                    </div>
-                    <div>
-                         <label className="text-sm text-slate-600">Contato*</label>
-                         <Input
-                         type="text"
-                         placeholder="Contato"
-                         classes="w-full border border-slate-300 rounded px-2 py-1"
-                         onChangeParam={(value) => setTransportadora({ ...transportadora, Contato: value })}
-                         valueParam={transportadora.Contato}
-                    />
-                    </div>
-                    <div>
-                         <label className="text-sm text-slate-600">Cidade*</label>
-                         <ComboboxDemo
-                         opcoes={cidades}
-                         onSelectProp={(value) => setTransportadora({ ...transportadora, CidadeId: value })}
-                         valueProp={transportadora.CidadeId}
-                         />
-                    </div> */}
-                    <div className="mt-6">
-                    {editando ? (
-                    <div className="flex gap-4">
-                         <BotaoAmarelo disabled={carregando}>
-                         {carregando ? (
-                              <LoaderCircle className="animate-spin w-4 h-4" />
-                         ) : (
-                              <PlusCircle className="w-4 h-4 mr-2" />
-                         )}
-                         Editar
-                         </BotaoAmarelo>
 
-                         <BotaoVermelho disabled={carregando}>
-                         <X size={20} className="w-4 h-4" /> Parar Edição
-                         </BotaoVermelho>
+                    <div>
+                         <label className="text-sm text-slate-600">Tipo consulta*</label>
+                         <ComboboxDemo
+                                   opcoes={opcoesTipoConsulta}
+                                   onSelectProp={(value) => setNovoAgendamento({ ...novoAgendamento, tipoConsulta: Number(value) })}
+                                   value={novoAgendamento.tipoConsulta.toString()}
+                              />
                     </div>
-                    ) : (
-                    <BotaoAmarelo disabled={carregando}>
-                         {carregando ? (
-                         <LoaderCircle className="animate-spin w-4 h-4" />
+                    
+                    
+                    <div className="flex gap-5 mt-6 items-center justify-center">
+                         <div className="">
+                              <BotaoAmarelo >
+                                   <PlusCircle size={16}/>
+                              </BotaoAmarelo>
+                         </div>
+
+                         {editando ? (
+                         <div className="flex gap-4">
+                              <BotaoAmarelo disabled={carregando}>
+                              {carregando ? (
+                                   <LoaderCircle className="animate-spin w-4 h-4" />
+                              ) : (
+                                   <PlusCircle className="w-4 h-4 mr-2" />
+                              )}
+                              Editar
+                              </BotaoAmarelo>
+
+                              <BotaoVermelho disabled={carregando}>
+                                   <X size={20} className="w-4 h-4" /> Parar Edição
+                              </BotaoVermelho>
+                         </div>
                          ) : (
-                         <PlusCircle className="w-4 h-4 mr-2" />
+                         <BotaoAmarelo onClick={confirmaCriacaoDeAgendamento} disabled={carregando}>
+                              {carregando ? (
+                                   <LoaderCircle className="animate-spin w-4 h-4" />
+                              ) : (
+                                   <Send className="w-4 h-4 mr-2" />
+                              )}
+                                   Agendar
+                         </BotaoAmarelo>
                          )}
-                         Agendar
-                    </BotaoAmarelo>
-                    )}
+
+                         
                     </div>
                </div>
                </section>

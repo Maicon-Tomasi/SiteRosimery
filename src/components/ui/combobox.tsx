@@ -1,12 +1,23 @@
 "use client"
 
 import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
 import { useEffect, useState } from "react"
+import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "cmdk"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
 
 type Opcao = {
   value: string
@@ -26,8 +37,8 @@ export function ComboboxDemo({
   value: externalValue,
   disabled = false,
 }: ComboboxDemoProps) {
-  const [open, setOpen] = useState<boolean>(false)
-  const [value, setValue] = useState<string>("")
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState("")
 
   useEffect(() => {
     setValue(externalValue || "")
@@ -49,36 +60,48 @@ export function ComboboxDemo({
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-full border border-slate-300 rounded px-2 py-1 justify-between text-left"
+          className={cn(
+            "w-full border border-slate-300 rounded px-3 py-2 justify-between text-left text-sm font-medium shadow-sm bg-white hover:bg-muted transition"
+          )}
         >
           {selected ? selected.label : "Selecione"}
-          <ChevronsUpDown className="opacity-50 ml-2 h-4 w-4" />
+          <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0 bg-white">
+      <PopoverContent className="w-[250px] p-0 mt-1 rounded-xl border bg-white shadow-lg z-50">
         <Command>
-          <CommandInput placeholder="Pesquisar" className="h-9" />
-          <CommandList>
-            <CommandEmpty>Nenhum encontrado!</CommandEmpty>
-              {disabled ? (
-                <CommandGroup>
-                  {opcoes.map((item, index) => (
-                    <CommandItem
-                      key={index}
-                      value={item.value}
-                      onSelect={() => handleSelect(item.value)}
-                    >
-                      {item.label}
-                      <Check
-                        className={cn(
-                          "ml-auto",
-                          value === item.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ) : null}
+          <CommandInput
+            placeholder="Pesquisar paciente..."
+            className="h-9 px-3 text-sm border-b focus:outline-none"
+          />
+          <CommandList className="max-h-60 overflow-y-auto">
+            <CommandEmpty className="px-3 py-2 text-sm text-muted-foreground">
+              Nenhum encontrado!
+            </CommandEmpty>
+            {disabled ? (
+              <CommandEmpty className="px-3 py-2 text-sm text-destructive">
+                Troca de produto não permitida!
+              </CommandEmpty>
+            ) : (
+              <CommandGroup>
+                {opcoes.map((item) => (
+                  <CommandItem
+                    key={item.value}
+                    value={item.value}
+                    onSelect={() => handleSelect(item.value)}
+                    className="cursor-pointer px-3 py-2 hover:bg-muted rounded-md flex items-center justify-between"
+                  >
+                    {item.label}
+                    <Check
+                      className={cn(
+                        "h-4 w-4 text-primary",
+                        value === item.value ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>
