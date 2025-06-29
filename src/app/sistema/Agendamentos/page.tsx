@@ -5,11 +5,8 @@ import { DatePicker } from "@/components/DatePicker/DatePicker";
 import TabelaAgendamentos from "@/components/TableAgendamentos/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useApi } from "@/hooks/useApi";
 import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
-import { set } from "date-fns";
-import { is } from "date-fns/locale";
 import { LoaderCircle, PlusCircle, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -18,6 +15,7 @@ const Agendamento = () =>{
      const { getPacientes, postAgendamento} = useApi();
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
+     const [mensagemErro, setMensagemErro] = useState("");
      const [dataSelecionada, setDataSelecionada] = useState<Date | null>(null)
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
      const [reloadTabela, setReloadTabela] = useState(0);
@@ -62,11 +60,6 @@ const Agendamento = () =>{
           setCarregando(true);
           try {
                const response = await postAgendamento(novoAgendamento);
-               if (!response || response.status < 200 || response.status >= 300) {
-                    setMostrarModalErro(true);
-                    setCarregando(false);
-                    return;
-               }
                setMostrarModalSucesso(true);
                setMostrarModal(false);
                setTimeout(() => {
@@ -79,12 +72,21 @@ const Agendamento = () =>{
                          pacienteId: 0
                     });
                }, 3000);
-          } catch (error) {
-               // Aqui cai qualquer erro de rede ou exceção
-               setMostrarModal(false);
-               setMostrarModalErro(true);
+          } catch (error: any) {
                setCarregando(false);
-               console.error("Erro ao cadastrar agendamento:", error);
+               if (error.response) {
+                    // Erro de resposta da API
+                    if (error.status === 400) {
+                         setMensagemErro(error.response.data);
+                    } else {
+                         setMensagemErro("Erro ao realizar agendamento, verifique as informações");
+                    }
+                    setMostrarModalErro(true);
+               } else {
+                    // Erro de rede ou outro
+                    setMostrarModalErro(true);
+                    setMensagemErro("Erro de conexão ou inesperado.");
+               }
           }
      };
 
@@ -129,7 +131,7 @@ const Agendamento = () =>{
                          <DialogHeader>
                               <DialogTitle>Confirmar Exclusão</DialogTitle>
                          <DialogDescription>
-                              Erro ao cadastrar agendamento. Por favor, verifique os dados e tente novamente.
+                              {mensagemErro}
                          </DialogDescription>
                          </DialogHeader>
                               <div className="flex justify-end gap-4 mt-4">

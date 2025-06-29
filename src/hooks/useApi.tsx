@@ -4,6 +4,12 @@ import Cookies from 'js-cookie';
 
 export const useApi = () => {
   const { api } = useApiContext();
+
+  function toISOStringLocal(date: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
+  }
+
   
   const getAgendamentos = async () => {
     const token = Cookies.get('token'); // nome do cookie
@@ -80,8 +86,21 @@ export const useApi = () => {
 
     if (!token) throw new Error('Token não encontrado nos cookies');
 
+    const data = new Date(agendamento.dataHoraConsulta);
+
+    const dataUtc = new Date(
+      Date.UTC(
+        data.getFullYear(),
+        data.getMonth(),
+        data.getDate(),
+        data.getHours(),
+        data.getMinutes(),
+        0
+      )
+    );
+
     let novoAgendamento: CreateAgendamentoDto[] = [{
-      dataHoraConsulta: agendamento.dataHoraConsulta,
+      dataHoraConsulta: dataUtc,
       tipoConsulta: agendamento.tipoConsulta,
       pacienteId: agendamento.pacienteId
     }];

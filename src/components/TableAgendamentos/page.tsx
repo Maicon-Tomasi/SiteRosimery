@@ -16,19 +16,13 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const { getAgendamentos, deleteAgendamento } = useApi();
   const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]);
   const [pesquisaNome, setPesquisaNome] = useState('');
-  const [mostrarModal, setMostrarModal] = useState(false); 
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarModalErro, setMostrarModalErro] = useState(false);
+  const [mensagemErro, setMensagemErro] = useState("");
   const [mostrarModalSubirArquivos, setmostrarModalSubirArquivos] = useState(false); 
   const [idParaExcluir, setIdParaExcluir] = useState<number>(0); 
   const [arquivosSelecionados, setArquivosSelecionados] = useState<File[]>([]);
-  const [consultaRealizada, setConsultaRealizada] = useState<CreateConsultasRealizadasDto>(
-      {
-        dataHoraConsulta: new Date(),
-        pacienteId: 0,
-        descricao: "",
-        tipoConsulta: 0,
-      }
-  ); 
-
+  const [consultaRealizadaSelecionada, setConsultaRealizadaSelecionada] = useState<CreateConsultasRealizadasDto>();
 
   const carregarAgendamentos = async () => {
       const dados = await getAgendamentos();
@@ -49,7 +43,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   };
 
   const onConfimarConsultaRealizada = () =>{
-
+    
   };
 
   const abrirModalExclusao = (id: number) => {
@@ -57,8 +51,24 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
     setMostrarModal(true); // Exibe a modal
   };
   
-  const abriModalConfirmarConsulta = (id: number) => {
-    setIdParaExcluir(id); // Define o ID da entrada a ser excluída
+  const abriModalConfirmarConsulta = (data: Date, paciente: number, tipoConsulta: number) => {
+    if (new Date(data) > new Date()) {
+      setMensagemErro("Você nao pode confirmar uma consulta que está no futuro");
+      setMostrarModalErro(true);
+      return;
+    }
+    
+    
+    let consultaRealizada: CreateConsultasRealizadasDto =
+    {
+      dataHoraConsulta: data,
+      descricao: "",
+      pacienteId: paciente,
+      tipoConsulta: tipoConsulta
+    }
+
+    setConsultaRealizadaSelecionada(consultaRealizada);
+
     setmostrarModalSubirArquivos(true); // Exibe a modal
   };
 
@@ -78,6 +88,10 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
 
   useEffect(() => {
     carregarAgendamentos();
+  }, [atualizarTabela]);
+  
+  useEffect(() => {
+    console.log
   }, [atualizarTabela]);
 
 //   useEffect(() => {
@@ -162,15 +176,16 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
           <div className="flex flex-col justify-end gap-4 mt-4">
             <div>
               <textarea
-              className="w-full border-2 border-yellow-600 outline-0 min-h-48 p-2"
-              placeholder="Digite aqui sua descricao"
-              name="descricao"
-              id="descricaoConsulta"
-              onChange={e => setConsultaRealizada({
-                ...consultaRealizada,
-                descricao: e.target.value
-              })}
-            />
+                className="w-full border-2 border-yellow-600 outline-0 min-h-48 p-2"
+                placeholder="Digite aqui sua descricao"
+                name="descricao"
+                id="descricaoConsulta"
+                onChange={e => setConsultaRealizadaSelecionada(prev => 
+                  prev
+                    ? { ...prev, descricao: e.target.value }
+                    : undefined
+                )}
+               />
             </div>
 
             <div>
@@ -204,7 +219,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
             <div className="flex gap-4 justify-end">
               <button
                 className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                onClick={onConfimarConsultaRealizada}
+                onClick={() => onConfimarConsultaRealizada()}
               >
                 Confirmar
               </button>
@@ -218,6 +233,18 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={mostrarModalErro} onOpenChange={setMostrarModalErro}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Erro</DialogTitle>
+            <DialogDescription>
+              {mensagemErro}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
 
       <div className="flex gap-3 my-5">
         {/* <Input
@@ -276,7 +303,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
                       <button
                         title="Excluir"
                         className="p-2 rounded-md bg-red-100 text-green-700 hover:bg-red-200 transition cursor-pointer"
-                        onClick={() => abriModalConfirmarConsulta(agendamento.id)}
+                        onClick={() => abriModalConfirmarConsulta(agendamento.dataHoraConsulta, Number(agendamento.paciente.id), Number(agendamento.tipoConsulta))}
                       >
                         <Check />
                       </button>
