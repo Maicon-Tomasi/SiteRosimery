@@ -12,6 +12,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
+  if (request.nextUrl.pathname === '/sistema/login' || request.nextUrl.pathname === '/sistema' && token) {
+    return NextResponse.redirect(new URL('/sistema/Dashboard', request.url));
+  }
+
   return NextResponse.next();
 }
 

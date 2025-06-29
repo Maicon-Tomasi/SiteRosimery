@@ -16,6 +16,11 @@ export interface CreateConsultasRealizadasDto {
     tipoConsulta: number;
 }
 
+export interface CreateConsultaEArquivosDto{
+    consultas: CreateConsultasRealizadasDto[];
+    arquivos: CreateUpdateArquivoConsultas[];
+}
+
 export interface CreatePacienteDto {
     nome: string;
     dataNascimento: Date;

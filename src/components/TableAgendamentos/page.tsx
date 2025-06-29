@@ -2,7 +2,7 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
-import { CreateConsultasRealizadasDto, ReadAgendamentoDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
 import { Check, Pen, Trash, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
@@ -13,7 +13,7 @@ interface TableProps {
 }
 
 const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
-  const { getAgendamentos, deleteAgendamento } = useApi();
+  const { getAgendamentos, deleteAgendamento, postCriaArquivoEConsulta } = useApi();
   const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]);
   const [pesquisaNome, setPesquisaNome] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -21,8 +21,8 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const [mensagemErro, setMensagemErro] = useState("");
   const [mostrarModalSubirArquivos, setmostrarModalSubirArquivos] = useState(false); 
   const [idParaExcluir, setIdParaExcluir] = useState<number>(0); 
-  const [arquivosSelecionados, setArquivosSelecionados] = useState<File[]>([]);
-  const [consultaRealizadaSelecionada, setConsultaRealizadaSelecionada] = useState<CreateConsultasRealizadasDto>();
+  const [arquivosSelecionados, setArquivosSelecionados] = useState<CreateUpdateArquivoConsultas[]>([]);
+  const [consultaRealizadaSelecionada, setConsultaRealizadaSelecionada] = useState<CreateConsultasRealizadasDto[]>();
 
   const carregarAgendamentos = async () => {
       const dados = await getAgendamentos();
@@ -42,8 +42,35 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
       }
   };
 
-  const onConfimarConsultaRealizada = () =>{
-    
+  const onConfimarConsultaRealizada = async () =>{
+    let criaERelacionaArquivos: CreateConsultaEArquivosDto = {
+      consultas: consultaRealizadaSelecionada ?? [],
+      arquivos: arquivosSelecionados
+    }
+
+    try
+    {
+      var response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
+      console.log(response);
+    }
+    catch (error: any)
+    {
+      // setCarregando(false);
+      if (error.response) {
+          // Erro de resposta da API
+          if (error.status === 400) {
+                setMensagemErro(error.response.data);
+          } else {
+                setMensagemErro("Erro ao realizar consulta, verifique as informações");
+          }
+          setMostrarModalErro(true);
+      } else {
+          // Erro de rede ou outro
+          setMostrarModalErro(true);
+          setMensagemErro("Erro de conexão ou inesperado.");
+      }
+    }
+
   };
 
   const abrirModalExclusao = (id: number) => {
@@ -57,17 +84,18 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
       setMostrarModalErro(true);
       return;
     }
-    
-    
-    let consultaRealizada: CreateConsultasRealizadasDto =
-    {
-      dataHoraConsulta: data,
-      descricao: "",
-      pacienteId: paciente,
-      tipoConsulta: tipoConsulta
-    }
 
-    setConsultaRealizadaSelecionada(consultaRealizada);
+    setConsultaRealizadaSelecionada((prev) => (
+      prev ? 
+      {
+        ...prev,
+        dataHoraConsulta: data,
+        pacienteId: paciente,
+        tipoConsulta: tipoConsulta
+      }
+    :
+      undefined
+  ));
 
     setmostrarModalSubirArquivos(true); // Exibe a modal
   };
@@ -91,8 +119,8 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   }, [atualizarTabela]);
   
   useEffect(() => {
-    console.log
-  }, [atualizarTabela]);
+    console.log(consultaRealizadaSelecionada);
+  }, [consultaRealizadaSelecionada]);
 
 //   useEffect(() => {
 //     const carregarCidadesPorPesquisa = async () => {
@@ -198,7 +226,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
                 className="block w-full text-slate-700 border border-yellow-600 rounded p-2"
                 onChange={e => {
                   const files = Array.from(e.target.files ?? []);
-                  setArquivosSelecionados(files);
+                  setArquivosSelecionados(files.map(file => ({ arquivo: file })));
                   // Se quiser salvar no estado principal:
                   // setConsultaRealizada({ ...consultaRealizada, arquivos: files });
                 }}
@@ -208,7 +236,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
                 <ul className="mt-2 list-disc list-inside text-slate-700">
                   {arquivosSelecionados.map((file, idx) => (
                     <div key={idx} className="flex justify-between mt-2 p-1 border-b-2 border-gray-300">
-                      <li>{file.name}</li>
+                      <li>{file.arquivo.name}</li>
                       <button onClick={() => removerArquivo(idx)} className="cursor-pointer"><X color="red"/></button>
                     </div>
                   ))}

@@ -1,4 +1,4 @@
-import { CreateAgendamentoDto, LoginUsuarioDto, ReadAgendamentoDto, ReadPacienteDto, RespoLogin } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadPacienteDto, RespoLogin } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
@@ -115,6 +115,122 @@ export const useApi = () => {
     return response; // Retorna a resposta completa do servidor
 
   }
+  
+  const postConsultaRealizada = async (consultaRealizada: CreateConsultasRealizadasDto) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const data = new Date(consultaRealizada.dataHoraConsulta);
+
+    const dataUtc = new Date(
+      Date.UTC(
+        data.getFullYear(),
+        data.getMonth(),
+        data.getDate(),
+        data.getHours(),
+        data.getMinutes(),
+        0
+      )
+    );
+
+    let novaConsultaRealizada: CreateConsultasRealizadasDto[] = [{
+      dataHoraConsulta: dataUtc,
+      tipoConsulta: consultaRealizada.tipoConsulta,
+      pacienteId: consultaRealizada.pacienteId,
+      descricao: consultaRealizada.descricao
+    }];
+
+    const response = await api.post('/api/ConsultasRealizadas', novaConsultaRealizada,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response; // Retorna a resposta completa do servidor
+
+  }
+
+  const postArquivosConsulta = async (arquivos: CreateUpdateArquivoConsultas) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    let arquivosEnviados: CreateUpdateArquivoConsultas[] = [{
+      arquivo: arquivos.arquivo
+    }];
+
+    const response = await api.post('/api/ArquivosConsulta', arquivosEnviados,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response; // Retorna a resposta completa do servidor
+
+  }
+
+  const postCriaArquivoEConsulta = async (consultasEarquivos: CreateConsultaEArquivosDto) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    
+    let arquivosAEnviados: CreateUpdateArquivoConsultas[] = [];
+    let consultasAEnviar: CreateConsultasRealizadasDto[] = [];
+
+    consultasEarquivos.arquivos.forEach(arquivoParametro => {
+      let novoArquivo: CreateUpdateArquivoConsultas = { arquivo: arquivoParametro.arquivo };
+
+      arquivosAEnviados.push(novoArquivo);
+    });
+
+    consultasEarquivos.consultas.forEach(consulta => {
+
+      const data = new Date(consulta.dataHoraConsulta);
+
+      const dataUtc = new Date(
+        Date.UTC(
+          data.getFullYear(),
+          data.getMonth(),
+          data.getDate(),
+          data.getHours(),
+          data.getMinutes(),
+          0
+        )
+      );
+
+      let novaConsulta: CreateConsultasRealizadasDto = {
+        dataHoraConsulta: dataUtc,
+        descricao: consulta.descricao,
+        pacienteId: consulta.pacienteId,
+        tipoConsulta: consulta.tipoConsulta
+      }
+
+      consultasAEnviar.push(novaConsulta);
+      
+    });
+
+
+    let consultasEArquivosFormatados: CreateConsultaEArquivosDto = {
+      consultas: consultasAEnviar,
+      arquivos: arquivosAEnviados
+    }
+
+    const response = await api.post('/api/ConsultasRealizadas/relacionaArquivos', consultasEArquivosFormatados,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response; // Retorna a resposta completa do servidor
+
+  }
+
+  
 
 
   const deleteAgendamento = async (id: number) => {
@@ -157,6 +273,9 @@ export const useApi = () => {
     getAgendamentos,
     getPacientes,
     postUsuarioLogin,
+    postConsultaRealizada,
+    postArquivosConsulta,
+    postCriaArquivoEConsulta,
     postAgendamento,
     deleteAgendamento
   };
