@@ -44,10 +44,13 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
 
   const onConfimarConsultaRealizada = async () =>{
     let criaERelacionaArquivos: CreateConsultaEArquivosDto = {
-      consultas: consultaRealizadaSelecionada ?? [],
+      consultas: consultaRealizadaSelecionada ? consultaRealizadaSelecionada : [],
       arquivos: arquivosSelecionados
     }
 
+    console.log(consultaRealizadaSelecionada);
+    console.log(arquivosSelecionados);
+    console.log("cria", criaERelacionaArquivos);
     try
     {
       var response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
@@ -85,17 +88,14 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
       return;
     }
 
-    setConsultaRealizadaSelecionada((prev) => (
-      prev ? 
+    setConsultaRealizadaSelecionada([
       {
-        ...prev,
         dataHoraConsulta: data,
         pacienteId: paciente,
-        tipoConsulta: tipoConsulta
+        tipoConsulta: tipoConsulta,
+        descricao: ""
       }
-    :
-      undefined
-  ));
+    ]);
 
     setmostrarModalSubirArquivos(true); // Exibe a modal
   };
@@ -210,8 +210,11 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
                 id="descricaoConsulta"
                 onChange={e => setConsultaRealizadaSelecionada(prev => 
                   prev
-                    ? { ...prev, descricao: e.target.value }
-                    : undefined
+                    ? [
+                        { ...prev[0], descricao: e.target.value },
+                        ...prev.slice(1)
+                      ] 
+                    : prev
                 )}
                />
             </div>
@@ -267,7 +270,11 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
           <DialogHeader>
             <DialogTitle>Erro</DialogTitle>
             <DialogDescription>
-              {mensagemErro}
+              {
+                typeof mensagemErro === "string"
+                  ? mensagemErro
+                  : JSON.stringify(mensagemErro, null, 2)
+                }
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

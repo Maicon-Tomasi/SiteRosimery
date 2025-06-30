@@ -173,62 +173,52 @@ export const useApi = () => {
   }
 
   const postCriaArquivoEConsulta = async (consultasEarquivos: CreateConsultaEArquivosDto) => {
-    const token = Cookies.get('token'); // nome do cookie
+      const token = Cookies.get('token');
+      if (!token) throw new Error('Token não encontrado nos cookies');
 
-    if (!token) throw new Error('Token não encontrado nos cookies');
+      const formData = new FormData();
 
-    
-    let arquivosAEnviados: CreateUpdateArquivoConsultas[] = [];
-    let consultasAEnviar: CreateConsultasRealizadasDto[] = [];
+      // Adiciona arquivos ao FormData
+      consultasEarquivos.arquivos.forEach((arquivoParametro, idx) => {
+        // O nome deve ser igual ao esperado pelo backend, por exemplo: "Arquivos"
+        formData.append(`Arquivos`, arquivoParametro.arquivo); // arquivoParametro.arquivo deve ser um File
+      });
 
-    consultasEarquivos.arquivos.forEach(arquivoParametro => {
-      let novoArquivo: CreateUpdateArquivoConsultas = { arquivo: arquivoParametro.arquivo };
-
-      arquivosAEnviados.push(novoArquivo);
-    });
-
-    consultasEarquivos.consultas.forEach(consulta => {
-
-      const data = new Date(consulta.dataHoraConsulta);
-
-      const dataUtc = new Date(
-        Date.UTC(
-          data.getFullYear(),
-          data.getMonth(),
-          data.getDate(),
-          data.getHours(),
-          data.getMinutes(),
-          0
+      // Adiciona as consultas como JSON (stringificado)
+      formData.append(
+        "Consultas",
+        JSON.stringify(
+          consultasEarquivos.consultas.map(consulta => {
+            const data = new Date(consulta.dataHoraConsulta);
+            const dataUtc = new Date(
+              Date.UTC(
+                data.getFullYear(),
+                data.getMonth(),
+                data.getDate(),
+                data.getHours(),
+                data.getMinutes(),
+                0
+              )
+            );
+            return {
+              dataHoraConsulta: dataUtc,
+              descricao: consulta.descricao,
+              pacienteId: consulta.pacienteId,
+              tipoConsulta: consulta.tipoConsulta
+            };
+          })
         )
       );
 
-      let novaConsulta: CreateConsultasRealizadasDto = {
-        dataHoraConsulta: dataUtc,
-        descricao: consulta.descricao,
-        pacienteId: consulta.pacienteId,
-        tipoConsulta: consulta.tipoConsulta
-      }
+      const response = await api.post('/api/ConsultasRealizadas/relacionaArquivos', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      consultasAEnviar.push(novaConsulta);
-      
-    });
-
-
-    let consultasEArquivosFormatados: CreateConsultaEArquivosDto = {
-      consultas: consultasAEnviar,
-      arquivos: arquivosAEnviados
-    }
-
-    const response = await api.post('/api/ConsultasRealizadas/relacionaArquivos', consultasEArquivosFormatados,
-      {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return response; // Retorna a resposta completa do servidor
-
-  }
+      return response;
+  };
 
   
 

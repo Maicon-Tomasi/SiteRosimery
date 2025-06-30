@@ -104,7 +104,7 @@ const Agendamento = () =>{
           <Dialog open={mostrarModal} onOpenChange={setMostrarModal}>
                <DialogContent>
                     <DialogHeader>
-                         <DialogTitle>Confirmar Exclusão</DialogTitle>
+                         <DialogTitle>Confirmar Agendamento</DialogTitle>
                     <DialogDescription>
                          Tem certeza que deseja realizar este agendamento?
                     </DialogDescription>
@@ -129,7 +129,7 @@ const Agendamento = () =>{
                <Dialog open={mostrarModalErro} onOpenChange={setMostrarModalErro}>
                     <DialogContent>
                          <DialogHeader>
-                              <DialogTitle>Confirmar Exclusão</DialogTitle>
+                              <DialogTitle>Erro</DialogTitle>
                          <DialogDescription>
                               {mensagemErro}
                          </DialogDescription>
@@ -148,7 +148,7 @@ const Agendamento = () =>{
                 <Dialog open={mostrarModeSucesso} onOpenChange={setMostrarModalSucesso}>
                     <DialogContent>
                          <DialogHeader>
-                              <DialogTitle>Confirmar Exclusão</DialogTitle>
+                              <DialogTitle>Agendamento Realizado</DialogTitle>
                          <DialogDescription>
                              Sucesso! Agendamento realizado com sucesso. <br />
                               Está modal será fechada em 3 segundos.
