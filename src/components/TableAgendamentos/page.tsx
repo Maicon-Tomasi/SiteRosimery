@@ -18,7 +18,9 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const [pesquisaNome, setPesquisaNome] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalErro, setMostrarModalErro] = useState(false);
+  const [mostrarModalSucesso, setMostrarModalSucesso] = useState(false);
   const [mensagemErro, setMensagemErro] = useState("");
+  const [mensagemSucesso, setMensagemSucesso] = useState("");
   const [mostrarModalSubirArquivos, setmostrarModalSubirArquivos] = useState(false); 
   const [idParaExcluir, setIdParaExcluir] = useState<number>(0); 
   const [arquivosSelecionados, setArquivosSelecionados] = useState<CreateUpdateArquivoConsultas[]>([]);
@@ -28,7 +30,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
       const dados = await getAgendamentos();
       setAgendamentos(dados);
       console.log(dados);
-    };
+  };
 
   const onDeletarAgendamento = async () => {
       try {
@@ -54,6 +56,14 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
     try
     {
       var response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
+      if (response.status == 200 || response.status == 204) {
+        setMensagemSucesso("Sua consulta foi confirmada e salva com sucesso");
+        setMostrarModalSucesso(true);
+        setmostrarModalSubirArquivos(false);
+        setArquivosSelecionados([]);
+        setConsultaRealizadaSelecionada([]);
+        await carregarAgendamentos();
+      }
       console.log(response);
     }
     catch (error: any)
@@ -274,6 +284,21 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
                 typeof mensagemErro === "string"
                   ? mensagemErro
                   : JSON.stringify(mensagemErro, null, 2)
+                }
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={mostrarModalSucesso} onOpenChange={setMostrarModalSucesso}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Sucesso!</DialogTitle>
+            <DialogDescription>
+              {
+                typeof mensagemSucesso === "string"
+                  ? mensagemSucesso
+                  : JSON.stringify(mensagemSucesso, null, 2)
                 }
             </DialogDescription>
           </DialogHeader>

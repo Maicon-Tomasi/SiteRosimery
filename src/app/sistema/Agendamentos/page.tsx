@@ -1,18 +1,21 @@
 "use client";
 import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
 import BotaoVermelho from "@/components/botaoVermelho/botaoAzul";
+import Calendario from "@/components/Calendario/Calendario";
 import { DatePicker } from "@/components/DatePicker/DatePicker";
 import TabelaAgendamentos from "@/components/TableAgendamentos/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
 import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
-import { LoaderCircle, PlusCircle, Send, X } from "lucide-react";
+import { addHours } from "date-fns";
+import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
 const Agendamento = () =>{
-     const { getPacientes, postAgendamento} = useApi();
+     const { getAgendamentos, getPacientes, postAgendamento} = useApi();
+     const [modoDeVisualizacao, setModoDeVisualizacao] = useState(false);
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
      const [mensagemErro, setMensagemErro] = useState("");
@@ -22,6 +25,8 @@ const Agendamento = () =>{
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
      const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
+     const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]); 
+     const [agendamentosFormatados, setAgendamentosFormatados] = useState([]); 
      const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
           dataHoraConsulta: new Date(),
           tipoConsulta: 0,
@@ -94,9 +99,35 @@ const Agendamento = () =>{
         carregarPacientes();
      }, []);
 
-       useEffect(() => {
-        console.log("Agendamento:", novoAgendamento);
-     }, [novoAgendamento]);
+     useEffect(() => {
+        console.log("Agendamentos formatados:", agendamentosFormatados);
+     }, [agendamentosFormatados]);
+
+     useEffect(() => {
+          if (!modoDeVisualizacao) {
+               return
+          }
+
+          let dadosFormatadosAgendamento: any = [];
+
+          const carregarAgendamentos = async () => {
+               const dados = await getAgendamentos();
+               setAgendamentos(dados);
+          };
+          carregarAgendamentos();
+
+          agendamentos.forEach((agendamentoFormatado) => {
+               let dataConsultaFormatada = new Date(agendamentoFormatado.dataHoraConsulta);
+               let dados = {
+                    title: agendamentoFormatado.paciente,
+                    start: dataConsultaFormatada,
+                    end: addHours(dataConsultaFormatada, 1),
+               }
+               dadosFormatadosAgendamento.push(dados);
+          });
+
+          setAgendamentosFormatados(dadosFormatadosAgendamento)
+     }, [modoDeVisualizacao])
 
      return (
      <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
@@ -225,9 +256,31 @@ const Agendamento = () =>{
                          
                     </div>
                </div>
-               </section>
 
-          <TabelaAgendamentos atualizarTabela={reloadTabela}/>
+          </section>
+          <div className="flex justify-center gap-4 w-25 bg-white p-1 rounded-md shadow-sm border border-slate-200">
+          <Table
+               onClick={() => setModoDeVisualizacao(false)}
+               className={
+                    !modoDeVisualizacao
+                    ? "text-center bg-[#d49f43] rounded-[10px] w-1/2 cursor-pointer"
+                    : "rounded-xl hover:bg-[#f5e7d0] w-1/2 cursor-pointer"
+               }
+               color={!modoDeVisualizacao ? "white" : "#d49f43"}
+          />
+
+          <Calendar
+               onClick={() => setModoDeVisualizacao(true)}
+               className={
+                    modoDeVisualizacao
+                    ? "text-center bg-[#d49f43] rounded-2xl w-1/2 cursor-pointer"
+                    : "text-center rounded-2xl hover:bg-[#f5e7d0] w-1/2 cursor-pointer"
+               }
+               color={modoDeVisualizacao ? "white" : "#d49f43"}
+          />
+          </div>
+
+          {!modoDeVisualizacao ? <TabelaAgendamentos atualizarTabela={reloadTabela}/> : <Calendario dados={agendamentosFormatados}/>}
      </div>
      );
 }

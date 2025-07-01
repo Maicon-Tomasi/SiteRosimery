@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ApiProvider } from "../../context/ApiContext";
 import { AppSidebar } from "@/components/SideBar/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import "../../custom-css/calendar-custom.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
