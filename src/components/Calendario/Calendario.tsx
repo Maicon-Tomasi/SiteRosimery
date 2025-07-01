@@ -26,17 +26,16 @@ interface EventType extends RBCEvent {
 
 interface CalendarioProps
 {
-     dados: EventType[]
+     dados: EventType[],
+     atualiza: number
 }
 
-
-
-const Calendario = ({dados}: CalendarioProps) => {
+const Calendario = ({dados, atualiza}: CalendarioProps) => {
      const hoje = new Date();
      hoje.setHours(8, 0, 0, 0);
      
      const diaMax = addDays(hoje, 5);
-     diaMax.setHours(18, 0, 0, 0);
+     diaMax.setHours(20, 0, 0, 0);
 
      const [eventos, setEventos] = useState<EventType[]>();
      const [dataMin, setDataMin] = useState<Date>(hoje);
@@ -54,7 +53,7 @@ const Calendario = ({dados}: CalendarioProps) => {
                events.push(element);
           });
           setEventos(events);
-     }, [dados]); 
+     }, [atualiza]); 
 
      useEffect(() =>{
           console.log(eventos);

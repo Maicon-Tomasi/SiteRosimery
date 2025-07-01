@@ -22,11 +22,12 @@ const Agendamento = () =>{
      const [dataSelecionada, setDataSelecionada] = useState<Date | null>(null)
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
      const [reloadTabela, setReloadTabela] = useState(0);
+     const [reloadCalendario, setReloadCalendario] = useState(0);
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
      const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
      const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]); 
-     const [agendamentosFormatados, setAgendamentosFormatados] = useState([]); 
+     const [agendamentosFormatados, setAgendamentosFormatados] = useState<{ title: string; start: Date; end: Date }[]>([]);
      const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
           dataHoraConsulta: new Date(),
           tipoConsulta: 0,
@@ -104,30 +105,30 @@ const Agendamento = () =>{
      }, [agendamentosFormatados]);
 
      useEffect(() => {
-          if (!modoDeVisualizacao) {
-               return
-          }
-
-          let dadosFormatadosAgendamento: any = [];
-
           const carregarAgendamentos = async () => {
-               const dados = await getAgendamentos();
-               setAgendamentos(dados);
+          const dados = await getAgendamentos();
+          setAgendamentos(dados);
           };
-          carregarAgendamentos();
 
-          agendamentos.forEach((agendamentoFormatado) => {
+          carregarAgendamentos();
+     }, [modoDeVisualizacao]);
+
+     useEffect(() => {
+          const dadosFormatadosAgendamento = agendamentos.map((agendamentoFormatado) => {
                let dataConsultaFormatada = new Date(agendamentoFormatado.dataHoraConsulta);
-               let dados = {
-                    title: agendamentoFormatado.paciente,
+               return {
+                    title: agendamentoFormatado.paciente.nome,
                     start: dataConsultaFormatada,
                     end: addHours(dataConsultaFormatada, 1),
-               }
-               dadosFormatadosAgendamento.push(dados);
+               };
           });
 
-          setAgendamentosFormatados(dadosFormatadosAgendamento)
-     }, [modoDeVisualizacao])
+          setAgendamentosFormatados(dadosFormatadosAgendamento);
+          setReloadCalendario((prev) => prev + 1);
+
+     }, [agendamentos]);
+
+
 
      return (
      <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
@@ -280,7 +281,7 @@ const Agendamento = () =>{
           />
           </div>
 
-          {!modoDeVisualizacao ? <TabelaAgendamentos atualizarTabela={reloadTabela}/> : <Calendario dados={agendamentosFormatados}/>}
+          {!modoDeVisualizacao ? <TabelaAgendamentos atualizarTabela={reloadTabela}/> : <Calendario dados={agendamentosFormatados} atualiza={reloadCalendario}/>}
      </div>
      );
 }
