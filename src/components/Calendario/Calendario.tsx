@@ -37,7 +37,9 @@ const Calendario = ({dados, atualiza}: CalendarioProps) => {
      const diaMax = addDays(hoje, 5);
      diaMax.setHours(20, 0, 0, 0);
 
-     const [eventos, setEventos] = useState<EventType[]>();
+    // Adicione esse estado para controlar a data atual
+     const [dataAtual, setDataAtual] = useState<Date>(new Date()); 
+     const [eventos, setEventos] = useState<EventType[]>([]);
      const [dataMin, setDataMin] = useState<Date>(hoje);
      const [dataMax, setDataMax] = useState<Date>(diaMax);
 
@@ -48,19 +50,20 @@ const Calendario = ({dados, atualiza}: CalendarioProps) => {
      }, []);
 
      useEffect(() => {
-          const events: EventType[] = [];
-          dados.forEach(element => {
-               events.push(element);
-          });
-          setEventos(events);
-     }, [atualiza]); 
+        const events: EventType[] = dados.map(element => ({
+          ...element,
+          start: new Date(element.start),
+          end: new Date(element.end),
+        }));
+        setEventos(events);
+    }, [atualiza]);
 
      useEffect(() =>{
           console.log(eventos);
      }, [eventos])
 
   return (
-    <div className="rounded-xl border border-[#e2cfcf] bg-[#fbeeee] p-4 shadow-md">
+    <div className="rounded-xl border border-[#e2cfcf] bg-[#ffffff] p-4 shadow-md">
       <Calendar
         localizer={localizer}
         events={eventos}
@@ -68,26 +71,23 @@ const Calendario = ({dados, atualiza}: CalendarioProps) => {
         endAccessor="end"
         defaultView="week"
         views={['week']}
-        style={{ height: '70vh' }}
-        min={dataMin}
-        max={dataMax}
-        onSelectEvent={handleEventClick}
-        className="custom-calendar"
-        toolbar
+        date={dataAtual} // ← controla a data exibida
+        onNavigate={(novaData) => setDataAtual(novaData)} // ← atualiza ao clicar nos botões
+        style={{ height: '80vh' }}
+        min={new Date(1970, 1, 1, 8, 0)}  // 08:00
+        max={new Date(1970, 1, 1, 19, 0)} // 19:00
         messages={{
-          next: 'Próximo',
-          previous: 'Voltar',
           today: 'Hoje',
-          month: 'Mês',
-          week: 'Semana',
-          day: 'Dia',
-          agenda: 'Agenda',
+          previous: 'Voltar',
+          next: 'Próximo',
           date: 'Data',
           time: 'Hora',
           event: 'Evento',
           noEventsInRange: 'Nenhum evento neste intervalo.',
         }}
       />
+
+
     </div>
   );
 }

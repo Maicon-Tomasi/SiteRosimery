@@ -27,10 +27,13 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const [consultaRealizadaSelecionada, setConsultaRealizadaSelecionada] = useState<CreateConsultasRealizadasDto[]>();
 
   const carregarAgendamentos = async () => {
-      const dados = await getAgendamentos();
-      setAgendamentos(dados);
-      console.log(dados);
-  };
+    const dados = await getAgendamentos();
+    const ordenados = [...dados].sort(
+        (a, b) => new Date(a.dataHoraConsulta).getTime() - new Date(b.dataHoraConsulta).getTime()
+    );
+    setAgendamentos(ordenados);
+    console.log("Agendamentos ordenados", ordenados);
+};
 
   const onDeletarAgendamento = async () => {
       try {
