@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 
 
 const Agendamento = () =>{
-     const { getAgendamentos, getPacientes, postAgendamento} = useApi();
+     const { getPacientes, postAgendamento} = useApi();
      const [modoDeVisualizacao, setModoDeVisualizacao] = useState(false);
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
@@ -22,12 +22,9 @@ const Agendamento = () =>{
      const [dataSelecionada, setDataSelecionada] = useState<Date | null>(null)
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
      const [reloadTabela, setReloadTabela] = useState(0);
-     const [reloadCalendario, setReloadCalendario] = useState(0);
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
      const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
-     const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]); 
-     const [agendamentosFormatados, setAgendamentosFormatados] = useState<{ title: string; start: Date; end: Date }[]>([]);
      const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
           dataHoraConsulta: new Date(),
           tipoConsulta: 0,
@@ -99,36 +96,6 @@ const Agendamento = () =>{
     useEffect(() => {
         carregarPacientes();
      }, []);
-
-     useEffect(() => {
-        console.log("Agendamentos formatados:", agendamentosFormatados);
-     }, [agendamentosFormatados]);
-
-     useEffect(() => {
-          const carregarAgendamentos = async () => {
-          const dados = await getAgendamentos();
-          setAgendamentos(dados);
-          };
-
-          carregarAgendamentos();
-     }, [modoDeVisualizacao]);
-
-     useEffect(() => {
-          const dadosFormatadosAgendamento = agendamentos.map((agendamentoFormatado) => {
-               let dataConsultaFormatada = new Date(agendamentoFormatado.dataHoraConsulta);
-               return {
-                    title: agendamentoFormatado.paciente.nome,
-                    start: dataConsultaFormatada,
-                    end: addHours(dataConsultaFormatada, 1),
-               };
-          });
-
-          setAgendamentosFormatados(dadosFormatadosAgendamento);
-          setReloadCalendario((prev) => prev + 1);
-
-     }, [agendamentos]);
-
-
 
      return (
      <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
@@ -281,7 +248,7 @@ const Agendamento = () =>{
           />
           </div>
 
-          {!modoDeVisualizacao ? <TabelaAgendamentos atualizarTabela={reloadTabela}/> : <Calendario dados={agendamentosFormatados} atualiza={reloadCalendario}/>}
+          {!modoDeVisualizacao ? <TabelaAgendamentos atualizarTabela={reloadTabela}/> : <Calendario />}
      </div>
      );
 }

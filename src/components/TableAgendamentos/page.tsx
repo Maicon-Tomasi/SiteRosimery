@@ -6,6 +6,7 @@ import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateA
 import { Check, Pen, Trash, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
+import { addHours } from "date-fns";
 
 interface TableProps {
      atualizarTabela: number;
@@ -25,6 +26,8 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const [idParaExcluir, setIdParaExcluir] = useState<number>(0); 
   const [arquivosSelecionados, setArquivosSelecionados] = useState<CreateUpdateArquivoConsultas[]>([]);
   const [consultaRealizadaSelecionada, setConsultaRealizadaSelecionada] = useState<CreateConsultasRealizadasDto[]>();
+
+
 
   const carregarAgendamentos = async () => {
     const dados = await getAgendamentos();
@@ -377,6 +380,22 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
             ))}
           </TableBody>
         </Table>
+
+        <div className="flex justify-center items-center gap-2 mt-4">
+            <button
+              className="px-3 py-1 bg-white rounded hover:bg-gray-300 cursor-pointer"
+             
+            >
+              Anterior
+            </button>
+            <span>Página 0 de 56</span>
+            <button
+              className="px-3 py-1 bg-white rounded hover:bg-gray-300 cursor-pointer"
+              
+            >
+              Próxima
+            </button>
+          </div>
       </div>
     </div>
   );
