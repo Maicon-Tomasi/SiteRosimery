@@ -1,0 +1,195 @@
+"use client";
+import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
+import BotaoVermelho from "@/components/botaoVermelho/botaoAzul";
+import Calendario from "@/components/Calendario/Calendario";
+import { DatePicker } from "@/components/DatePicker/DatePicker";
+import TabelaAgendamentos from "@/components/TableAgendamentos/page";
+import TabelaConsultasRealizadas from "@/components/TableConsultasRealizadas/page";
+import { ComboboxDemo } from "@/components/ui/combobox";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useApi } from "@/hooks/useApi";
+import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { addHours } from "date-fns";
+import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
+import { useEffect, useState } from "react";
+
+
+const ConsutasRealizadas = () =>{
+     const { getPacientes, postAgendamento} = useApi();
+     const [modoDeVisualizacao, setModoDeVisualizacao] = useState(false);
+     const [carregando, setCarregando] = useState(false);
+     const [editando, setEditando] = useState(false);
+     const [mensagemErro, setMensagemErro] = useState("");
+     const [dataSelecionada, setDataSelecionada] = useState<Date | null>(null)
+     const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
+     const [reloadTabela, setReloadTabela] = useState(0);
+     const [mostrarModal, setMostrarModal] = useState(false); 
+     const [mostrarModalErro, setMostrarModalErro] = useState(false); 
+     const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
+     const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
+          dataHoraConsulta: new Date(),
+          tipoConsulta: 0,
+          pacienteId: 0
+     });
+
+     const carregarPacientes = async () => {
+      const dados = await getPacientes();
+     const formatadas = dados.map((p) => ({
+     value: p.id.toString(),
+     label: p.nome
+     }));
+
+      setOpcoesPaciente(formatadas);
+
+      console.log(dados);
+    };
+
+    const opcoesTipoConsulta = Object.entries(TipoConsultaLabel).map(([value, label]) => ({
+          value,
+          label,
+     }));
+
+     const confirmaCriacaoDeAgendamento = () => {
+          setCarregando(true);
+          setMostrarModal(true);
+     }
+
+     const onCloseModal = () => {
+          setCarregando(false);
+          setMostrarModal(false);
+          setMostrarModalErro(false);
+     }
+
+     const onCadastarAgendamento = async () => {
+          setCarregando(true);
+          try {
+               const response = await postAgendamento(novoAgendamento);
+               setMostrarModalSucesso(true);
+               setMostrarModal(false);
+               setTimeout(() => {
+                    setMostrarModalSucesso(false);
+                    setReloadTabela(reloadTabela + 1);
+                    setCarregando(false);
+                    setNovoAgendamento({
+                         dataHoraConsulta: new Date(),
+                         tipoConsulta: 0,
+                         pacienteId: 0
+                    });
+               }, 3000);
+          } catch (error: any) {
+               setCarregando(false);
+               if (error.response) {
+                    // Erro de resposta da API
+                    if (error.status === 400) {
+                         setMensagemErro(error.response.data);
+                    } else {
+                         setMensagemErro("Erro ao realizar agendamento, verifique as informações");
+                    }
+                    setMostrarModalErro(true);
+               } else {
+                    // Erro de rede ou outro
+                    setMostrarModalErro(true);
+                    setMensagemErro("Erro de conexão ou inesperado.");
+               }
+          }
+     };
+
+    useEffect(() => {
+        carregarPacientes();
+     }, []);
+
+     return (
+     <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
+
+          <Dialog open={mostrarModal} onOpenChange={setMostrarModal}>
+               <DialogContent>
+                    <DialogHeader>
+                         <DialogTitle>Confirmar Agendamento</DialogTitle>
+                    <DialogDescription>
+                         Tem certeza que deseja realizar este agendamento?
+                    </DialogDescription>
+                    </DialogHeader>
+                         <div className="flex justify-end gap-4 mt-4">
+                              <button
+                              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                              onClick={onCadastarAgendamento}
+                              >
+                                   Confirmar
+                              </button>
+                              <button
+                              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                              onClick={onCloseModal}
+                              >
+                                   Cancelar
+                              </button>
+                         </div>
+                    </DialogContent>
+               </Dialog>
+
+               <Dialog open={mostrarModalErro} onOpenChange={setMostrarModalErro}>
+                    <DialogContent>
+                         <DialogHeader>
+                              <DialogTitle>Erro</DialogTitle>
+                         <DialogDescription>
+                              {mensagemErro}
+                         </DialogDescription>
+                         </DialogHeader>
+                              <div className="flex justify-end gap-4 mt-4">
+                                   <button
+                                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                                   onClick={onCloseModal}
+                                   >
+                                        Cancelar
+                                   </button>
+                              </div>
+                    </DialogContent>
+               </Dialog>
+
+                <Dialog open={mostrarModeSucesso} onOpenChange={setMostrarModalSucesso}>
+                    <DialogContent>
+                         <DialogHeader>
+                              <DialogTitle>Agendamento Realizado</DialogTitle>
+                         <DialogDescription>
+                             Sucesso! Agendamento realizado com sucesso. <br />
+                              Está modal será fechada em 3 segundos.
+                         </DialogDescription>
+                         </DialogHeader>
+                    </DialogContent>
+               </Dialog>
+
+
+          <header className="flex items-center justify-between">
+               <h1 className="text-3xl font-bold text-yellow-600 tracking-tight">
+                    Consultas Realizadas
+               </h1>
+          </header>
+
+          
+          <div className="flex justify-center gap-4 w-25 bg-white p-1 rounded-md shadow-sm border border-slate-200">
+          <Table
+               onClick={() => setModoDeVisualizacao(false)}
+               className={
+                    !modoDeVisualizacao
+                    ? "text-center bg-[#d49f43] rounded-[10px] w-1/2 cursor-pointer"
+                    : "rounded-xl hover:bg-[#f5e7d0] w-1/2 cursor-pointer"
+               }
+               color={!modoDeVisualizacao ? "white" : "#d49f43"}
+          />
+
+          <Calendar
+               onClick={() => setModoDeVisualizacao(true)}
+               className={
+                    modoDeVisualizacao
+                    ? "text-center bg-[#d49f43] rounded-2xl w-1/2 cursor-pointer"
+                    : "text-center rounded-2xl hover:bg-[#f5e7d0] w-1/2 cursor-pointer"
+               }
+               color={modoDeVisualizacao ? "white" : "#d49f43"}
+          />
+          </div>
+
+          {!modoDeVisualizacao ? <TabelaConsultasRealizadas atualizarTabela={reloadTabela}/> : <Calendario />}
+     </div>
+     );
+}
+
+export default ConsutasRealizadas;

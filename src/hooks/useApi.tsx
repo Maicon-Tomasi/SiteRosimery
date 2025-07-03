@@ -1,4 +1,4 @@
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadPacienteDto, RespoLogin } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
@@ -83,6 +83,40 @@ export const useApi = () => {
     }));
 
     return pacientesDto;
+  }
+  
+  const getConsutlasRealizadas = async () => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const response = await api.get('/api/ConsultasRealizadas', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
+
+
+    let ConsultasRealizadasDto: ReadConsultasRealizadasDto[] = response.data.map((consulta: ReadConsultasRealizadasDto) => ({
+      id: consulta.id,
+      dataHoraConsulta: consulta.dataHoraConsulta,
+      descricao: consulta.descricao,
+      tipoConsulta: Number(consulta.tipoConsulta),
+      paciente: {
+        id: consulta.paciente.id,
+        nome: consulta.paciente.nome,
+        dataNascimento: consulta.paciente.dataNascimento,
+        telefone: consulta.paciente.telefone,
+        email: consulta.paciente.email,
+        cpf: consulta.paciente.cpf
+      }
+    }));
+
+    return ConsultasRealizadasDto;
   }
   
 
@@ -254,27 +288,34 @@ export const useApi = () => {
         // Se for array, pegue o primeiro ou trate como lista
         agendamento = agendamento[0];
       }
+      return response.status;
+  }
+  
+  const deletarConsultaRealizada = async (id: number) => {
+    const token = Cookies.get('token');
+    const response = await api.delete(`/api/Agendamentos/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      // const agendamentoDto: ReadAgendamentoDto = {
-      //   id: Number(agendamento.id),
-      //   dataHoraConsulta: agendamento.dataHoraConsulta,
-      //   tipoConsulta: agendamento.tipoConsulta,
-      //   paciente: {
-      //     id: Number(agendamento.paciente.id),
-      //     nome: agendamento.paciente.nome,
-      //     dataNascimento: agendamento.paciente.dataNascimento,
-      //     telefone: agendamento.paciente.telefone,
-      //     email: agendamento.paciente.email,
-      //     cpf: agendamento.paciente.cpf
-      //   }
-      // };
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
 
+      let agendamento = response.data.result;
+
+      if (Array.isArray(agendamento)) {
+        // Se for array, pegue o primeiro ou trate como lista
+        agendamento = agendamento[0];
+      }
       return response.status;
   }
 
   return {
     getAgendamentos,
     getPacientes,
+    getConsutlasRealizadas,
     postUsuarioLogin,
     postConsultaRealizada,
     postArquivosConsulta,

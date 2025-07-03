@@ -26,17 +26,23 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
   const [idParaExcluir, setIdParaExcluir] = useState<number>(0); 
   const [arquivosSelecionados, setArquivosSelecionados] = useState<CreateUpdateArquivoConsultas[]>([]);
   const [consultaRealizadaSelecionada, setConsultaRealizadaSelecionada] = useState<CreateConsultasRealizadasDto[]>();
-
+  const [skip, setSkip] = useState(0);
 
 
   const carregarAgendamentos = async () => {
-    const dados = await getAgendamentos(null, null);
+    const dados = await getAgendamentos(skip, 10);
     const ordenados = [...dados].sort(
         (a, b) => new Date(a.dataHoraConsulta).getTime() - new Date(b.dataHoraConsulta).getTime()
     );
+
+    if (dados.length <= 0) {
+      setSkip(skip - 10);
+      return;
+    }
+
     setAgendamentos(ordenados);
     console.log("Agendamentos ordenados", ordenados);
-};
+  };
 
   const onDeletarAgendamento = async () => {
       try {
@@ -132,7 +138,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
 
   useEffect(() => {
     carregarAgendamentos();
-  }, [atualizarTabela]);
+  }, [atualizarTabela, skip]);
   
   useEffect(() => {
     console.log(consultaRealizadaSelecionada);
@@ -383,13 +389,20 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
 
         <div className="flex justify-center items-center gap-2 mt-4">
             <button
+              onClick={() => setSkip(0)}
+              className="px-3 py-1 bg-white rounded hover:bg-gray-300 cursor-pointer"
+             
+            >
+              Ínicio
+            </button>
+            <button
+              onClick={() => setSkip(() => skip > 0 ? skip - 10 : 0)}
               className="px-3 py-1 bg-white rounded hover:bg-gray-300 cursor-pointer"
              
             >
               Anterior
             </button>
-            <span>Página 0 de 56</span>
-            <button
+            <button onClick={() => setSkip(() => agendamentos.length <= 0 ? skip : skip + 10)}
               className="px-3 py-1 bg-white rounded hover:bg-gray-300 cursor-pointer"
               
             >
