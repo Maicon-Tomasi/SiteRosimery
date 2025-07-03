@@ -11,21 +11,35 @@ export const useApi = () => {
   }
 
   
-  const getAgendamentos = async () => {
+  const getAgendamentos = async (skip: number | null, take: number | null) => {
     const token = Cookies.get('token'); // nome do cookie
     if (!token) throw new Error('Token não encontrado nos cookies');
 
-    const response = await api.get('/api/Agendamentos', {
+    let response
+
+    if (skip != null && take != null) {
+      response = await api.get(`/api/Agendamentos?skip=${skip}&take=${take}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });  
+    }
+    else
+    {
+      response = await api.get('/api/Agendamentos', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    }
+
+    
 
     if (response.status !== 200) {
       throw new Error('Erro ao buscar agendamentos');
     }
 
-    let agendamentoDto: ReadAgendamentoDto[] = response.data.result.map((agendamento: ReadAgendamentoDto) => ({
+    let agendamentoDto: ReadAgendamentoDto[] = response.data.map((agendamento: ReadAgendamentoDto) => ({
       id: Number(agendamento.id),
       dataHoraConsulta: agendamento.dataHoraConsulta,
       tipoConsulta: Number(agendamento.tipoConsulta),

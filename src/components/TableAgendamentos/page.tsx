@@ -30,7 +30,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
 
 
   const carregarAgendamentos = async () => {
-    const dados = await getAgendamentos();
+    const dados = await getAgendamentos(null, null);
     const ordenados = [...dados].sort(
         (a, b) => new Date(a.dataHoraConsulta).getTime() - new Date(b.dataHoraConsulta).getTime()
     );

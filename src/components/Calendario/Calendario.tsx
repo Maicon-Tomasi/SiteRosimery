@@ -67,7 +67,7 @@ const Calendario = () => {
   
        useEffect(() => {
             const carregarAgendamentos = async () => {
-            const dados = await getAgendamentos();
+            const dados = await getAgendamentos(null, null);
             setAgendamentos(dados);
             };
   
