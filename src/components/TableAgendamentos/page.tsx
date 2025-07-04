@@ -9,11 +9,11 @@ import { Tooltip } from "@radix-ui/react-tooltip";
 import { addHours } from "date-fns";
 
 interface TableProps {
-     atualizarTabela: number;
-     // onEditarCidade: (cidade: any) => void; // Ajuste o tipo conforme necessário
+     atualizarTabela: number,
+     onEditarAgendamento: (agendamentoSelecionado: ReadAgendamentoDto) => void
 }
 
-const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
+const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps) => {
   const { getAgendamentos, deleteAgendamento, postCriaArquivoEConsulta } = useApi();
   const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]);
   const [pesquisaNome, setPesquisaNome] = useState('');
@@ -356,6 +356,7 @@ const TabelaAgendamentos = ({ atualizarTabela } :TableProps) => {
                       <button
                         title="Editar"
                         className="p-2 rounded-md bg-green-100 text-yellow-600 hover:bg-green-200 transition cursor-pointer"
+                        onClick={() => onEditarAgendamento(agendamento)}
                       >
                         <Pen />
                       </button>

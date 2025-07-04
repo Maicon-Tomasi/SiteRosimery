@@ -95,7 +95,7 @@ export interface ReadUsuarioDto {
 
 export interface UpdateAgendamentoDto {
     dataHoraConsulta: Date;
-    tipoConsulta: TipoConsulta;
+    tipoConsulta: number;
     pacienteId: number;
 }
 

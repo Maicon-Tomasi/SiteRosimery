@@ -1,4 +1,4 @@
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
@@ -267,7 +267,40 @@ export const useApi = () => {
 
   };
 
-  
+  const putEditarAgendamento = async (id: number, agendamento: UpdateAgendamentoDto) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const data = new Date(agendamento.dataHoraConsulta);
+
+    const dataUtc = new Date(
+      Date.UTC(
+        data.getFullYear(),
+        data.getMonth(),
+        data.getDate(),
+        data.getHours(),
+        data.getMinutes(),
+        0
+      )
+    );
+
+    let agendamentoEditado: UpdateAgendamentoDto[] = [{
+      dataHoraConsulta: dataUtc,
+      tipoConsulta: agendamento.tipoConsulta,
+      pacienteId: agendamento.pacienteId
+    }];
+
+    const response = await api.put(`/api/Agendamentos/${id}`, agendamentoEditado,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response; // Retorna a resposta completa do servidor
+
+  }
 
 
   const deleteAgendamento = async (id: number) => {
@@ -321,6 +354,7 @@ export const useApi = () => {
     postArquivosConsulta,
     postCriaArquivoEConsulta,
     postAgendamento,
+    putEditarAgendamento,
     deleteAgendamento
   };
 };

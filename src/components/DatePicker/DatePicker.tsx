@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import { Button } from "../ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -8,20 +8,32 @@ import { Calendar } from "../ui/calendar"
 import { Input } from "../ui/input"
 
 interface DatePickerProps {
+  value?: Date
   onChange?: (data: Date) => void
 }
 
-export function DatePicker({onChange}: DatePickerProps) {
-  const [dataHora, setDataHora] = useState<Date>(new Date())
-  const [hora, setHora] = useState<number>(new Date().getHours())
-  const [minuto, setMinuto] = useState<number>(new Date().getMinutes())
+export function DatePicker({ value, onChange }: DatePickerProps) {
+  const initialDate = value instanceof Date ? value : new Date(value ?? new Date())
+  const [dataHora, setDataHora] = useState<Date>(initialDate)
+  const [hora, setHora] = useState<number>(initialDate.getHours())
+  const [minuto, setMinuto] = useState<number>(initialDate.getMinutes())
+
+  // Atualiza o estado interno se a prop value mudar
+  useEffect(() => {
+    if (value) {
+      const novaData = value instanceof Date ? value : new Date(value)
+      setDataHora(novaData)
+      setHora(novaData.getHours())
+      setMinuto(novaData.getMinutes())
+    }
+  }, [value])
 
   const handleHoraChange = (h: number) => {
     const novaData = new Date(dataHora)
     novaData.setHours(h)
     setDataHora(novaData)
     setHora(h)
-    onChange?.(novaData) // Chama a função onChange se fornecida
+    onChange?.(novaData)
   }
 
   const handleMinutoChange = (m: number) => {
@@ -29,7 +41,7 @@ export function DatePicker({onChange}: DatePickerProps) {
     novaData.setMinutes(m)
     setDataHora(novaData)
     setMinuto(m)
-    onChange?.(novaData) 
+    onChange?.(novaData)
   }
 
   const handleDataChange = (date?: Date) => {
@@ -38,7 +50,7 @@ export function DatePicker({onChange}: DatePickerProps) {
     novaData.setHours(hora)
     novaData.setMinutes(minuto)
     setDataHora(novaData)
-    onChange?.(novaData) 
+    onChange?.(novaData)
   }
 
   return (

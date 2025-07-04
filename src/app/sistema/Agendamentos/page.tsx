@@ -7,14 +7,14 @@ import TabelaAgendamentos from "@/components/TableAgendamentos/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
-import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel, UpdateAgendamentoDto } from "@/interfaces/interfacesDto";
 import { addHours } from "date-fns";
 import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
 const Agendamento = () =>{
-     const { getPacientes, postAgendamento} = useApi();
+     const { getPacientes, postAgendamento, putEditarAgendamento} = useApi();
      const [modoDeVisualizacao, setModoDeVisualizacao] = useState(false);
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
@@ -25,6 +25,9 @@ const Agendamento = () =>{
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
      const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
+     const [mostrarModalEdicao, setmostrarModalEdicao] = useState(false); 
+     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState<ReadAgendamentoDto>();
+     const [idAgendamento, setIdAgendamento] = useState<number>(0);
      const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
           dataHoraConsulta: new Date(),
           tipoConsulta: 0,
@@ -93,6 +96,66 @@ const Agendamento = () =>{
           }
      };
 
+     const onParaEdicao = () => 
+     {
+          setEditando(false);
+
+          setNovoAgendamento({
+               dataHoraConsulta: new Date(),
+               pacienteId: 0,
+               tipoConsulta: 1
+          });
+     }
+
+     const onEditarAgendamento = async (agendamentoSelecionado: ReadAgendamentoDto) => {
+          console.log(agendamentoSelecionado);
+          setEditando(true);
+
+          setIdAgendamento(agendamentoSelecionado.id);
+
+          setNovoAgendamento({
+               dataHoraConsulta: agendamentoSelecionado.dataHoraConsulta,
+               pacienteId: agendamentoSelecionado.paciente.id,
+               tipoConsulta: Number(agendamentoSelecionado.tipoConsulta)
+          });
+
+     };
+     
+     const editaAgendamentoPosConfirmacao = async () => {
+          try {
+               setCarregando(true);
+               let agendamentoAAtualziar: UpdateAgendamentoDto = {
+                    dataHoraConsulta: novoAgendamento.dataHoraConsulta,
+                    pacienteId: novoAgendamento.pacienteId,
+                    tipoConsulta: Number(novoAgendamento.tipoConsulta)
+               }
+               await putEditarAgendamento(idAgendamento, agendamentoAAtualziar);
+               setReloadTabela(prev => prev + 1);
+               setNovoAgendamento({
+                    dataHoraConsulta: new Date(),
+                    pacienteId: 0,
+                    tipoConsulta: 1
+               });
+          }
+          catch (error: any) {
+               setMensagemErro('Preencha todos os campos obrigatórios! E verifque se não há duplicação de código de produto!');
+               setMostrarModalErro(true)
+          }
+          finally {
+               setCarregando(false);
+               setEditando(false);
+               setNovoAgendamento({
+                    dataHoraConsulta: new Date(),
+                    pacienteId: 0,
+                    tipoConsulta: 1
+               });;
+          }
+     };
+
+     const onConfirmarEdicao = () => {
+          setmostrarModalEdicao(true);
+     }
+
     useEffect(() => {
         carregarPacientes();
      }, []);
@@ -104,26 +167,51 @@ const Agendamento = () =>{
                <DialogContent>
                     <DialogHeader>
                          <DialogTitle>Confirmar Agendamento</DialogTitle>
-                    <DialogDescription>
-                         Tem certeza que deseja realizar este agendamento?
-                    </DialogDescription>
+                         <DialogDescription>
+                              Tem certeza que deseja realizar este agendamento?
+                         </DialogDescription>
                     </DialogHeader>
-                         <div className="flex justify-end gap-4 mt-4">
-                              <button
-                              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                              onClick={onCadastarAgendamento}
-                              >
-                                   Confirmar
-                              </button>
-                              <button
-                              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-                              onClick={onCloseModal}
-                              >
-                                   Cancelar
-                              </button>
-                         </div>
-                    </DialogContent>
-               </Dialog>
+                    <div className="flex justify-end gap-4 mt-4">
+                         <button
+                         className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                         onClick={onCadastarAgendamento}
+                         >
+                              Confirmar
+                         </button>
+                         <button
+                         className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                         onClick={onCloseModal}
+                         >
+                              Cancelar
+                         </button>
+                    </div>
+               </DialogContent>
+          </Dialog>
+          
+          <Dialog open={mostrarModalEdicao} onOpenChange={setmostrarModalEdicao}>
+               <DialogContent>
+                    <DialogHeader>
+                         <DialogTitle>Confirmar Edição</DialogTitle>
+                         <DialogDescription>
+                              Tem certeza que deseja realizar esta edição?
+                         </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex justify-end gap-4 mt-4">
+                         <button
+                         className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                         onClick={editaAgendamentoPosConfirmacao}
+                         >
+                              Confirmar
+                         </button>
+                         <button
+                         className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                         onClick={onCloseModal}
+                         >
+                              Cancelar
+                         </button>
+                    </div>
+               </DialogContent>
+          </Dialog>
 
                <Dialog open={mostrarModalErro} onOpenChange={setMostrarModalErro}>
                     <DialogContent>
@@ -175,8 +263,15 @@ const Agendamento = () =>{
                     </div>
                     <div className="flex flex-col">
                          <label className="text-[16px] text-slate-600">Data e hora do agendamento</label>
-                         <DatePicker onChange={(value) => setNovoAgendamento({ ...novoAgendamento, dataHoraConsulta: new Date(value)})}/>
-                    </div>
+                         <DatePicker
+                              value={novoAgendamento.dataHoraConsulta}
+                              onChange={(value) =>
+                                   setNovoAgendamento({
+                                        ...novoAgendamento,
+                                        dataHoraConsulta: value instanceof Date ? value : new Date(value),
+                                   })
+                              }
+                         />                    </div>
 
                     <div>
                          <label className="text-sm text-slate-600">Tipo consulta*</label>
@@ -197,7 +292,7 @@ const Agendamento = () =>{
 
                          {editando ? (
                          <div className="flex gap-4">
-                              <BotaoAmarelo disabled={carregando}>
+                              <BotaoAmarelo disabled={carregando} onClick={onConfirmarEdicao}>
                               {carregando ? (
                                    <LoaderCircle className="animate-spin w-4 h-4" />
                               ) : (
@@ -206,7 +301,7 @@ const Agendamento = () =>{
                               Editar
                               </BotaoAmarelo>
 
-                              <BotaoVermelho disabled={carregando}>
+                              <BotaoVermelho onClick={onParaEdicao} disabled={carregando}>
                                    <X size={20} className="w-4 h-4" /> Parar Edição
                               </BotaoVermelho>
                          </div>
@@ -248,7 +343,7 @@ const Agendamento = () =>{
           />
           </div>
 
-          {!modoDeVisualizacao ? <TabelaAgendamentos atualizarTabela={reloadTabela}/> : <Calendario />}
+          {!modoDeVisualizacao ? <TabelaAgendamentos atualizarTabela={reloadTabela} onEditarAgendamento={onEditarAgendamento}/> : <Calendario />}
      </div>
      );
 }
