@@ -136,9 +136,11 @@ const Agendamento = () =>{
                     pacienteId: 0,
                     tipoConsulta: 1
                });
+               setMostrarModalSucesso(true);
+               setmostrarModalEdicao(false);
           }
           catch (error: any) {
-               setMensagemErro('Preencha todos os campos obrigatórios! E verifque se não há duplicação de código de produto!');
+               setMensagemErro('Verifique os campos preenchidos');
                setMostrarModalErro(true)
           }
           finally {

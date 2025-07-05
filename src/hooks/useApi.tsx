@@ -285,11 +285,11 @@ export const useApi = () => {
       )
     );
 
-    let agendamentoEditado: UpdateAgendamentoDto[] = [{
+    let agendamentoEditado: UpdateAgendamentoDto = {
       dataHoraConsulta: dataUtc,
       tipoConsulta: agendamento.tipoConsulta,
       pacienteId: agendamento.pacienteId
-    }];
+    };
 
     const response = await api.put(`/api/Agendamentos/${id}`, agendamentoEditado,
       {
