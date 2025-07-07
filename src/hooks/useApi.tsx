@@ -1,4 +1,4 @@
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
@@ -301,6 +301,42 @@ export const useApi = () => {
     return response; // Retorna a resposta completa do servidor
 
   }
+  
+  const putEditarConsulta = async (id: number, consultaRealizada: UpdateConsultasRealizadasDto) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const data = new Date(consultaRealizada.dataHoraConsulta);
+
+    const dataUtc = new Date(
+      Date.UTC(
+        data.getFullYear(),
+        data.getMonth(),
+        data.getDate(),
+        data.getHours(),
+        data.getMinutes(),
+        0
+      )
+    );
+
+    let consultaRealizadaEditado: UpdateConsultasRealizadasDto = {
+      dataHoraConsulta: dataUtc,
+      tipoConsulta: consultaRealizada.tipoConsulta,
+      pacienteId: consultaRealizada.pacienteId,
+      descricao: consultaRealizada.descricao
+    };
+
+    const response = await api.put(`/api/ConsultasRealizadas/${id}`, consultaRealizadaEditado,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response; // Retorna a resposta completa do servidor
+
+  }
 
 
   const deleteAgendamento = async (id: number) => {
@@ -355,6 +391,7 @@ export const useApi = () => {
     postCriaArquivoEConsulta,
     postAgendamento,
     putEditarAgendamento,
+    putEditarConsulta,
     deleteAgendamento
   };
 };

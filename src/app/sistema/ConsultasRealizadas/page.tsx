@@ -10,14 +10,14 @@ import TabelaConsultasRealizadas from "@/components/TableConsultasRealizadas/pag
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
 import { addHours } from "date-fns";
 import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
 const ConsutasRealizadas = () =>{
-     const { getPacientes, postCriaArquivoEConsulta} = useApi();
+     const { getPacientes, postCriaArquivoEConsulta, putEditarConsulta} = useApi();
      const [modoDeVisualizacao, setModoDeVisualizacao] = useState(false);
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
@@ -29,6 +29,8 @@ const ConsutasRealizadas = () =>{
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
      const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
+     const [mostrarModalEdicao, setmostrarModalEdicao] = useState(false); 
+     const [idConsultaRealizada, setIdConsultaRealizada] = useState<number>(0); 
      const [arquivosSelecionados, setArquivosSelecionados] = useState<CreateUpdateArquivoConsultas[]>([]);
      const [novaConsultaRealizada, setNovaConsultaRealizada] = useState<CreateConsultasRealizadasDto[]>([{
           dataHoraConsulta: new Date(),
@@ -64,6 +66,7 @@ const ConsutasRealizadas = () =>{
           setCarregando(false);
           setMostrarModal(false);
           setMostrarModalErro(false);
+          setmostrarModalEdicao(false);
      }
 
      const onConfimarConsultaRealizada = async () =>{
@@ -104,7 +107,131 @@ const ConsutasRealizadas = () =>{
            }
          }
      
-       };
+     };
+
+     const onEditar = async (consultaRealizada: ReadConsultasRealizadasDto) => {
+          console.log(consultaRealizada);
+          setEditando(true);
+
+          setIdConsultaRealizada(consultaRealizada.id);
+
+          setNovaConsultaRealizada((prev) => {
+               const novoArray = [...prev];
+               if (novoArray.length > 0) {
+                    novoArray[0] = {
+                         ...novoArray[0],
+                         dataHoraConsulta: consultaRealizada.dataHoraConsulta,
+                         pacienteId: consultaRealizada.paciente.id,
+                         tipoConsulta: Number(consultaRealizada.tipoConsulta),
+                         descricao: consultaRealizada.descricao
+                    };
+               } else {
+                    novoArray[0] = {
+                         dataHoraConsulta: consultaRealizada.dataHoraConsulta,
+                         pacienteId: consultaRealizada.paciente.id,
+                         tipoConsulta: Number(consultaRealizada.tipoConsulta),
+                         descricao: consultaRealizada.descricao
+                    };
+               }
+               return novoArray;
+          });
+     };
+
+     const onPararEdicao = () => {
+          setEditando(false);
+          setNovaConsultaRealizada((prev) => {
+               const novoArray = [...prev];
+               if (novoArray.length > 0) {
+                    novoArray[0] = {
+                         ...novoArray[0],
+                         dataHoraConsulta: new Date(),
+                         pacienteId: 0,
+                         tipoConsulta: 1,
+                         descricao: ""
+                    } 
+               }
+               else {
+                    novoArray[0] = {
+                         dataHoraConsulta: new Date(),
+                         pacienteId: 0,
+                         tipoConsulta: 1,
+                         descricao: ""
+                    };
+               }
+               return novoArray;
+          });  
+     }
+
+     const onConfirmarEdicao = () => {
+          setmostrarModalEdicao(true);
+     }
+
+     const editaConsultaPosConfirmacao = async () => {
+          try {
+               setCarregando(true);
+               let consultaAAtualziar: UpdateConsultasRealizadasDto = {
+                    dataHoraConsulta: novaConsultaRealizada[0].dataHoraConsulta,
+                    pacienteId: novaConsultaRealizada[0].pacienteId,
+                    tipoConsulta: Number(novaConsultaRealizada[0].tipoConsulta),
+                    descricao: novaConsultaRealizada[0].descricao
+               }
+               await putEditarConsulta(idConsultaRealizada, consultaAAtualziar);
+               setReloadTabela(prev => prev + 1);
+               setNovaConsultaRealizada((prev) => {
+                    const novoArray = [...prev];
+                    if (novoArray.length > 0) {
+                         novoArray[0] = {
+                              ...novoArray[0],
+                              dataHoraConsulta: new Date(),
+                              pacienteId: 0,
+                              tipoConsulta: 1,
+                              descricao: ""
+                         } 
+                    }
+                    else {
+                         novoArray[0] = {
+                              dataHoraConsulta: new Date(),
+                              pacienteId: 0,
+                              tipoConsulta: 1,
+                              descricao: ""
+                         };
+                    }
+                    return novoArray;
+               });
+               setMensagemSucesso("Sucesso!! Sua consulta foi editada!")
+               setMostrarModalSucesso(true);
+               setmostrarModalEdicao(false);
+          }
+          catch (error: any) {
+               setMensagemErro('Verifique os campos preenchidos');
+               setMostrarModalErro(true)
+          }
+          finally {
+               setCarregando(false);
+               setEditando(false);
+               setNovaConsultaRealizada((prev) => {
+                    const novoArray = [...prev];
+                    if (novoArray.length > 0) {
+                         novoArray[0] = {
+                              ...novoArray[0],
+                              dataHoraConsulta: new Date(),
+                              pacienteId: 0,
+                              tipoConsulta: 1,
+                              descricao: ""
+                         } 
+                    }
+                    else {
+                         novoArray[0] = {
+                              dataHoraConsulta: new Date(),
+                              pacienteId: 0,
+                              tipoConsulta: 1,
+                              descricao: ""
+                         };
+                    }
+                    return novoArray;
+               });  
+          }
+     };
 
     useEffect(() => {
         carregarPacientes();
@@ -192,6 +319,31 @@ const ConsutasRealizadas = () =>{
                     </DialogContent>
                </Dialog>
 
+               <Dialog open={mostrarModalEdicao} onOpenChange={setmostrarModalEdicao}>
+                    <DialogContent>
+                         <DialogHeader>
+                              <DialogTitle>Confirmar Edição</DialogTitle>
+                              <DialogDescription>
+                                   Tem certeza que deseja realizar esta edição?
+                              </DialogDescription>
+                         </DialogHeader>
+                         <div className="flex justify-end gap-4 mt-4">
+                              <button
+                              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                              onClick={editaConsultaPosConfirmacao}
+                              >
+                                   Confirmar
+                              </button>
+                              <button
+                              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                              onClick={onCloseModal}
+                              >
+                                   Cancelar
+                              </button>
+                         </div>
+                    </DialogContent>
+               </Dialog>
+
 
           <header className="flex items-center justify-between">
                <h1 className="text-3xl font-bold text-yellow-600 tracking-tight">
@@ -267,14 +419,15 @@ const ConsutasRealizadas = () =>{
                     onChange={(e) =>{
                               const novasConsultas = [...novaConsultaRealizada]
                               novasConsultas[0].descricao = e.target.value;
-                              setNovaConsultaRealizada(novaConsultaRealizada);     
+                              setNovaConsultaRealizada(novasConsultas);     
                          }
                     }
+                    value={novaConsultaRealizada[0].descricao.toString()}
                     ></textarea>
                </div>
 
                
-               <div className="mt-4">
+               {/* <div className="mt-4">
                     <label className="text-sm text-slate-600">Arquivos*</label>
                     <FileUploader 
                          onFilesSelected={(arquivos) => {
@@ -285,17 +438,14 @@ const ConsutasRealizadas = () =>{
                               setArquivosSelecionados(arquivosFormatados);
                          }}
                     />
-               </div>
+               </div> */}
 
                {/* Botões */}
                <div className="flex gap-5 mt-6 items-center justify-center flex-wrap">
-               <BotaoAmarelo>
-                    <PlusCircle size={16} />
-               </BotaoAmarelo>
 
                {editando ? (
                     <div className="flex gap-4 flex-wrap">
-                    <BotaoAmarelo disabled={carregando}>
+                    <BotaoAmarelo disabled={carregando} onClick={onConfirmarEdicao}>
                          {carregando ? (
                          <LoaderCircle className="animate-spin w-4 h-4" />
                          ) : (
@@ -306,21 +456,12 @@ const ConsutasRealizadas = () =>{
                          )}
                     </BotaoAmarelo>
 
-                    <BotaoVermelho disabled={carregando}>
+                    <BotaoVermelho disabled={carregando} onClick={onPararEdicao}>
                          <X size={20} className="w-4 h-4" /> Parar Edição
                     </BotaoVermelho>
                     </div>
                ) : (
-                    <BotaoAmarelo onClick={confirmaCriacaoDeConsultaRealizada} disabled={carregando}>
-                    {carregando ? (
-                         <LoaderCircle className="animate-spin w-4 h-4" />
-                    ) : (
-                         <>
-                         <Send className="w-4 h-4 mr-2" />
-                         Cadastrar
-                         </>
-                    )}
-                    </BotaoAmarelo>
+                    ''
                )}
                </div>
           </section>
@@ -349,7 +490,7 @@ const ConsutasRealizadas = () =>{
           />
           </div>
 
-          {!modoDeVisualizacao ? <TabelaConsultasRealizadas atualizarTabela={reloadTabela}/> : <Calendario />}
+          {!modoDeVisualizacao ? <TabelaConsultasRealizadas atualizarTabela={reloadTabela} onEditarConsultaRealizada={onEditar}/> : <Calendario />}
      </div>
      );
 }

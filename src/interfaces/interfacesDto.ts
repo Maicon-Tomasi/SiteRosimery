@@ -108,7 +108,7 @@ export interface UpdateConsultasRealizadasDto {
     dataHoraConsulta: Date;
     pacienteId: number;
     descricao: string;
-    tipoConsulta: TipoConsulta;
+    tipoConsulta: number;
 }
 
 export interface UpdatePacienteDto {

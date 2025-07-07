@@ -10,10 +10,10 @@ import { addHours } from "date-fns";
 
 interface TableProps {
      atualizarTabela: number;
-     // onEditarCidade: (cidade: any) => void; // Ajuste o tipo conforme necessário
+     onEditarConsultaRealizada: (consultaSelecionada: ReadConsultasRealizadasDto) => void
 }
 
-const TabelaConsultasRealizadas = ({ atualizarTabela } :TableProps) => {
+const TabelaConsultasRealizadas = ({ atualizarTabela, onEditarConsultaRealizada } :TableProps) => {
   const { getConsutlasRealizadas, postCriaArquivoEConsulta } = useApi();
   const [consultasRealizadas, setConsultasRealizadas] = useState<ReadConsultasRealizadasDto[]>([]);
   const [pesquisaNome, setPesquisaNome] = useState('');
@@ -161,6 +161,7 @@ const TabelaConsultasRealizadas = ({ atualizarTabela } :TableProps) => {
                       <button
                         title="Editar"
                         className="p-2 rounded-md bg-green-100 text-yellow-600 hover:bg-green-200 transition cursor-pointer"
+                        onClick={() => onEditarConsultaRealizada(consulta)}
                       >
                         <Pen />
                       </button>
