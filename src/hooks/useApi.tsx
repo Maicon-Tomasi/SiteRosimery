@@ -1,4 +1,4 @@
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadArquivoConsultasDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
@@ -117,6 +117,32 @@ export const useApi = () => {
     }));
 
     return ConsultasRealizadasDto;
+  }
+  
+  const getArquivosConsutlasRealizadas = async (idConsulta: number) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const response = await api.get(`/api/ArquivosConsulta/arquivosConsulta/${idConsulta}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status >= 200 && response.status <= 299) {
+      throw new Error('Erro ao buscar agendamentos', response);
+    }
+
+
+    let arquivosConsultasRealizadasDto: ReadArquivoConsultasDto[] = response.data.map((arquivo: ReadArquivoConsultasDto) => ({
+       id: Number(arquivo.id),
+       nomeArquivo: arquivo.nomeArquivo.toString(),
+       contentType: arquivo.contentType,
+       urlDownload: arquivo.urlDownload
+    }));
+
+    return arquivosConsultasRealizadasDto;
   }
   
 
@@ -385,6 +411,7 @@ export const useApi = () => {
     getAgendamentos,
     getPacientes,
     getConsutlasRealizadas,
+    getArquivosConsutlasRealizadas,
     postUsuarioLogin,
     postConsultaRealizada,
     postArquivosConsulta,

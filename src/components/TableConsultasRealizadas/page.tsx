@@ -7,6 +7,7 @@ import { Check, File, Pen, Trash, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { addHours } from "date-fns";
+import { useRouter } from "next/navigation";
 
 interface TableProps {
      atualizarTabela: number;
@@ -14,6 +15,7 @@ interface TableProps {
 }
 
 const TabelaConsultasRealizadas = ({ atualizarTabela, onEditarConsultaRealizada } :TableProps) => {
+  const router = useRouter();
   const { getConsutlasRealizadas, postCriaArquivoEConsulta } = useApi();
   const [consultasRealizadas, setConsultasRealizadas] = useState<ReadConsultasRealizadasDto[]>([]);
   const [pesquisaNome, setPesquisaNome] = useState('');
@@ -40,37 +42,18 @@ const TabelaConsultasRealizadas = ({ atualizarTabela, onEditarConsultaRealizada 
     console.log("Consultas ordenados", ordenados);
   };
 
+  const onVisualizarArquivos = (id: string, dataHoraConsulta: Date, paciente: string) => {
+    const data = new Date(dataHoraConsulta);
+    const dataEncoded = encodeURIComponent(data.toISOString());
+    const pacienteEncoded = encodeURIComponent(paciente);
+
+    router.push(`ConsultasRealizadas/arquivosConsulta/${id}?data=${dataEncoded}&paciente=${pacienteEncoded}`);
+  };
+
+
   useEffect(() => {
     carregarConsultas();
   }, [atualizarTabela, skip]);
-
-//   useEffect(() => {
-//     const carregarCidadesPorPesquisa = async () => {
-//       try {
-//         if (pesquisaNome) {
-//           const dados = await getAgendamentos(pesquisaNome);
-//           if (dados && dados.length > 0) {
-//             setCidades(dados);
-//           } else {
-//             setCidades([]);
-//             console.warn("Nenhuma cidade encontrada.");
-//           }
-//         } else {
-//           const dados = await getCidades();
-//           setCidades(dados);
-//         }
-//       } catch (error) {
-//         if (error.response && error.response.status === 404) {
-//           console.warn("Nenhuma cidade encontrada (Erro 404).");
-//           setCidades([]);
-//         } else {
-//           console.error("Erro ao carregar cidades:", error);
-//         }
-//       }
-//     };
-
-//     carregarCidadesPorPesquisa();
-//   }, [pesquisaNome]);
 
   const padZero = (num: number) => num.toString().padStart(2, '0');
 
@@ -171,6 +154,7 @@ const TabelaConsultasRealizadas = ({ atualizarTabela, onEditarConsultaRealizada 
                       <button
                         title="Visualizar Arquivos"
                         className="p-2 rounded-md bg-red-100 text-green-700 hover:bg-red-200 transition cursor-pointer"
+                        onClick={() => onVisualizarArquivos(consulta.id.toString(), consulta.dataHoraConsulta, consulta.paciente.nome)}
                       >
                         <File />
                       </button>
