@@ -130,8 +130,8 @@ export const useApi = () => {
       },
     });
 
-    if (response.status >= 200 && response.status <= 299) {
-      throw new Error('Erro ao buscar agendamentos', response);
+    if (response.status > 299) {
+      throw new Error('Erro ao buscar agendamentos');
     }
 
 
@@ -144,6 +144,50 @@ export const useApi = () => {
 
     return arquivosConsultasRealizadasDto;
   }
+  
+  const downloadArquivoConsulta = async (idArquivo: number) => {
+    const token = Cookies.get("token");
+
+    if (!token) throw new Error("Token não encontrado");
+
+    const response = await api.get(`/api/ArquivosConsulta/download/${idArquivo}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: "blob", // IMPORTANTÍSSIMO para pegar arquivo binário
+    });
+
+    console.log(response);
+
+    // Testa o tamanho do blob (deve ser maior que zero)
+    if (response.data.size === 0) {
+      throw new Error("Arquivo vazio recebido da API");
+    }
+
+    const blob = new Blob([response.data], { type: response.data.type });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+
+    // Tenta extrair o nome do arquivo do header content-disposition
+    const contentDisposition = response.headers["content-disposition"];
+    let fileName = "arquivo";
+
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename="?([^"]+)"?/);
+      if (match && match[1]) {
+        fileName = decodeURIComponent(match[1]);
+      }
+    }
+
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  };
+
+
   
 
   const postUsuarioLogin = async (login: LoginUsuarioDto) => {
@@ -406,6 +450,21 @@ export const useApi = () => {
       }
       return response.status;
   }
+  
+  const deletarArquivo = async (id: number) => {
+    const token = Cookies.get('token');
+    const response = await api.delete(`/api/ArquivosConsulta/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar Arquivos');
+    }
+
+    return response.status;
+  }
 
   return {
     getAgendamentos,
@@ -419,6 +478,8 @@ export const useApi = () => {
     postAgendamento,
     putEditarAgendamento,
     putEditarConsulta,
-    deleteAgendamento
+    deleteAgendamento,
+    deletarArquivo,
+    downloadArquivoConsulta
   };
 };

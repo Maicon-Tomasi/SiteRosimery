@@ -5,13 +5,15 @@ import formatDate from "@/utils/formatDate";
 import { useEffect, useState } from "react";
 import FileUploader from "@/components/fileUploader/FileUploader";
 import { useApi } from "@/hooks/useApi";
-import { ReadArquivoConsultasDto } from "@/interfaces/interfacesDto";
+import { CreateUpdateArquivoConsultas, ReadArquivoConsultasDto } from "@/interfaces/interfacesDto";
+import TabelaArquivosConsultasRealizadas from "@/components/TableArquivosConsultasRealizadas/page";
 
 const Page = () => {
      const params = useParams();
      const searchParams = useSearchParams();
-     const { getArquivosConsutlasRealizadas } = useApi();
+     const { getArquivosConsutlasRealizadas, deletarArquivo, postArquivosConsulta } = useApi();
      const [arquivos, setArquivos] = useState<ReadArquivoConsultasDto[]>([]);
+     const [novosArquivos, setNovosArquivos] = useState<CreateUpdateArquivoConsultas[]>([]);
 
      const id = params.id as string;
      const paciente = searchParams.get("paciente");
@@ -21,11 +23,42 @@ const Page = () => {
      const carregaArquivos = async () => {
           let arquivos = await getArquivosConsutlasRealizadas(Number(id));
           setArquivos(arquivos);
+     };
+
+     const enviaArquivos = async (arquivosAEnviar: CreateUpdateArquivoConsultas[]) => {
+          try
+          {
+               arquivosAEnviar.forEach(async (element) => {
+                    var response = await postArquivosConsulta(element);
+
+                    if (response.status > 299) {
+                         throw new Error("Não foi possível enviar o arquivo");
+                    }
+               });
+
+               setNovosArquivos(arquivosAEnviar);
+          }
+          catch (err: any)
+          {
+               console.log("EROOOOOOOOOOOOOO");
+               console.log(err);
+               console.log("EROOOOOOOOOOOOOO");
+          }
+     };
+
+     const deletaArquivo = async (idArquivo: number) => {
+     try {
+          await deletarArquivo(idArquivo); 
+          setArquivos((prevArquivos) => prevArquivos.filter(a => a.id !== idArquivo));
+     } catch (error) {
+          console.error("Erro ao deletar arquivo:", error);
      }
+     };
+
 
      useEffect(() => {
           carregaArquivos();
-     }, [])
+     }, [id, novosArquivos])
 
      useEffect(() => {
           console.log(arquivos);
@@ -44,17 +77,18 @@ const Page = () => {
                <div className="mt-4">
                     <label className="text-sm text-slate-600">Arquivos*</label>
                     <FileUploader
-                         onFilesSelected={(oi) => {}} 
-                         // onFilesSelected={(arquivos) => {
-                         //      const arquivosFormatados = arquivos.map((file) => ({
-                         //           arquivo: file,
-                         //      }));
+                         onFilesSelected={(arquivos) => {
+                              const arquivosFormatados = arquivos.map((file) => ({
+                                   arquivo: file,
+                              }));
 
-                         //      setArquivosSelecionados(arquivosFormatados);
-                         // }}
+                              enviaArquivos(arquivosFormatados);
+                         }}
                     />
                </div>
           </section>
+
+          <TabelaArquivosConsultasRealizadas arquivos={arquivos} onDeletarArquivo={deletaArquivo} />
      </div>
      );
 };
