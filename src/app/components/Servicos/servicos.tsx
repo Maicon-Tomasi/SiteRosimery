@@ -181,7 +181,7 @@ const Servico: FC = () => {
         <h2 className="text-3xl font-bold mb-2">Algumas formas de te ajudar</h2>
         <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
           Ofereço suporte psicológico especializado como psicóloga obstétrica, adaptado às necessidades específicas de futuros e novos pais, ajudando você a navegar pela jornada emocional da paternidade com confiança e tranquilidade.
-          Além disso, realizo atendimentos voltados à saúde mental de forma geral, acolhendo diferentes demandas emocionais com empatia e profissionalism
+          Além disso, realizo atendimentos voltados à saúde mental de forma geral, acolhendo diferentes demandas emocionais com empatia e profissionalismo.
         </p>
 
         <Slider

@@ -5,10 +5,10 @@ import Cookies from 'js-cookie';
 export const useApi = () => {
   const { api } = useApiContext();
 
-  function toISOStringLocal(date: Date): string {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
-  }
+  // function toISOStringLocal(date: Date): string {
+  //   const pad = (n: number) => n.toString().padStart(2, '0');
+  //   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
+  // }
 
   
   const getAgendamentos = async (skip: number | null, take: number | null) => {
@@ -39,7 +39,7 @@ export const useApi = () => {
       throw new Error('Erro ao buscar agendamentos');
     }
 
-    let agendamentoDto: ReadAgendamentoDto[] = response.data.map((agendamento: ReadAgendamentoDto) => ({
+    const agendamentoDto: ReadAgendamentoDto[] = response.data.map((agendamento: ReadAgendamentoDto) => ({
       id: Number(agendamento.id),
       dataHoraConsulta: agendamento.dataHoraConsulta,
       tipoConsulta: Number(agendamento.tipoConsulta),
@@ -73,7 +73,7 @@ export const useApi = () => {
     }
 
 
-    let pacientesDto: ReadPacienteDto[] = response.data.result.map((paciente: ReadPacienteDto) => ({
+    const pacientesDto: ReadPacienteDto[] = response.data.result.map((paciente: ReadPacienteDto) => ({
       id: paciente.id,
       nome: paciente.nome,
       dataNascimento: paciente.dataNascimento,
@@ -101,7 +101,7 @@ export const useApi = () => {
     }
 
 
-    let ConsultasRealizadasDto: ReadConsultasRealizadasDto[] = response.data.map((consulta: ReadConsultasRealizadasDto) => ({
+    const ConsultasRealizadasDto: ReadConsultasRealizadasDto[] = response.data.map((consulta: ReadConsultasRealizadasDto) => ({
       id: consulta.id,
       dataHoraConsulta: consulta.dataHoraConsulta,
       descricao: consulta.descricao,
@@ -135,7 +135,7 @@ export const useApi = () => {
     }
 
 
-    let arquivosConsultasRealizadasDto: ReadArquivoConsultasDto[] = response.data.map((arquivo: ReadArquivoConsultasDto) => ({
+    const arquivosConsultasRealizadasDto: ReadArquivoConsultasDto[] = response.data.map((arquivo: ReadArquivoConsultasDto) => ({
        id: Number(arquivo.id),
        nomeArquivo: arquivo.nomeArquivo.toString(),
        contentType: arquivo.contentType,
@@ -192,7 +192,7 @@ export const useApi = () => {
 
   const postUsuarioLogin = async (login: LoginUsuarioDto) => {
     const response = await api.post('/Usuario/Login', login)
-    let resposta: RespoLogin = {
+    const resposta: RespoLogin = {
       status: response.data.status,
       token: response.data.token
     };
@@ -217,7 +217,7 @@ export const useApi = () => {
       )
     );
 
-    let novoAgendamento: CreateAgendamentoDto[] = [{
+    const novoAgendamento: CreateAgendamentoDto[] = [{
       dataHoraConsulta: dataUtc,
       tipoConsulta: agendamento.tipoConsulta,
       pacienteId: agendamento.pacienteId
@@ -252,7 +252,7 @@ export const useApi = () => {
       )
     );
 
-    let novaConsultaRealizada: CreateConsultasRealizadasDto[] = [{
+    const novaConsultaRealizada: CreateConsultasRealizadasDto[] = [{
       dataHoraConsulta: dataUtc,
       tipoConsulta: consultaRealizada.tipoConsulta,
       pacienteId: consultaRealizada.pacienteId,
@@ -275,7 +275,7 @@ export const useApi = () => {
 
     if (!token) throw new Error('Token não encontrado nos cookies');
 
-    let arquivosEnviados: CreateUpdateArquivoConsultas[] = [{
+    const arquivosEnviados: CreateUpdateArquivoConsultas[] = [{
       arquivo: arquivos.arquivo
     }];
 
@@ -319,7 +319,7 @@ export const useApi = () => {
       formData.append("tipoConsulta", primeiraConsulta.tipoConsulta.toString());
 
       // Adiciona os arquivos
-      consultaRealizada.arquivos.forEach((item, index) => {
+      consultaRealizada.arquivos.forEach((item) => {
         formData.append("arquivo", item.arquivo); // o backend espera só `arquivo` se for 1 único
       });
 
@@ -355,7 +355,7 @@ export const useApi = () => {
       )
     );
 
-    let agendamentoEditado: UpdateAgendamentoDto = {
+    const agendamentoEditado: UpdateAgendamentoDto = {
       dataHoraConsulta: dataUtc,
       tipoConsulta: agendamento.tipoConsulta,
       pacienteId: agendamento.pacienteId
@@ -390,7 +390,7 @@ export const useApi = () => {
       )
     );
 
-    let consultaRealizadaEditado: UpdateConsultasRealizadasDto = {
+    const consultaRealizadaEditado: UpdateConsultasRealizadasDto = {
       dataHoraConsulta: dataUtc,
       tipoConsulta: consultaRealizada.tipoConsulta,
       pacienteId: consultaRealizada.pacienteId,
@@ -430,26 +430,26 @@ export const useApi = () => {
       return response.status;
   }
   
-  const deletarConsultaRealizada = async (id: number) => {
-    const token = Cookies.get('token');
-    const response = await api.delete(`/api/Agendamentos/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  // const deletarConsultaRealizada = async (id: number) => {
+  //   const token = Cookies.get('token');
+  //   const response = await api.delete(`/api/Agendamentos/${id}`, {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
 
-    if (response.status !== 200) {
-      throw new Error('Erro ao buscar agendamentos');
-    }
+  //   if (response.status !== 200) {
+  //     throw new Error('Erro ao buscar agendamentos');
+  //   }
 
-      let agendamento = response.data.result;
+  //     let agendamento = response.data.result;
 
-      if (Array.isArray(agendamento)) {
-        // Se for array, pegue o primeiro ou trate como lista
-        agendamento = agendamento[0];
-      }
-      return response.status;
-  }
+  //     if (Array.isArray(agendamento)) {
+  //       // Se for array, pegue o primeiro ou trate como lista
+  //       agendamento = agendamento[0];
+  //     }
+  //     return response.status;
+  // }
   
   const deletarArquivo = async (id: number) => {
     const token = Cookies.get('token');

@@ -2,11 +2,10 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
-import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, TipoConsultaLabel } from "@/interfaces/interfacesDto";
 import { Check, Pen, Trash, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
-import { addHours } from "date-fns";
 
 interface TableProps {
      atualizarTabela: number,
@@ -16,7 +15,7 @@ interface TableProps {
 const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps) => {
   const { getAgendamentos, deleteAgendamento, postCriaArquivoEConsulta } = useApi();
   const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]);
-  const [pesquisaNome, setPesquisaNome] = useState('');
+  // const [pesquisaNome, setPesquisaNome] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [mostrarModalSucesso, setMostrarModalSucesso] = useState(false);
@@ -57,7 +56,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
   };
 
   const onConfimarConsultaRealizada = async () =>{
-    let criaERelacionaArquivos: CreateConsultaEArquivosDto = {
+    const criaERelacionaArquivos: CreateConsultaEArquivosDto = {
       consultas: consultaRealizadaSelecionada ? consultaRealizadaSelecionada : [],
       arquivos: arquivosSelecionados
     }
@@ -67,7 +66,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
     console.log("cria", criaERelacionaArquivos);
     try
     {
-      var response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
+      const response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
       if (response.status == 200 || response.status == 204) {
         setMensagemSucesso("Sua consulta foi confirmada e salva com sucesso");
         setMostrarModalSucesso(true);

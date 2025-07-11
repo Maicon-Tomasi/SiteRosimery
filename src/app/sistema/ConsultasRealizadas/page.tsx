@@ -3,16 +3,13 @@ import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
 import BotaoVermelho from "@/components/botaoVermelho/botaoAzul";
 import Calendario from "@/components/Calendario/Calendario";
 import { DatePicker } from "@/components/DatePicker/DatePicker";
-import FileUploader from "@/components/fileUploader/FileUploader";
 import Input from "@/components/input/input";
-import TabelaAgendamentos from "@/components/TableAgendamentos/page";
 import TabelaConsultasRealizadas from "@/components/TableConsultasRealizadas/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, ReadConsultasRealizadasDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
-import { addHours } from "date-fns";
-import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
+import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadConsultasRealizadasDto, TipoConsultaLabel, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
+import { Calendar, LoaderCircle, PlusCircle, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
@@ -23,7 +20,6 @@ const ConsutasRealizadas = () =>{
      const [editando, setEditando] = useState(false);
      const [mensagemErro, setMensagemErro] = useState("");
      const [mensagemSucesso, setMensagemSucesso] = useState("");
-     const [dataSelecionada, setDataSelecionada] = useState<Date | null>(null)
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
      const [reloadTabela, setReloadTabela] = useState(0);
      const [mostrarModal, setMostrarModal] = useState(false); 
@@ -57,10 +53,10 @@ const ConsutasRealizadas = () =>{
           label,
      }));
 
-     const confirmaCriacaoDeConsultaRealizada = () => {
-          setCarregando(true);
-          setMostrarModal(true);
-     }
+     // const confirmaCriacaoDeConsultaRealizada = () => {
+     //      setCarregando(true);
+     //      setMostrarModal(true);
+     // }
 
      const onCloseModal = () => {
           setCarregando(false);
@@ -70,7 +66,7 @@ const ConsutasRealizadas = () =>{
      }
 
      const onConfimarConsultaRealizada = async () =>{
-         let criaERelacionaArquivos: CreateConsultaEArquivosDto = {
+         const criaERelacionaArquivos: CreateConsultaEArquivosDto = {
            consultas: novaConsultaRealizada ? novaConsultaRealizada : [],
            arquivos: arquivosSelecionados
          }
@@ -80,7 +76,7 @@ const ConsutasRealizadas = () =>{
          console.log("cria", criaERelacionaArquivos);
          try
          {
-           var response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
+           const response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
            if (response.status == 200 || response.status == 204) {
              setMensagemSucesso("Sua consulta foi confirmada e salva com sucesso");
              setMostrarModalSucesso(true);
@@ -169,7 +165,7 @@ const ConsutasRealizadas = () =>{
      const editaConsultaPosConfirmacao = async () => {
           try {
                setCarregando(true);
-               let consultaAAtualziar: UpdateConsultasRealizadasDto = {
+               const consultaAAtualziar: UpdateConsultasRealizadasDto = {
                     dataHoraConsulta: novaConsultaRealizada[0].dataHoraConsulta,
                     pacienteId: novaConsultaRealizada[0].pacienteId,
                     tipoConsulta: Number(novaConsultaRealizada[0].tipoConsulta),
@@ -202,9 +198,10 @@ const ConsutasRealizadas = () =>{
                setMostrarModalSucesso(true);
                setmostrarModalEdicao(false);
           }
-          catch (error: any) {
+          catch (error: unknown) {
                setMensagemErro('Verifique os campos preenchidos');
                setMostrarModalErro(true)
+               console.log(error);
           }
           finally {
                setCarregando(false);
@@ -310,10 +307,9 @@ const ConsutasRealizadas = () =>{
                 <Dialog open={mostrarModeSucesso} onOpenChange={setMostrarModalSucesso}>
                     <DialogContent>
                          <DialogHeader>
-                              <DialogTitle>Agendamento Realizado</DialogTitle>
+                              <DialogTitle>Sucesso</DialogTitle>
                          <DialogDescription>
-                             Sucesso! Agendamento realizado com sucesso. <br />
-                              Está modal será fechada em 3 segundos.
+                             {mensagemSucesso}
                          </DialogDescription>
                          </DialogHeader>
                     </DialogContent>
@@ -425,20 +421,6 @@ const ConsutasRealizadas = () =>{
                     value={novaConsultaRealizada[0].descricao.toString()}
                     ></textarea>
                </div>
-
-               
-               {/* <div className="mt-4">
-                    <label className="text-sm text-slate-600">Arquivos*</label>
-                    <FileUploader 
-                         onFilesSelected={(arquivos) => {
-                              const arquivosFormatados = arquivos.map((file) => ({
-                                   arquivo: file,
-                              }));
-
-                              setArquivosSelecionados(arquivosFormatados);
-                         }}
-                    />
-               </div> */}
 
                {/* Botões */}
                <div className="flex gap-5 mt-6 items-center justify-center flex-wrap">

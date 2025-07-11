@@ -3,7 +3,7 @@ import { Calendar, dateFnsLocalizer, Event as RBCEvent } from 'react-big-calenda
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { format, parse, startOfWeek, getDay, addDays, addHours } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { use, useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ReadAgendamentoDto } from '@/interfaces/interfacesDto';
 import { useApi } from '@/hooks/useApi';
 
@@ -36,17 +36,9 @@ const Calendario = () => {
     const { getAgendamentos } = useApi();
      const [dataAtual, setDataAtual] = useState<Date>(new Date()); 
      const [eventos, setEventos] = useState<EventType[]>([]);
-     const [dataMin, setDataMin] = useState<Date>(hoje);
-     const [dataMax, setDataMax] = useState<Date>(diaMax);
      const [agendamentosFormatados, setAgendamentosFormatados] = useState<{ title: string; start: Date; end: Date }[]>([]);
      const [reloadCalendario, setReloadCalendario] = useState(0);
      const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]); 
-      
-     const handleEventClick = useCallback((event: EventType) => {
-          // if (window.confirm(`Remover evento "${event.title}"?`)) {
-          //      setEventos(prev => prev.filter(e => e !== event));
-          // }
-     }, []);
 
      useEffect(() => {
         const events: EventType[] = agendamentosFormatados.map(element => ({
@@ -76,7 +68,7 @@ const Calendario = () => {
   
        useEffect(() => {
             const dadosFormatadosAgendamento = agendamentos.map((agendamentoFormatado) => {
-                 let dataConsultaFormatada = new Date(agendamentoFormatado.dataHoraConsulta);
+                 const dataConsultaFormatada = new Date(agendamentoFormatado.dataHoraConsulta);
                  return {
                       title: agendamentoFormatado.paciente.nome,
                       start: dataConsultaFormatada,

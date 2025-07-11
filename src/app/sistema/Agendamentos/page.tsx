@@ -7,8 +7,7 @@ import TabelaAgendamentos from "@/components/TableAgendamentos/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
-import { CreateAgendamentoDto, ReadAgendamentoDto, ReadPacienteDto, TipoConsulta, TipoConsultaLabel, UpdateAgendamentoDto } from "@/interfaces/interfacesDto";
-import { addHours } from "date-fns";
+import { CreateAgendamentoDto, ReadAgendamentoDto, TipoConsultaLabel, UpdateAgendamentoDto } from "@/interfaces/interfacesDto";
 import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -19,14 +18,12 @@ const Agendamento = () =>{
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
      const [mensagemErro, setMensagemErro] = useState("");
-     const [dataSelecionada, setDataSelecionada] = useState<Date | null>(null)
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
      const [reloadTabela, setReloadTabela] = useState(0);
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
      const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
-     const [mostrarModalEdicao, setmostrarModalEdicao] = useState(false); 
-     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState<ReadAgendamentoDto>();
+     const [mostrarModalEdicao, setmostrarModalEdicao] = useState(false);
      const [idAgendamento, setIdAgendamento] = useState<number>(0);
      const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
           dataHoraConsulta: new Date(),
@@ -65,7 +62,7 @@ const Agendamento = () =>{
      const onCadastarAgendamento = async () => {
           setCarregando(true);
           try {
-               const response = await postAgendamento(novoAgendamento);
+               await postAgendamento(novoAgendamento);
                setMostrarModalSucesso(true);
                setMostrarModal(false);
                setTimeout(() => {
@@ -80,6 +77,7 @@ const Agendamento = () =>{
                }, 3000);
           } catch (error: any) {
                setCarregando(false);
+
                if (error.response) {
                     // Erro de resposta da API
                     if (error.status === 400) {
@@ -124,7 +122,7 @@ const Agendamento = () =>{
      const editaAgendamentoPosConfirmacao = async () => {
           try {
                setCarregando(true);
-               let agendamentoAAtualziar: UpdateAgendamentoDto = {
+               const agendamentoAAtualziar: UpdateAgendamentoDto = {
                     dataHoraConsulta: novoAgendamento.dataHoraConsulta,
                     pacienteId: novoAgendamento.pacienteId,
                     tipoConsulta: Number(novoAgendamento.tipoConsulta)
@@ -141,6 +139,7 @@ const Agendamento = () =>{
           }
           catch (error: any) {
                setMensagemErro('Verifique os campos preenchidos');
+               console.log(error);
                setMostrarModalErro(true)
           }
           finally {

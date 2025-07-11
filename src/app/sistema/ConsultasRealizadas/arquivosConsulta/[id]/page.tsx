@@ -7,6 +7,8 @@ import FileUploader from "@/components/fileUploader/FileUploader";
 import { useApi } from "@/hooks/useApi";
 import { CreateUpdateArquivoConsultas, ReadArquivoConsultasDto } from "@/interfaces/interfacesDto";
 import TabelaArquivosConsultasRealizadas from "@/components/TableArquivosConsultasRealizadas/page";
+import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
+import { LoaderCircle, Send } from "lucide-react";
 
 const Page = () => {
      const params = useParams();
@@ -14,6 +16,8 @@ const Page = () => {
      const { getArquivosConsutlasRealizadas, deletarArquivo, postArquivosConsulta } = useApi();
      const [arquivos, setArquivos] = useState<ReadArquivoConsultasDto[]>([]);
      const [novosArquivos, setNovosArquivos] = useState<CreateUpdateArquivoConsultas[]>([]);
+     const [carregando, setCarregando] = useState(false);
+
 
      const id = params.id as string;
      const paciente = searchParams.get("paciente");
@@ -21,15 +25,16 @@ const Page = () => {
      const data = dataEncoded ? new Date(decodeURIComponent(dataEncoded)) : null;
 
      const carregaArquivos = async () => {
-          let arquivos = await getArquivosConsutlasRealizadas(Number(id));
+          const arquivos = await getArquivosConsutlasRealizadas(Number(id));
           setArquivos(arquivos);
      };
 
      const enviaArquivos = async (arquivosAEnviar: CreateUpdateArquivoConsultas[]) => {
           try
           {
+               setCarregando(true);
                arquivosAEnviar.forEach(async (element) => {
-                    var response = await postArquivosConsulta(element);
+                    const response = await postArquivosConsulta(element);
 
                     if (response.status > 299) {
                          throw new Error("Não foi possível enviar o arquivo");
@@ -37,8 +42,9 @@ const Page = () => {
                });
 
                setNovosArquivos(arquivosAEnviar);
+               setCarregando(false);
           }
-          catch (err: any)
+          catch (err: unknown)
           {
                console.log("EROOOOOOOOOOOOOO");
                console.log(err);
@@ -82,9 +88,19 @@ const Page = () => {
                                    arquivo: file,
                               }));
 
-                              enviaArquivos(arquivosFormatados);
+                              setNovosArquivos(arquivosFormatados);
                          }}
                     />
+               </div>
+               <div className="mt-5">
+                    <BotaoAmarelo>
+                         {carregando ? (
+                              <LoaderCircle className="animate-spin w-4 h-4" />
+                         ) : (
+                              <Send className="w-4 h-4 mr-2" />
+                         )}
+                              Enviar
+                    </BotaoAmarelo>
                </div>
           </section>
 

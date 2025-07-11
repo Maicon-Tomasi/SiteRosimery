@@ -2,11 +2,10 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
-import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, ReadConsultasRealizadasDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
-import { Check, File, Pen, Trash, X } from "lucide-react";
+import { ReadConsultasRealizadasDto, TipoConsultaLabel } from "@/interfaces/interfacesDto";
+import { File, Pen} from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
-import { addHours } from "date-fns";
 import { useRouter } from "next/navigation";
 
 interface TableProps {
@@ -16,10 +15,10 @@ interface TableProps {
 
 const TabelaConsultasRealizadas = ({ atualizarTabela, onEditarConsultaRealizada } :TableProps) => {
   const router = useRouter();
-  const { getConsutlasRealizadas, postCriaArquivoEConsulta } = useApi();
+  const { getConsutlasRealizadas } = useApi();
   const [consultasRealizadas, setConsultasRealizadas] = useState<ReadConsultasRealizadasDto[]>([]);
-  const [pesquisaNome, setPesquisaNome] = useState('');
-  const [mostrarModal, setMostrarModal] = useState(false);
+  // const [pesquisaNome, setPesquisaNome] = useState('');
+  // const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [mostrarModalSucesso, setMostrarModalSucesso] = useState(false);
   const [mensagemErro, setMensagemErro] = useState("");

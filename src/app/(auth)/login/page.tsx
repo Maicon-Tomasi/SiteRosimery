@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactHTMLElement, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { LoginUsuarioDto } from "@/interfaces/interfacesDto";

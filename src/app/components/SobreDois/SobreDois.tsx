@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { FC, useEffect } from 'react'
 import { Element } from 'react-scroll'
 import AOS from "aos";
@@ -20,18 +19,16 @@ const SobreDois: FC = () => {
       <section className="py-16 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="flex flex-col gap-6">
           <h2 data-aos="fade-up" className="text-2xl md:text-3xl font-semibold text-center lg:text-left">
-            Sobre Dr. Rosméry Tomasi
+            Sobre Dr. Rosiméry Tomasi
           </h2>
           <p data-aos="fade-up" className="text-center lg:text-left text-gray-700">
             Estou à sua disposição e comprometida em atender às suas necessidades em todas as fases da vida.
           </p>
           <div data-aos="flip-left" className="rounded-lg overflow-hidden shadow-md">
-            <Image
-              src="/img-about.jpg" // Substitua com o caminho real
-              alt="Dr. Sarah with client"
-              width={600}
-              height={400}
-              className="w-full h-auto object-cover"
+            <img
+              src="/imagensSite/fotoClinica.jpeg" // Substitua com o caminho real
+              alt="Welcoming Office"
+              className="w-full h-auto object-cover max-h-[380px]"
             />
           </div>
           <div data-aos="flip-left" className="bg-pink-50 p-6 rounded-lg">
@@ -70,9 +67,10 @@ const SobreDois: FC = () => {
               <li className="flex items-start gap-2">
                 🧠 Rede de violência doméstica contra a mulher
               </li>
-              {/* <li className="flex items-start gap-2">
-                📘 Postpartum Support International – Certified Provider
+               <li className="flex items-start gap-2">
+                📘 Gestar bem: Por um puerpério melhor.
               </li>
+              {/*
               <li className="flex items-start gap-2">
                 📍 California Psychological Association – Active Member
               </li>

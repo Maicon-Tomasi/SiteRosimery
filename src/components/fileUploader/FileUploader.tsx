@@ -12,7 +12,7 @@ const FileUploader = ({ onFilesSelected }: FileUploaderProps) => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles((prev) => [...prev, ...acceptedFiles]);
-    onFilesSelected([...files, ...acceptedFiles]);
+    onFilesSelected(acceptedFiles);
   }, [files, onFilesSelected]);
 
   const removeFile = (file: File) => {

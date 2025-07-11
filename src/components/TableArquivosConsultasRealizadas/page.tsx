@@ -1,12 +1,11 @@
 "use cliente";
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { useEffect, useState } from "react";
-import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, ReadArquivoConsultasDto, TipoConsulta, TipoConsultaLabel } from "@/interfaces/interfacesDto";
-import { Check, Download, Pen, Trash, X } from "lucide-react";
+import { useState } from "react";
+import { ReadArquivoConsultasDto} from "@/interfaces/interfacesDto";
+import { Download, Trash } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
-import { addHours } from "date-fns";
 
 interface TableProps {
     //  atualizarTabela: number,
@@ -16,7 +15,7 @@ interface TableProps {
 }
 
 const TabelaArquivosConsultasRealizadas = ({ arquivos, onDeletarArquivo } :TableProps) => {
-  const { deleteAgendamento, downloadArquivoConsulta } = useApi();
+  const { downloadArquivoConsulta } = useApi();
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [mostrarModalSucesso, setMostrarModalSucesso] = useState(false);
