@@ -9,6 +9,7 @@ import { CreateUpdateArquivoConsultas, ReadArquivoConsultasDto } from "@/interfa
 import TabelaArquivosConsultasRealizadas from "@/components/TableArquivosConsultasRealizadas/page";
 import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
 import { LoaderCircle, Send } from "lucide-react";
+import { Console } from "console";
 
 const Page = () => {
      const params = useParams();
@@ -17,7 +18,7 @@ const Page = () => {
      const [arquivos, setArquivos] = useState<ReadArquivoConsultasDto[]>([]);
      const [novosArquivos, setNovosArquivos] = useState<CreateUpdateArquivoConsultas[]>([]);
      const [carregando, setCarregando] = useState(false);
-
+     const [limparArquivos, setLimparArquivos] = useState<number>(0);
 
      const id = params.id as string;
      const paciente = searchParams.get("paciente");
@@ -29,20 +30,23 @@ const Page = () => {
           setArquivos(arquivos);
      };
 
-     const enviaArquivos = async (arquivosAEnviar: CreateUpdateArquivoConsultas[]) => {
+     const enviaArquivos = async () => {
           try
           {
+               console.log("aaaaaaaaaaaaa");
                setCarregando(true);
-               arquivosAEnviar.forEach(async (element) => {
-                    const response = await postArquivosConsulta(element);
+               console.log(novosArquivos);
 
-                    if (response.status > 299) {
-                         throw new Error("Não foi possível enviar o arquivo");
-                    }
-               });
-
-               setNovosArquivos(arquivosAEnviar);
+               const response = await postArquivosConsulta(novosArquivos, Number(id));
+               console.log(response);
+               if (response.status > 299) {
+                    throw new Error("Não foi possível enviar o arquivo");
+               }
+               
+               carregaArquivos();
                setCarregando(false);
+               setNovosArquivos([]);
+               setLimparArquivos(prev => prev + 1);
           }
           catch (err: unknown)
           {
@@ -82,18 +86,20 @@ const Page = () => {
           <section className="bg-white p-4 rounded-md shadow-sm border border-slate-200">   
                <div className="mt-4">
                     <label className="text-sm text-slate-600">Arquivos*</label>
-                    <FileUploader
+                    <FileUploader limpar={limparArquivos}
                          onFilesSelected={(arquivos) => {
                               const arquivosFormatados = arquivos.map((file) => ({
                                    arquivo: file,
                               }));
+
+                              console.log(arquivosFormatados);
 
                               setNovosArquivos(arquivosFormatados);
                          }}
                     />
                </div>
                <div className="mt-5">
-                    <BotaoAmarelo>
+                    <BotaoAmarelo onClick={() => enviaArquivos()}>
                          {carregando ? (
                               <LoaderCircle className="animate-spin w-4 h-4" />
                          ) : (

@@ -23,7 +23,7 @@ export interface CreateConsultaEArquivosDto{
 
 export interface CreatePacienteDto {
     nome: string;
-    dataNascimento: Date;
+    dataNascimento: string;
     telefone: string;
     email: string;
     cpf: string;

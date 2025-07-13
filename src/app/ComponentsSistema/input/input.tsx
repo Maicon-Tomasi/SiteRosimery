@@ -3,7 +3,7 @@ interface InputProps {
     placeholder: string;
     classes: string;
     onChangeParam: (value: string) => void;
-    valueParam: string;
+    valueParam?: string;
     disabled?: boolean;
     maxLengthParam?: number;
 }

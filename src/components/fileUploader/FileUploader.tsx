@@ -1,13 +1,14 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Paperclip, X } from "lucide-react";
 
 interface FileUploaderProps {
   onFilesSelected: (files: File[]) => void;
+  limpar?: number;
 }
 
-const FileUploader = ({ onFilesSelected }: FileUploaderProps) => {
+const FileUploader = ({ onFilesSelected,  limpar}: FileUploaderProps) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -25,6 +26,10 @@ const FileUploader = ({ onFilesSelected }: FileUploaderProps) => {
     onDrop,
     multiple: true
   });
+
+  useEffect(() => {
+    setFiles([])
+  }, [limpar])
 
   return (
     <div className="mt-2">

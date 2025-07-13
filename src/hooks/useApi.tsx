@@ -1,15 +1,9 @@
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadArquivoConsultasDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreatePacienteDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadArquivoConsultasDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
 export const useApi = () => {
   const { api } = useApiContext();
-
-  // function toISOStringLocal(date: Date): string {
-  //   const pad = (n: number) => n.toString().padStart(2, '0');
-  //   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
-  // }
-
   
   const getAgendamentos = async (skip: number | null, take: number | null) => {
     const token = Cookies.get('token'); // nome do cookie
@@ -270,19 +264,47 @@ export const useApi = () => {
 
   }
 
-  const postArquivosConsulta = async (arquivos: CreateUpdateArquivoConsultas) => {
+  const postArquivosConsulta = async (arquivos: CreateUpdateArquivoConsultas[], idConsulta: number) => {
     const token = Cookies.get('token'); // nome do cookie
 
     if (!token) throw new Error('Token não encontrado nos cookies');
 
-    const arquivosEnviados: CreateUpdateArquivoConsultas[] = [{
-      arquivo: arquivos.arquivo
-    }];
+    const formData = new FormData();
+      formData.append("idConsulta", idConsulta.toString());
 
-    const response = await api.post('/api/ArquivosConsulta', arquivosEnviados,
+    arquivos.forEach((item) => {
+        formData.append("arquivos", item.arquivo); 
+      });
+
+    const response = await api.post('/api/ArquivosConsulta', formData,
       {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      },
+    });
+
+    return response; // Retorna a resposta completa do servidor
+
+  }
+  
+  const postPaciente = async (pacientes: CreatePacienteDto) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const pacientesArray: CreatePacienteDto[] = [{
+      nome: pacientes.nome,
+      cpf: pacientes.cpf,
+      dataNascimento: pacientes.dataNascimento,
+      telefone: pacientes.telefone,
+      email: pacientes.email 
+    }];
+
+    const response = await api.post('/api/Paciente', pacientesArray,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`
       },
     });
 
@@ -476,6 +498,7 @@ export const useApi = () => {
     postArquivosConsulta,
     postCriaArquivoEConsulta,
     postAgendamento,
+    postPaciente,
     putEditarAgendamento,
     putEditarConsulta,
     deleteAgendamento,

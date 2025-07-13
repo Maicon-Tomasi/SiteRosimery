@@ -272,7 +272,8 @@ const Agendamento = () =>{
                                         dataHoraConsulta: value instanceof Date ? value : new Date(value),
                                    })
                               }
-                         />                    </div>
+                         />                    
+                    </div>
 
                     <div>
                          <label className="text-sm text-slate-600">Tipo consulta*</label>

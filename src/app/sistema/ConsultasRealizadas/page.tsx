@@ -1,9 +1,9 @@
 "use client";
 import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
 import BotaoVermelho from "@/components/botaoVermelho/botaoAzul";
-import Calendario from "@/components/Calendario/Calendario";
+import CalendarioConsultasRealizadas from "@/components/Calendario/CalendarioConsultasRealizadas";
 import { DatePicker } from "@/components/DatePicker/DatePicker";
-import Input from "@/components/input/input";
+import Input from "@/app/ComponentsSistema/input/input";
 import TabelaConsultasRealizadas from "@/components/TableConsultasRealizadas/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -379,7 +379,7 @@ const ConsutasRealizadas = () =>{
                     
                     <div className="flex flex-col min-w-[250px] flex-1">
                          <label className="text-[16px] text-slate-600">Valor</label>
-                         <Input 
+                         <Input
                               type="text" 
                               disabled={true} 
                               classes="w-full border border-slate-300 rounded px-3 py-2 justify-between text-left text-sm font-medium shadow-sm bg-white hover:bg-muted transition" 
@@ -472,7 +472,7 @@ const ConsutasRealizadas = () =>{
           />
           </div>
 
-          {!modoDeVisualizacao ? <TabelaConsultasRealizadas atualizarTabela={reloadTabela} onEditarConsultaRealizada={onEditar}/> : <Calendario />}
+          {!modoDeVisualizacao ? <TabelaConsultasRealizadas atualizarTabela={reloadTabela} onEditarConsultaRealizada={onEditar}/> : <CalendarioConsultasRealizadas />}
      </div>
      );
 }
