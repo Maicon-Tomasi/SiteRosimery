@@ -1,4 +1,4 @@
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreatePacienteDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadArquivoConsultasDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreatePacienteDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadArquivoConsultasDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto, UpdatePacienteDto } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
 
@@ -429,11 +429,48 @@ export const useApi = () => {
     return response; // Retorna a resposta completa do servidor
 
   }
+  
+  const putEditarPaciente = async (id: number, pacienteEditado: UpdatePacienteDto) => {
+    const token = Cookies.get('token'); // nome do cookie
+
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const response = await api.put(`/api/paciente/${id}`, pacienteEditado,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response; // Retorna a resposta completa do servidor
+
+  }
 
 
   const deleteAgendamento = async (id: number) => {
     const token = Cookies.get('token');
     const response = await api.delete(`/api/Agendamentos/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
+
+      let agendamento = response.data.result;
+
+      if (Array.isArray(agendamento)) {
+        // Se for array, pegue o primeiro ou trate como lista
+        agendamento = agendamento[0];
+      }
+      return response.status;
+  }
+  
+  const deletePaciente = async (id: number) => {
+    const token = Cookies.get('token');
+    const response = await api.delete(`/api/Paciente/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -501,8 +538,10 @@ export const useApi = () => {
     postPaciente,
     putEditarAgendamento,
     putEditarConsulta,
+    putEditarPaciente,
     deleteAgendamento,
     deletarArquivo,
+    deletePaciente,
     downloadArquivoConsulta
   };
 };

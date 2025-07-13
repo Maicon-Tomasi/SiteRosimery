@@ -113,7 +113,7 @@ export interface UpdateConsultasRealizadasDto {
 
 export interface UpdatePacienteDto {
     nome: string;
-    dataNascimento: Date;
+    dataNascimento: string;
     telefone: string;
     email: string;
     cpf: string;

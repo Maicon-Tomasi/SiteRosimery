@@ -48,13 +48,7 @@ const menuSections = [
 
 const menusDropDowns = 
 [
-  { title: "Pacientes", url: "/sistema/Pacientes", icon: Tags },
-  { title: "Cidades", url: "/cidades", icon: Building },
-  { title: "Clientes", url: "/cliente", icon: Users },
-  { title: "Estoques", url: "/estoques", icon: Package },
-  { title: "Fornecedores", url: "/Fornecedores", icon: Users },
-  { title: "Produtos", url: "/Produtos", icon: Boxes },
-  { title: "Transportadoras", url: "/Transportadoras", icon: Truck },
+  { title: "Pacientes", url: "/sistema/Pacientes", icon: Tags }
 ]
 
 export function AppSidebar() {

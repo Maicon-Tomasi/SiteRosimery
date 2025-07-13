@@ -6,14 +6,14 @@ import { DatePicker } from "@/components/DatePicker/DatePicker";
 import TabelaPacientes from "@/components/TablePacientes/page";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
-import { CreateAgendamentoDto, CreatePacienteDto, ReadAgendamentoDto, TipoConsultaLabel, UpdateAgendamentoDto } from "@/interfaces/interfacesDto";
+import { CreatePacienteDto, ReadPacienteDto, UpdatePacienteDto } from "@/interfaces/interfacesDto";
 import { aplicarMascaraCPF, aplicarMascaraTelefone, filtrarCaracteresEmail } from "@/utils/mascaras";
-import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
+import { LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
 const Pacientes = () =>{
-     const { postPaciente } = useApi();
+     const { postPaciente, putEditarPaciente } = useApi();
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
      const [mensagemErro, setMensagemErro] = useState("");
@@ -21,6 +21,7 @@ const Pacientes = () =>{
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
      const [mostrarModeSucesso, setMostrarModalSucesso] = useState(false); 
+     const [mensagemSucesso, setMensagemSucesso] = useState(""); 
      const [mostrarModalEdicao, setmostrarModalEdicao] = useState(false);
      const [idPaciente, setIdPaciente] = useState<number>(0);
      const [novoPaciente, setNovoPaciente] = useState<CreatePacienteDto>({
@@ -46,20 +47,19 @@ const Pacientes = () =>{
           setCarregando(true);
           try {
                await postPaciente(novoPaciente);
+               setMensagemSucesso("Sucesso! Seu paciente foi cadastrado")
                setMostrarModalSucesso(true);
                setMostrarModal(false);
-               setTimeout(() => {
-                    setMostrarModalSucesso(false);
-                    setReloadTabela(reloadTabela + 1);
-                    setCarregando(false);    
-                    setNovoPaciente({
-                         nome: "",
-                         cpf: "",
-                         dataNascimento: "",
-                         email: "",
-                         telefone: ""
-                    });
-               }, 3000);
+               setMostrarModalSucesso(false);
+               setReloadTabela(reloadTabela + 1);
+               setCarregando(false);    
+               setNovoPaciente({
+                    nome: "",
+                    cpf: "",
+                    dataNascimento: "",
+                    email: "",
+                    telefone: ""
+               });
           } catch (error: any) {
                setCarregando(false);
 
@@ -79,64 +79,68 @@ const Pacientes = () =>{
           }
      };
 
-     // const onParaEdicao = () => 
-     // {
-     //      setEditando(false);
+     const onParaEdicao = () => 
+     {
+          setEditando(false);
 
-     //      setNovoAgendamento({
-     //           dataHoraConsulta: new Date(),
-     //           pacienteId: 0,
-     //           tipoConsulta: 1
-     //      });
-     // }
+          setNovoPaciente({
+               nome: "",
+               cpf: "",
+               dataNascimento: "",
+               email: "",
+               telefone: ""
+          });
+     }
 
-     // const onEditarAgendamento = async (agendamentoSelecionado: ReadAgendamentoDto) => {
-     //      console.log(agendamentoSelecionado);
-     //      setEditando(true);
+     const onEditarPaciente = async (pacienteSelecionado: ReadPacienteDto) => {
+          console.log(pacienteSelecionado);
+          setEditando(true);
 
-     //      setIdAgendamento(agendamentoSelecionado.id);
+          setIdPaciente(pacienteSelecionado.id);
 
-     //      setNovoAgendamento({
-     //           dataHoraConsulta: agendamentoSelecionado.dataHoraConsulta,
-     //           pacienteId: agendamentoSelecionado.paciente.id,
-     //           tipoConsulta: Number(agendamentoSelecionado.tipoConsulta)
-     //      });
+          setNovoPaciente({
+               nome: pacienteSelecionado.nome,
+               cpf: pacienteSelecionado.cpf,
+               dataNascimento: pacienteSelecionado.dataNascimento.toString(),
+               email: pacienteSelecionado.email,
+               telefone: pacienteSelecionado.telefone
+          });
 
-     // };
+     };
      
-     // const editaAgendamentoPosConfirmacao = async () => {
-     //      try {
-     //           setCarregando(true);
-     //           const agendamentoAAtualziar: UpdateAgendamentoDto = {
-     //                dataHoraConsulta: novoAgendamento.dataHoraConsulta,
-     //                pacienteId: novoAgendamento.pacienteId,
-     //                tipoConsulta: Number(novoAgendamento.tipoConsulta)
-     //           }
-     //           await putEditarAgendamento(idAgendamento, agendamentoAAtualziar);
-     //           setReloadTabela(prev => prev + 1);
-     //           setNovoAgendamento({
-     //                dataHoraConsulta: new Date(),
-     //                pacienteId: 0,
-     //                tipoConsulta: 1
-     //           });
-     //           setMostrarModalSucesso(true);
-     //           setmostrarModalEdicao(false);
-     //      }
-     //      catch (error: any) {
-     //           setMensagemErro('Verifique os campos preenchidos');
-     //           console.log(error);
-     //           setMostrarModalErro(true)
-     //      }
-     //      finally {
-     //           setCarregando(false);
-     //           setEditando(false);
-     //           setNovoAgendamento({
-     //                dataHoraConsulta: new Date(),
-     //                pacienteId: 0,
-     //                tipoConsulta: 1
-     //           });;
-     //      }
-     // };
+     const editaPacientePosConfirmacao = async () => {
+          try {
+               setCarregando(true);
+               const pacienteAAtualziar: UpdatePacienteDto = {
+                    nome: novoPaciente.nome,
+                    cpf: novoPaciente.cpf,
+                    dataNascimento: novoPaciente.dataNascimento.toString(),
+                    email: novoPaciente.email,
+                    telefone: novoPaciente.telefone
+               }
+               await putEditarPaciente(idPaciente, pacienteAAtualziar);
+               setReloadTabela(prev => prev + 1);
+               setMensagemSucesso("Sucesso! O cadastro do seu paciente foi editado!")
+               setMostrarModalSucesso(true);
+               setmostrarModalEdicao(false);
+          }
+          catch (error: any) {
+               setMensagemErro('Verifique os campos preenchidos');
+               console.log(error);
+               setMostrarModalErro(true)
+          }
+          finally {
+               setCarregando(false);
+               setEditando(false);
+               setNovoPaciente({
+                    nome: "",
+                    cpf: "",
+                    dataNascimento: "",
+                    email: "",
+                    telefone: ""
+               });;
+          }
+     };
 
      const onConfirmarEdicao = () => {
           setmostrarModalEdicao(true);
@@ -185,6 +189,7 @@ const Pacientes = () =>{
                     <div className="flex justify-end gap-4 mt-4">
                          <button
                          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                         onClick={editaPacientePosConfirmacao}
                          >
                               Confirmar
                          </button>
@@ -222,8 +227,7 @@ const Pacientes = () =>{
                          <DialogHeader>
                               <DialogTitle>Sucesso!</DialogTitle>
                          <DialogDescription>
-                             Sucesso! Agendamento realizado com sucesso. <br />
-                              Está modal será fechada em 3 segundos.
+                            {mensagemSucesso}
                          </DialogDescription>
                          </DialogHeader>
                     </DialogContent>
@@ -286,6 +290,7 @@ const Pacientes = () =>{
                                    })
                               }}
                               valueParam={aplicarMascaraTelefone(novoPaciente.telefone)}
+                              maxLengthParam={15}
                          />
                     </div>
                    
@@ -309,7 +314,7 @@ const Pacientes = () =>{
                     <div className="flex flex-col">
                          <label className="text-[16px] text-slate-600">Data de nascimento</label>
                          <DatePicker
-                         value={novoPaciente.dataNascimento ? new Date(novoPaciente.dataNascimento) : undefined}
+                         value={novoPaciente.dataNascimento ? new Date(novoPaciente.dataNascimento) : new Date("1000-09-09")}
                          onChange={(value) =>
                               setNovoPaciente({
                               ...novoPaciente,
@@ -338,7 +343,7 @@ const Pacientes = () =>{
                               Editar
                               </BotaoAmarelo>
 
-                              <BotaoVermelho disabled={carregando}>
+                              <BotaoVermelho disabled={carregando} onClick={onParaEdicao}>
                                    <X size={20} className="w-4 h-4" /> Parar Edição
                               </BotaoVermelho>
                          </div>
@@ -359,7 +364,7 @@ const Pacientes = () =>{
 
           </section>
 
-          <TabelaPacientes atualizarTabela={reloadTabela} />
+          <TabelaPacientes atualizarTabela={reloadTabela} onEditarPaciente={onEditarPaciente}/>
      </div>
      );
 }
