@@ -5,6 +5,63 @@ import Cookies from 'js-cookie';
 export const useApi = () => {
   const { api } = useApiContext();
   
+  const getQuantidadeTotalAgendamentos = async () => {
+    const token = Cookies.get('token'); // nome do cookie
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+      const response = await api.get('/api/Agendamentos/total', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
+
+    return response.data;
+  };
+  
+  const getQuantidadeTotalConsultasRealizadas = async () => {
+    const token = Cookies.get('token'); // nome do cookie
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+      const response = await api.get('/api/ConsultasRealizadas/total', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
+
+    return response.data;
+  };
+  
+  const getQuantidadeTotalPacientes = async () => {
+    const token = Cookies.get('token'); // nome do cookie
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+      const response = await api.get('/api/Paciente/total', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
+
+    return Number(response.data.result);
+  };
+  
   const getAgendamentos = async (skip: number | null, take: number | null) => {
     const token = Cookies.get('token'); // nome do cookie
     if (!token) throw new Error('Token não encontrado nos cookies');
@@ -526,6 +583,9 @@ export const useApi = () => {
   }
 
   return {
+    getQuantidadeTotalAgendamentos,
+    getQuantidadeTotalConsultasRealizadas,
+    getQuantidadeTotalPacientes,
     getAgendamentos,
     getPacientes,
     getConsutlasRealizadas,

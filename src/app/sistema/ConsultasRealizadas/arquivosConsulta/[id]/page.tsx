@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams, useSearchParams } from "next/navigation";
-import formatDate from "@/utils/formatDate";
 import { useEffect, useState } from "react";
 import FileUploader from "@/components/fileUploader/FileUploader";
 import { useApi } from "@/hooks/useApi";
@@ -9,7 +8,7 @@ import { CreateUpdateArquivoConsultas, ReadArquivoConsultasDto } from "@/interfa
 import TabelaArquivosConsultasRealizadas from "@/components/TableArquivosConsultasRealizadas/page";
 import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
 import { LoaderCircle, Send } from "lucide-react";
-import { Console } from "console";
+import { formatDate } from "@/utils/formatDate";
 
 const Page = () => {
      const params = useParams();
