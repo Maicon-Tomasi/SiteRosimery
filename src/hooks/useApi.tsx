@@ -155,6 +155,25 @@ export const useApi = () => {
     return response.data;
   };
   
+  const getQuantidadeTotalConsultasRealizadasPorTipoConsulta = async (ano: number) => {
+    const token = Cookies.get('token'); // nome do cookie
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+      const response = await api.get(`/api/ConsultasRealizadas/qtdConsultaPorTipo/${ano}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar agendamentos');
+    }
+
+    return response.data;
+  };
+  
   const getConsutlasRealizadas = async () => {
     const token = Cookies.get('token'); // nome do cookie
 
@@ -608,6 +627,7 @@ export const useApi = () => {
     getAgendamentos,
     getPacientes,
     getQuantidadeTotalConsultasRealizadasPorMes,
+    getQuantidadeTotalConsultasRealizadasPorTipoConsulta,
     getConsutlasRealizadas,
     getArquivosConsutlasRealizadas,
     postUsuarioLogin,

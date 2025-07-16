@@ -9,20 +9,23 @@ import {
   Users,
   DollarSign,
 } from "lucide-react";
+import { get } from "http";
 
 const Dashboard = () => {
   const {
     getQuantidadeTotalAgendamentos,
     getQuantidadeTotalConsultasRealizadas,
     getQuantidadeTotalPacientes,
-    getQuantidadeTotalConsultasRealizadasPorMes
+    getQuantidadeTotalConsultasRealizadasPorMes,
+    getQuantidadeTotalConsultasRealizadasPorTipoConsulta,
   } = useApi();
 
   const [qtdeAgendamentos, setQtdeAgendamentos] = useState<number>(0);
   const [qtdeConsultasRealizadas, setQtdeConsultasRealizada] = useState<number>(0);
   const [qtdePacienteCadastrados, setQtdePacienteCadastrados] = useState<number>(0);
   const [qtdeConsultasRealizadasPorMes, setQtdeConsultasRealizadasPorMes] = useState<number[]>([]);
-  const [anoReferenciaConsultasRealizadasPorMes, setAnoReferenciaConsultasRealizadasPorMes] = useState<number>(new Date().getFullYear());
+  const [qtdeConsultasRealizadasPorTipoConsulta, setQtdeConsultasRealizadasPorTipoConsulta] = useState([{}]);
+  const [anoReferencia, setAnoReferencia] = useState<number>(new Date().getFullYear());
 
   const options: EChartsOption = {
     tooltip: {},
@@ -48,8 +51,8 @@ const Dashboard = () => {
   
   const optionsPie: EChartsOption = {
     title: {
-      text: 'Referer of a Website',
-      subtext: 'Fake Data',
+      text: 'Tipos de Consultas Realizadas',
+      subtext: '',
       left: 'center'
     },
     tooltip: {
@@ -61,16 +64,10 @@ const Dashboard = () => {
     },
     series: [
       {
-        name: 'Access From',
+        name: 'Tipos de Consulta',
         type: 'pie',
         radius: '50%',
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' }
-        ],
+        data: qtdeConsultasRealizadasPorTipoConsulta,
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -84,11 +81,12 @@ const Dashboard = () => {
 
   const carregarDados = async () => {
     try {
-      const [agend, consult, pacientes, consultarPorMes] = await Promise.all([
+      const [agend, consult, pacientes, consultarPorMes, consultasPorTipoConsulta] = await Promise.all([
         getQuantidadeTotalAgendamentos(),
         getQuantidadeTotalConsultasRealizadas(),
         getQuantidadeTotalPacientes(),
-        getQuantidadeTotalConsultasRealizadasPorMes(anoReferenciaConsultasRealizadasPorMes),
+        getQuantidadeTotalConsultasRealizadasPorMes(anoReferencia),
+        getQuantidadeTotalConsultasRealizadasPorTipoConsulta(anoReferencia),
       ]);
       setQtdeAgendamentos(agend);
       setQtdeConsultasRealizada(consult);
@@ -99,6 +97,16 @@ const Dashboard = () => {
                                   : Object.values(consultarPorMes).map(Number);
     
       setQtdeConsultasRealizadasPorMes(consultarPorMesArray);
+
+      const dadosGraficoPie = Object.entries(consultasPorTipoConsulta)
+      .filter(([_, value]) => Number(value) > 0)
+      .map(([name, value]) => ({
+        name,
+        value: Number(value)
+      }));
+      
+      setQtdeConsultasRealizadasPorTipoConsulta(dadosGraficoPie);
+
     } catch (error) {
       console.error("Erro ao carregar dados do dashboard:", error);
     }
@@ -157,7 +165,7 @@ const Dashboard = () => {
           <ReactECharts option={options} style={{ height: "400px" }} />
         </div>
         <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Gráfico 2</h2>
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Tipos De Consultas Realizadas</h2>
           <ReactECharts option={optionsPie} style={{ height: "400px" }} />
         </div>
       </div>
