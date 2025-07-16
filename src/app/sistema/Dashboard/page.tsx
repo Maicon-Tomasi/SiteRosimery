@@ -3,141 +3,166 @@
 import { useApi } from "@/hooks/useApi";
 import { useEffect, useState } from "react";
 import ReactECharts, { EChartsOption } from "echarts-for-react";
+import {
+  CalendarDays,
+  CheckCircle,
+  Users,
+  DollarSign,
+} from "lucide-react";
 
 const Dashboard = () => {
-  const { getQuantidadeTotalAgendamentos, getQuantidadeTotalConsultasRealizadas, getQuantidadeTotalPacientes } = useApi();
+  const {
+    getQuantidadeTotalAgendamentos,
+    getQuantidadeTotalConsultasRealizadas,
+    getQuantidadeTotalPacientes,
+    getQuantidadeTotalConsultasRealizadasPorMes
+  } = useApi();
+
   const [qtdeAgendamentos, setQtdeAgendamentos] = useState<number>(0);
   const [qtdeConsultasRealizadas, setQtdeConsultasRealizada] = useState<number>(0);
   const [qtdePacienteCadastrados, setQtdePacienteCadastrados] = useState<number>(0);
+  const [qtdeConsultasRealizadasPorMes, setQtdeConsultasRealizadasPorMes] = useState<number[]>([]);
+  const [anoReferenciaConsultasRealizadasPorMes, setAnoReferenciaConsultasRealizadasPorMes] = useState<number>(new Date().getFullYear());
 
   const options: EChartsOption = {
-    title: {
-      text: 'Agendamentos Mensal',
-    },
     tooltip: {},
     xAxis: {
-      type: 'category',
-      data: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+      type: "category",
+      data: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
     },
     yAxis: {
-      type: 'value',
+      type: "value",
     },
     series: [
       {
-        name: 'Agendamentos',
-        type: 'bar',
-        data: [5, 20, 36, 10, 10, 20, 15, 25, 30, 40, 50, 60],
+        name: "Consultas Realizadas",
+        type: "bar",
+        data: qtdeConsultasRealizadasPorMes,
         itemStyle: {
           color: '#f39c12', // Cor amarela
+          borderRadius: [4, 4, 0, 0],
         },
       },
     ],
   };
+  
+  const optionsPie: EChartsOption = {
+    title: {
+      text: 'Referer of a Website',
+      subtext: 'Fake Data',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left'
+    },
+    series: [
+      {
+        name: 'Access From',
+        type: 'pie',
+        radius: '50%',
+        data: [
+          { value: 1048, name: 'Search Engine' },
+          { value: 735, name: 'Direct' },
+          { value: 580, name: 'Email' },
+          { value: 484, name: 'Union Ads' },
+          { value: 300, name: 'Video Ads' }
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  };
 
-  const carregarQuantidadeAgendamentos = async () => {
+  const carregarDados = async () => {
     try {
-      const quantidade = await getQuantidadeTotalAgendamentos();  
-      setQtdeAgendamentos(quantidade);
+      const [agend, consult, pacientes, consultarPorMes] = await Promise.all([
+        getQuantidadeTotalAgendamentos(),
+        getQuantidadeTotalConsultasRealizadas(),
+        getQuantidadeTotalPacientes(),
+        getQuantidadeTotalConsultasRealizadasPorMes(anoReferenciaConsultasRealizadasPorMes),
+      ]);
+      setQtdeAgendamentos(agend);
+      setQtdeConsultasRealizada(consult);
+      setQtdePacienteCadastrados(pacientes); 
+      
+      const consultarPorMesArray = Array.isArray(consultarPorMes) 
+                                  ? consultarPorMes.map(Number) 
+                                  : Object.values(consultarPorMes).map(Number);
+    
+      setQtdeConsultasRealizadasPorMes(consultarPorMesArray);
     } catch (error) {
-      console.error("Erro ao carregar quantidade de agendamentos:", error);
+      console.error("Erro ao carregar dados do dashboard:", error);
     }
-  }
-  
-  const carregarQuantidadeConsultasRealizadas = async () => {
-    try {
-      const quantidade = await getQuantidadeTotalConsultasRealizadas();  
-      setQtdeConsultasRealizada(quantidade);
-    } catch (error) {
-      console.error("Erro ao carregar quantidade de agendamentos:", error);
-    }
-  }
-  
-  const carregarQuantidadePacientesCadastrados = async () => {
-    try {
-      const quantidade = await getQuantidadeTotalPacientes();  
-      setQtdePacienteCadastrados(quantidade);
-    } catch (error) {
-      console.error("Erro ao carregar quantidade de agendamentos:", error);
-    }
-  }
+  };
 
   useEffect(() => {
-    carregarQuantidadeAgendamentos();
-    carregarQuantidadeConsultasRealizadas();
-    carregarQuantidadePacientesCadastrados();
-  }, [])
+    carregarDados();
+  }, []);
+  
+  useEffect(() => {
+    console.log("Consultas realizadas por mês:", qtdeConsultasRealizadasPorMes);
+  }, [qtdeConsultasRealizadasPorMes]);
+
+  const cards = [
+    {
+      title: "Total de Agendamentos",
+      icon: <CalendarDays className="w-6 h-6 text-yellow-500" />,
+      value: qtdeAgendamentos,
+    },
+    {
+      title: "Consultas Realizadas",
+      icon: <CheckCircle className="w-6 h-6 text-green-500" />,
+      value: qtdeConsultasRealizadas,
+    },
+    {
+      title: "Pacientes Cadastrados",
+      icon: <Users className="w-6 h-6 text-blue-500" />,
+      value: qtdePacienteCadastrados,
+    },
+    {
+      title: "Faturamento",
+      icon: <DollarSign className="w-6 h-6 text-emerald-500" />,
+      value: "R$ 0,00",
+    },
+  ];
 
   return (
-    <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
-      <div>
-            <div className='flex gap-5'>
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                    <div className="text-lg font-semibold mb-2">
-                        Total de Agendamentos
-                    </div>
-                    <div className="text-2xl font-bold text-yellow-600 text-right pr-4">
-                        {qtdeAgendamentos}
-                    </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                    <div className="text-lg font-semibold mb-2">
-                        Total de Consultas Realizadas
-                    </div>
-                    <div className="text-2xl font-bold text-yellow-600 text-right pr-4">
-                        {qtdeConsultasRealizadas}
-                    </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                    <div className="text-lg font-semibold mb-2">
-                        Pacientes Cadastrados
-                    </div>
-                    <div className="text-2xl font-bold text-yellow-600 text-right pr-4">
-                        {qtdePacienteCadastrados}
-                    </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                    <div className="text-lg font-semibold mb-2">
-                        Faturamento
-                    </div>
-                    <div className="text-2xl font-bold text-yellow-600 text-right pr-4">
-                       0
-                    </div>
-                </div>
+    <div className="w-full p-6 min-h-screen">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {cards.map((card, index) => (
+          <div key={index} className="bg-white rounded-xl shadow-md p-5 flex items-center gap-4">
+            <div className="bg-gray-100 p-3 rounded-full">{card.icon}</div>
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-500">{card.title}</span>
+              <strong className="text-2xl font-semibold text-gray-800">
+                {card.value}
+              </strong>
             </div>
+          </div>
+        ))}
+      </div>
 
-            <div className="flex gap-5 mt-10">
-              <div className="w-1/2">
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                  <ReactECharts option={options} style={{ height: '400px' }} />
-                </div>
-              </div>
-              
-              <div className="w-1/2">
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                  <ReactECharts option={options} style={{ height: '400px' }} />
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex gap-5 mt-10">
-              <div className="w-1/2">
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                  <ReactECharts option={options} style={{ height: '400px' }} />
-                </div>
-              </div>
-              
-              <div className="w-1/2">
-                <div className="bg-white p-4 rounded-lg shadow-md w-full">
-                  <ReactECharts option={options} style={{ height: '400px' }} />
-                </div>
-              </div>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
+        <div className="bg-white rounded-xl shadow-md p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Consultas Realizadas Mensal</h2>
+          <ReactECharts option={options} style={{ height: "400px" }} />
         </div>
+        <div className="bg-white rounded-xl shadow-md p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Gráfico 2</h2>
+          <ReactECharts option={optionsPie} style={{ height: "400px" }} />
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Dashboard;
