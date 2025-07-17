@@ -1,7 +1,7 @@
 "use cliente";
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReadArquivoConsultasDto} from "@/interfaces/interfacesDto";
 import { Download, Trash } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
@@ -70,6 +70,11 @@ const TabelaArquivosConsultasRealizadas = ({ arquivos, onDeletarArquivo } :Table
 
 //     carregarCidadesPorPesquisa();
 //   }, [pesquisaNome]);
+
+  useEffect(() => {
+    setMensagemErro("oi");
+    setMensagemSucesso("oi");
+  },[])
 
   return (
     <div>

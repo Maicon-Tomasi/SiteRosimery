@@ -1,15 +1,10 @@
 'use client'
 import {
-  Boxes,
-  Building,
   Calendar,
   Home,
-  Package,
   Settings,
   Stethoscope,
   Tags,
-  Truck,
-  Users,
 } from "lucide-react"
 
 import {

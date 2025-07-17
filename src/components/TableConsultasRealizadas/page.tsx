@@ -52,6 +52,8 @@ const TabelaConsultasRealizadas = ({ atualizarTabela, onEditarConsultaRealizada 
 
   useEffect(() => {
     carregarConsultas();
+    setMensagemErro("oi");
+    setMensagemSucesso("oi");
   }, [atualizarTabela, skip]);
 
   const padZero = (num: number) => num.toString().padStart(2, '0');

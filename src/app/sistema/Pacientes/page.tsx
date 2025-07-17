@@ -7,7 +7,7 @@ import TabelaPacientes from "@/components/TablePacientes/page";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
 import { CreatePacienteDto, ReadPacienteDto, UpdatePacienteDto } from "@/interfaces/interfacesDto";
-import { aplicarMascaraCPF, aplicarMascaraTelefone, filtrarCaracteresEmail } from "@/utils/mascaras";
+import { aplicarMascaraCPF, aplicarMascaraTelefone } from "@/utils/mascaras";
 import { LoaderCircle, PlusCircle, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
