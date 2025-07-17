@@ -18,9 +18,9 @@ function filtrarCaracteresEmail(valor: string): string {
   return valor.replace(/\s/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-function validarEmail(email: string): boolean {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-}
+// function validarEmail(email: string): boolean {
+//   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   return regex.test(email);
+// }
 
 export {aplicarMascaraCPF, aplicarMascaraTelefone, filtrarCaracteresEmail}

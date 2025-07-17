@@ -85,7 +85,7 @@ const ConsutasRealizadas = () =>{
            }
            console.log(response);
          }
-         catch (error: any)
+         catch (error: any) // eslint-disable-line @typescript-eslint/no-explicit-any
          {
            // setCarregando(false);
            if (error.response) {

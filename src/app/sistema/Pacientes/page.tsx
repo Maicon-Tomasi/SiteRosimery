@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useApi } from "@/hooks/useApi";
 import { CreatePacienteDto, ReadPacienteDto, UpdatePacienteDto } from "@/interfaces/interfacesDto";
 import { aplicarMascaraCPF, aplicarMascaraTelefone, filtrarCaracteresEmail } from "@/utils/mascaras";
-import { LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
+import { LoaderCircle, PlusCircle, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
@@ -301,7 +301,7 @@ const Pacientes = () =>{
                               classes="w-full border border-slate-300 rounded px-3 py-2 justify-between text-left text-sm font-medium shadow-sm bg-white hover:bg-muted transition" 
                               placeholder="email@gmail.com" 
                               onChangeParam={(value) => {
-                                    const emailLimpo = filtrarCaracteresEmail(value);
+                                   //  const emailLimpo = filtrarCaracteresEmail(value);
                                    setNovoPaciente({
                                         ...novoPaciente,
                                         email: value,

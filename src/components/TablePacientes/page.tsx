@@ -2,8 +2,8 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
-import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, ReadPacienteDto, TipoConsultaLabel } from "@/interfaces/interfacesDto";
-import { Check, Pen, Trash, X } from "lucide-react";
+import { ReadPacienteDto } from "@/interfaces/interfacesDto";
+import { Pen, Trash } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { aplicarMascaraCPF, aplicarMascaraTelefone } from "@/utils/mascaras";
@@ -15,7 +15,7 @@ interface TableProps {
 }
 
 const TabelaPacientes = ({ atualizarTabela, onEditarPaciente } :TableProps) => {
-  const { getPacientes, deletePaciente, postCriaArquivoEConsulta } = useApi();
+  const { getPacientes, deletePaciente } = useApi();
   const [pacientes, setPacientes] = useState<ReadPacienteDto[]>([]);
   // const [pesquisaNome, setPesquisaNome] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);

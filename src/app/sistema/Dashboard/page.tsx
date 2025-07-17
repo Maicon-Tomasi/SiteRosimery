@@ -9,7 +9,6 @@ import {
   Users,
   DollarSign,
 } from "lucide-react";
-import { get } from "http";
 
 const Dashboard = () => {
   const {
@@ -99,7 +98,7 @@ const Dashboard = () => {
       setQtdeConsultasRealizadasPorMes(consultarPorMesArray);
 
       const dadosGraficoPie = Object.entries(consultasPorTipoConsulta)
-      .filter(([_, value]) => Number(value) > 0)
+      .filter(([value]) => Number(value) > 0)
       .map(([name, value]) => ({
         name,
         value: Number(value)
@@ -114,6 +113,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     carregarDados();
+    setAnoReferencia(2025);
   }, []);
   
   useEffect(() => {
