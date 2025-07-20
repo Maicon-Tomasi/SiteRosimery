@@ -50,6 +50,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
         carregarAgendamentos();
         setMostrarModal(false); // Fecha a modal após a exclusão
         setIdParaExcluir(0); // Reseta o ID após a exclusão
+        atualizarTabela++;
       } catch (error) {
         console.error("Erro ao excluir cidade:", error);
       }

@@ -65,6 +65,9 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
           mode="single"
           selected={dataHora}
           onSelect={handleDataChange}
+          captionLayout="dropdown"
+          startMonth={new Date(2000, 0, 1)}
+          endMonth={new Date(new Date().getFullYear() + 5, 11, 31)}
         />
         <div className="flex gap-2 mt-2">
           <Input

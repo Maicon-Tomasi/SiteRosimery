@@ -48,7 +48,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-white">
       <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-md border border-gray-200">
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 tracking-tight">
-          Bem-vindo ao <span className="text-purple-500">EasyStorage</span>
+          Bem-vindo!
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -87,13 +87,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white font-semibold transition disabled:opacity-60"
+            className="cursor-pointer w-full py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-semibold transition disabled:opacity-60"
           >
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
         <div className="mt-8 text-center text-gray-400 text-xs">
-          © {new Date().getFullYear()} EasyStorage. Todos os direitos reservados.
+          © {new Date().getFullYear()} Maicon Tomasi. Todos os direitos reservados.
         </div>
       </div>
     </div>
