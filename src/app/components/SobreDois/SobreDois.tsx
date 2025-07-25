@@ -19,7 +19,7 @@ const SobreDois: FC = () => {
       <section className="py-16 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="flex flex-col gap-6">
           <h2 data-aos="fade-up" className="text-2xl md:text-3xl font-semibold text-center lg:text-left">
-            Sobre Dr. Rosiméry Tomasi
+            Sobre Drª. Rosiméry Tomasi
           </h2>
           <p data-aos="fade-up" className="text-center lg:text-left text-gray-700">
             Estou à sua disposição e comprometida em atender às suas necessidades em todas as fases da vida.
@@ -94,7 +94,7 @@ const SobreDois: FC = () => {
           </div>
 
           <div data-aos="flip-right" className="bg-white border rounded-lg p-4">
-            <h3 className="font-semibold mb-2">Consigo me cominicar em:</h3>
+            <h3 className="font-semibold mb-2">Consigo me comunicar em:</h3>
             <ul className="text-sm list-disc list-inside">
               <li>Potuguês - Brasil (Nativo)</li>
             </ul>
