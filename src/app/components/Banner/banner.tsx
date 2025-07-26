@@ -25,7 +25,7 @@ const Banner: FC = () => {
                 </button> */}
             </div>
             <div>
-                <img src="/imagensSite/banner/banner2.jpg" alt="" className="w-full h-auto" />
+                <img src="/imagensSite/banner/banner2.png" alt="" className="w-full h-auto" />
             </div>
             </Slider>
 

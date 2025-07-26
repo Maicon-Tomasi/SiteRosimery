@@ -89,7 +89,7 @@ const SobreDois: FC = () => {
               <p className="text-sm">Consultório de psicologia próprio!</p>
               <p className="text-sm mt-2">📍 Primavera do Leste, MT</p>
               <p className="text-sm">💼 5+ Anos de experiência</p>
-              <p className="text-sm">👨‍👩‍👧 30+ Familias Atendidas</p>
+              <p className="text-sm">👨‍👩‍👧 100+ Familias Atendidas</p>
             </div>
           </div>
 

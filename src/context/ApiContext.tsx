@@ -16,7 +16,7 @@ interface Props {
 
 const ApiProvider: React.FC<Props> = ({ children }) => {
   const api = axios.create({
-    baseURL: 'https://api.psicologarosimery.com.br',
+    baseURL: 'https://localhost:7034',
     headers: {
       'Content-Type': 'application/json',
       // 'Authorization': 'Bearer ' + localStorage.getItem('token'), 
