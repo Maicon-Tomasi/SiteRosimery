@@ -50,7 +50,7 @@ export const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-700 mt-10 pt-6 text-sm text-gray-500 flex flex-col md:flex-row justify-between items-center">
-        <p>© 2025 Dr. Rosiméry A. S. Tomasi. Todos os direitos reservados.</p>
+        <p>© 2025 Drª. Rosiméry A. S. Tomasi. Todos os direitos reservados.</p>
         <div className="flex space-x-6 mt-4 md:mt-0">
           {/* <a href="#">Terms of Service</a>
           <a href="#">Privacy Policy</a>

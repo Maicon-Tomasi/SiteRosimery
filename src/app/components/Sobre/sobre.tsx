@@ -86,7 +86,7 @@ const Sobre: FC = () => {
                             </div>
 
                             <h3 className="text-xl sm:text-2xl font-bold text-gray-800 text-center">Dra. Rosiméry Tomasi</h3>
-                            <p className="text-gray-600 text-center">Psicólogo Clínico Licenciado</p>
+                            <p className="text-gray-600 text-center">Psicóloga Clínica Licenciada</p>
                             <p className="text-sm text-gray-500 text-center">Especialista em Psicologia Obstétrica</p>
                         </div>
 
@@ -97,7 +97,7 @@ const Sobre: FC = () => {
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Familias atendidas</span>
-                                <span className="font-semibold text-[#e5a9b3]">30+</span>
+                                <span className="font-semibold text-[#e5a9b3]">100+</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Avaliação</span>

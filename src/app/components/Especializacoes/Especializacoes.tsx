@@ -1,5 +1,5 @@
 'use client'
-import { GraduationCap, BadgeCheck, Heart, Brain, Users } from "lucide-react"
+import { GraduationCap, BadgeCheck, Heart, Brain, Users, Mic } from "lucide-react"
 import { FC, useEffect } from "react";
 import AOS from "aos";
 import { Element } from "react-scroll";
@@ -43,8 +43,8 @@ const Especializacoes: FC = () => {
                   },
                   {
                     icon: <Brain className="text-pink-500" />,
-                    title: "Terapia Cognitiva Comportamental",
-                    subtitle: "Faculdade Anhanguera-MT - (2019)",
+                    title: "Terapia Cognitivo-Comportamental (COGNITIVO)",
+                    subtitle: "Universidade Pitágoras Unopar Anhanguera - (2019)",
                     desc: "Primavera Do Leste, MT",
                   },
                   {
@@ -52,6 +52,12 @@ const Especializacoes: FC = () => {
                     title: "Gestão de Pessoas por Competências ",
                     subtitle: "IPOG-MT - (2016)",
                     desc: "Primavera Do Leste, MT",
+                  },
+                  {
+                    icon: <Mic className="text-pink-500" />,
+                    title: "IV Conferência Internacional de Psicologia Obstétrica",
+                    subtitle: "Universidade Anhembi Morumbi - (2023)",
+                    desc: "",
                   }
                 ].map((item, i) => (
                   <li data-aos="fade-right"
@@ -92,8 +98,8 @@ const Especializacoes: FC = () => {
                     desc: "Primavera Do Leste, MT",
                   },
                   {
-                    title: "Pós-Graduada Em Terapia Cognitiva Comportamental e Psicologia Positiva",
-                    subtitle: "ANHANGUERA UNIC - (2019  )",
+                    title: "Terapia Cognitivo-Comportamental e Psicologia Positiva (cognitivo)",
+                    subtitle: "Faculdade Focus",
                     desc: "Primavera Do Leste, MT",
                   },
                 ].map((item, i) => (
