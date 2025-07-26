@@ -164,10 +164,10 @@ const Dashboard = () => {
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Consultas Realizadas Mensal</h2>
           <ReactECharts option={options} style={{ height: "400px" }} />
         </div>
-        {/* <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Tipos De Consultas Realizadas</h2>
           <ReactECharts option={optionsPie} style={{ height: "400px" }} />
-        </div> */}
+        </div>
       </div>
     </div>
   );
