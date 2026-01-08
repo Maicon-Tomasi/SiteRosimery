@@ -152,7 +152,7 @@ const TabelaPacientes = ({ atualizarTabela, onEditarPaciente } :TableProps) => {
       </div>
       <div className="overflow-x-auto">
         <Table className="min-w-full rounded-md border border-slate-200 overflow-hidden shadow-sm bg-white dark:bg-slate-900">
-          <TableCaption className="text-slate-500">Lista de agendamentos.</TableCaption>
+          <TableCaption className="text-slate-500">Lista de pacientes.</TableCaption>
 
           <TableHeader className="bg-slate-100 dark:bg-slate-800">
             <TableRow>

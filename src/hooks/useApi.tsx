@@ -124,7 +124,7 @@ export const useApi = () => {
     }
 
 
-    const pacientesDto: ReadPacienteDto[] = response.data.result.map((paciente: ReadPacienteDto) => ({
+    const pacientesDto: ReadPacienteDto[] = response.data.map((paciente: ReadPacienteDto) => ({
       id: paciente.id,
       nome: paciente.nome,
       dataNascimento: paciente.dataNascimento,
@@ -620,6 +620,22 @@ export const useApi = () => {
     return response.status;
   }
 
+  const getTiposConsultas = async () => {
+    const token = Cookies.get('token');
+    const response = await api.get(`/api/tipoConsulta`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar Arquivos');
+    }
+
+    return response.data;
+  };
+
+
   return {
     getQuantidadeTotalAgendamentos,
     getQuantidadeTotalConsultasRealizadas,
@@ -630,6 +646,7 @@ export const useApi = () => {
     getQuantidadeTotalConsultasRealizadasPorTipoConsulta,
     getConsutlasRealizadas,
     getArquivosConsutlasRealizadas,
+    getTiposConsultas,
     postUsuarioLogin,
     postConsultaRealizada,
     postArquivosConsulta,

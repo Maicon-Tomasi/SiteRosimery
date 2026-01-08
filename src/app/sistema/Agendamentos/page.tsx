@@ -13,12 +13,13 @@ import { useEffect, useState } from "react";
 
 
 const Agendamento = () =>{
-     const { getPacientes, postAgendamento, putEditarAgendamento} = useApi();
+     const { getPacientes, getTiposConsultas, postAgendamento, putEditarAgendamento} = useApi();
      const [modoDeVisualizacao, setModoDeVisualizacao] = useState(false);
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
      const [mensagemErro, setMensagemErro] = useState("");
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
+     const [opcoesTipoConsultas, setOpcoesTipoConsultas] = useState<{ value: string; label: string }[]>([]);
      const [reloadTabela, setReloadTabela] = useState(0);
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
@@ -41,6 +42,17 @@ const Agendamento = () =>{
       setOpcoesPaciente(formatadas);
 
       console.log(dados);
+    };
+
+    const carregarTiposConsultas = async () => {
+          const dados = await getTiposConsultas();
+          const formatadas = dados.map((p) => ({
+               value: p.id.toString(),
+               label: p.nome
+          }));
+
+          setOpcoesTipoConsultas(formatadas);
+          console.log(dados);
     };
 
     const opcoesTipoConsulta = Object.entries(TipoConsultaLabel).map(([value, label]) => ({
@@ -159,6 +171,7 @@ const Agendamento = () =>{
 
     useEffect(() => {
         carregarPacientes();
+        carregarTiposConsultas();
      }, []);
 
      return (
