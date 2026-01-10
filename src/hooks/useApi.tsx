@@ -632,6 +632,20 @@ export const useApi = () => {
       throw new Error('Erro ao buscar Arquivos');
     }
 
+    const tipoConsultaDto: ReadTipoConsu[] = response.data.map((agendamento: ReadAgendamentoDto) => ({
+      id: Number(agendamento.id),
+      dataHoraConsulta: agendamento.dataHoraConsulta,
+      tipoConsulta: Number(agendamento.tipoConsulta),
+      paciente: {
+        id: agendamento.paciente.id,
+        nome: agendamento.paciente.nome,
+        dataNascimento: agendamento.paciente.dataNascimento,
+        telefone: agendamento.paciente.telefone,
+        email: agendamento.paciente.email,
+        cpf: agendamento.paciente.cpf
+      }
+    }));
+
     return response.data;
   };
 

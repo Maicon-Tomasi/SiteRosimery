@@ -119,35 +119,8 @@ export interface UpdatePacienteDto {
     cpf: string;
 }
 
-export interface Paciente {
+
+export interface ReadTipoConsultaDto {
     id: number;
-    nome: string;
-    dataNascimento: Date;
-    telefone: string;
-    email: string;
-    cpf: string;
+    descricao: string;
 }
-
-export enum TipoConsulta {
-  AvaliacaoPsicologica = 'Avaliação Psicológica',
-  PsicoterapiaIndividual = 'Psicoterapia Individual',
-  PsicoterapiaCasal = 'Psicoterapia de Casal',
-  PsicoterapiaFamiliar = 'Psicoterapia Familiar',
-  PsicoterapiaInfantil = 'Psicoterapia Infantil',
-  AcompanhamentoPsicologico = 'Acompanhamento Psicológico',
-  OrientacaoProfissional = 'Orientação Profissional',
-  Retorno = 'Retorno',
-  Teleatendimento = 'Teleatendimento'
-}
-
-export const TipoConsultaLabel: Record<number, string> = {
-  0: TipoConsulta.AvaliacaoPsicologica,
-  1: TipoConsulta.PsicoterapiaIndividual,
-  2: TipoConsulta.PsicoterapiaCasal,
-  3: TipoConsulta.PsicoterapiaFamiliar,
-  4: TipoConsulta.PsicoterapiaInfantil,
-  5: TipoConsulta.AcompanhamentoPsicologico,
-  6: TipoConsulta.OrientacaoProfissional,
-  7: TipoConsulta.Retorno,
-  8: TipoConsulta.Teleatendimento,
-};
