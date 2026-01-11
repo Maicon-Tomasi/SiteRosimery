@@ -1,6 +1,18 @@
-import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreatePacienteDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadArquivoConsultasDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto, UpdatePacienteDto } from "@/interfaces/interfacesDto";
+import { ReadAgendamentoDto } from "@/interfaces/ReadDtos/ReadAgendamentoDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
+import { ReadPacienteDto } from "@/interfaces/ReadDtos/ReadPacienteDto";
+import { ReadConsultasRealizadasDto } from "@/interfaces/ReadDtos/ReadConsultasRealizadasDto";
+import { ReadArquivoConsultasDto } from "@/interfaces/ReadDtos/ReadArquivoConsultasDto";
+import { LoginUsuarioDto, RespoLogin } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto } from "@/interfaces/CreateDtos/CreateAgendamentoDto";
+import { CreateConsultasRealizadasDto } from "@/interfaces/CreateDtos/CreateConsultasRealizadasDto";
+import { CreateUpdateArquivoConsultas } from "@/interfaces/CreateDtos/CreateUpdateArquivoConsultasDto";
+import { CreatePacienteDto } from "@/interfaces/CreateDtos/CreatePacienteDto";
+import { CreateConsultaEArquivosDto } from "@/interfaces/CreateDtos/CreateConsultaEArquivosDto";
+import { UpdateAgendamentoDto } from "@/interfaces/UpdateDtos/UpdateAgendamentoDto";
+import { UpdateConsultasRealizadasDto } from "@/interfaces/UpdateDtos/UpdateConsultasRealizadasDto";
+import { UpdatePacienteDto } from "@/interfaces/UpdateDtos/UpdatePacienteDto";
 
 export const useApi = () => {
   const { api } = useApiContext();
