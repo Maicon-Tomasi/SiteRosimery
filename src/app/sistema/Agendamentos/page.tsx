@@ -7,7 +7,10 @@ import TabelaAgendamentos from "@/components/TableAgendamentos/page";
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
-import { CreateAgendamentoDto, ReadAgendamentoDto, TipoConsultaLabel, UpdateAgendamentoDto } from "@/interfaces/interfacesDto";
+import { CreateAgendamentoDto } from "@/interfaces/CreateDtos/CreateAgendamentoDto";
+import { ReadAgendamentoDto } from "@/interfaces/ReadDtos/ReadAgendamentoDto";
+import { ReadTipoConsultaDto } from "@/interfaces/ReadDtos/ReadTipoConsultaDto";
+import { UpdateAgendamentoDto } from "@/interfaces/UpdateDtos/UpdateAgendamentoDto";
 import { Calendar, LoaderCircle, PlusCircle, Send, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -34,10 +37,10 @@ const Agendamento = () =>{
 
      const carregarPacientes = async () => {
       const dados = await getPacientes();
-     const formatadas = dados.map((p) => ({
-     value: p.id.toString(),
-     label: p.nome
-     }));
+          const formatadas = dados.map((p) => ({
+          value: p.id.toString(),
+          label: p.nome
+          }));
 
       setOpcoesPaciente(formatadas);
 
@@ -46,19 +49,14 @@ const Agendamento = () =>{
 
     const carregarTiposConsultas = async () => {
           const dados = await getTiposConsultas();
-          const formatadas = dados.map((p) => ({
+          const formatadas = dados.map((p: ReadTipoConsultaDto) => ({
                value: p.id.toString(),
-               label: p.nome
+               label: p.descricao
           }));
 
           setOpcoesTipoConsultas(formatadas);
           console.log(dados);
     };
-
-    const opcoesTipoConsulta = Object.entries(TipoConsultaLabel).map(([value, label]) => ({
-          value,
-          label,
-     }));
 
      const confirmaCriacaoDeAgendamento = () => {
           setCarregando(true);
@@ -291,7 +289,7 @@ const Agendamento = () =>{
                     <div>
                          <label className="text-sm text-slate-600">Tipo consulta*</label>
                          <ComboboxDemo
-                                   opcoes={opcoesTipoConsulta}
+                                   opcoes={opcoesTipoConsultas}
                                    onSelectProp={(value) => setNovoAgendamento({ ...novoAgendamento, tipoConsulta: Number(value) })}
                                    value={novoAgendamento.tipoConsulta.toString()}
                               />

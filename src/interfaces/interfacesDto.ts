@@ -9,7 +9,7 @@ export interface RespoLogin
      token: string;
 }
 
-export interface Paciente{
-    id: number;
-    descricao: string;
-}
+// export interface Paciente{
+//     id: number;
+//     descricao: string;
+// }

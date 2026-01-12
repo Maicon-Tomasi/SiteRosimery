@@ -1,9 +1,9 @@
-import { Paciente } from "../interfacesDto";
-import { TipoConsulta } from "./ReadTipoConsultaDto";
+import { ReadPacienteDto } from "./ReadPacienteDto";
+import { ReadTipoConsultaDto } from "./ReadTipoConsultaDto";
 
 export interface ReadAgendamentoDto {
     id: number;
     dataHoraConsulta: Date;
-    tipoConsulta: TipoConsulta;
-    paciente: Paciente;
+    tipoConsulta: ReadTipoConsultaDto;
+    paciente: ReadPacienteDto;
 }

@@ -1,4 +1,4 @@
-export interface TipoConsulta {
+export interface ReadTipoConsultaDto {
     id: number;
     descricao: string;
 }

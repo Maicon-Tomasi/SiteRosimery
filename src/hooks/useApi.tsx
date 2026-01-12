@@ -13,6 +13,7 @@ import { CreateConsultaEArquivosDto } from "@/interfaces/CreateDtos/CreateConsul
 import { UpdateAgendamentoDto } from "@/interfaces/UpdateDtos/UpdateAgendamentoDto";
 import { UpdateConsultasRealizadasDto } from "@/interfaces/UpdateDtos/UpdateConsultasRealizadasDto";
 import { UpdatePacienteDto } from "@/interfaces/UpdateDtos/UpdatePacienteDto";
+import { ReadTipoConsultaDto } from "@/interfaces/ReadDtos/ReadTipoConsultaDto";
 
 export const useApi = () => {
   const { api } = useApiContext();
@@ -644,19 +645,11 @@ export const useApi = () => {
       throw new Error('Erro ao buscar Arquivos');
     }
 
-    const tipoConsultaDto: ReadTipoConsu[] = response.data.map((agendamento: ReadAgendamentoDto) => ({
-      id: Number(agendamento.id),
-      dataHoraConsulta: agendamento.dataHoraConsulta,
-      tipoConsulta: Number(agendamento.tipoConsulta),
-      paciente: {
-        id: agendamento.paciente.id,
-        nome: agendamento.paciente.nome,
-        dataNascimento: agendamento.paciente.dataNascimento,
-        telefone: agendamento.paciente.telefone,
-        email: agendamento.paciente.email,
-        cpf: agendamento.paciente.cpf
-      }
+    const tipoConsultaDto: ReadTipoConsultaDto[] = (response.data as ReadTipoConsultaDto[]).map(tipoConsulta => ({
+      id: Number(tipoConsulta.id),
+      descricao: tipoConsulta.descricao
     }));
+
 
     return response.data;
   };

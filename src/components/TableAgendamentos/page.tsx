@@ -2,10 +2,13 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
-import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadAgendamentoDto, TipoConsultaLabel } from "@/interfaces/interfacesDto";
 import { Check, Pen, Trash, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
+import { ReadAgendamentoDto } from "@/interfaces/ReadDtos/ReadAgendamentoDto";
+import { CreateUpdateArquivoConsultas } from "@/interfaces/CreateDtos/CreateUpdateArquivoConsultasDto";
+import { CreateConsultasRealizadasDto } from "@/interfaces/CreateDtos/CreateConsultasRealizadasDto";
+import { CreateConsultaEArquivosDto } from "@/interfaces/CreateDtos/CreateConsultaEArquivosDto";
 
 interface TableProps {
      atualizarTabela: number,
@@ -34,10 +37,10 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
         (a, b) => new Date(a.dataHoraConsulta).getTime() - new Date(b.dataHoraConsulta).getTime()
     );
 
-    if (dados.length <= 0) {
-      setSkip(skip - 10);
-      return;
-    }
+    // if (dados.length <= 0) {
+    //   setSkip(skip - 10);
+    //   return;
+    // }
 
     setAgendamentos(ordenados);
     console.log("Agendamentos ordenados", ordenados);
@@ -143,34 +146,6 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
   useEffect(() => {
     console.log(consultaRealizadaSelecionada);
   }, [consultaRealizadaSelecionada]);
-
-//   useEffect(() => {
-//     const carregarCidadesPorPesquisa = async () => {
-//       try {
-//         if (pesquisaNome) {
-//           const dados = await getAgendamentos(pesquisaNome);
-//           if (dados && dados.length > 0) {
-//             setCidades(dados);
-//           } else {
-//             setCidades([]);
-//             console.warn("Nenhuma cidade encontrada.");
-//           }
-//         } else {
-//           const dados = await getCidades();
-//           setCidades(dados);
-//         }
-//       } catch (error) {
-//         if (error.response && error.response.status === 404) {
-//           console.warn("Nenhuma cidade encontrada (Erro 404).");
-//           setCidades([]);
-//         } else {
-//           console.error("Erro ao carregar cidades:", error);
-//         }
-//       }
-//     };
-
-//     carregarCidadesPorPesquisa();
-//   }, [pesquisaNome]);
 
   const padZero = (num: number) => num.toString().padStart(2, '0');
 
@@ -348,7 +323,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.paciente.nome}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.paciente.telefone}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{formatDate(agendamento.dataHoraConsulta)}</TableCell>
-                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{TipoConsultaLabel[Number(agendamento.tipoConsulta)]}</TableCell>
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.tipoConsulta.descricao}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">R$ 00,00</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">

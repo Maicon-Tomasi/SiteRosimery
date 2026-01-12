@@ -2,11 +2,11 @@
 import { useApi } from "@/hooks/useApi";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useEffect, useState } from "react";
-import { ReadConsultasRealizadasDto, TipoConsultaLabel } from "@/interfaces/interfacesDto";
 import { File, Pen} from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { useRouter } from "next/navigation";
+import { ReadConsultasRealizadasDto } from "@/interfaces/ReadDtos/ReadConsultasRealizadasDto";
 
 interface TableProps {
      atualizarTabela: number;
@@ -134,7 +134,7 @@ const TabelaConsultasRealizadas = ({ atualizarTabela, onEditarConsultaRealizada 
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{consulta.paciente.nome}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{consulta.paciente.telefone}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{formatDate(consulta.dataHoraConsulta)}</TableCell>
-                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{TipoConsultaLabel[Number(consulta.tipoConsulta)]}</TableCell>
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{consulta.tipoConsulta.descricao}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 break-words max-w-xs whitespace-normal">
                   {consulta.descricao}
                 </TableCell>

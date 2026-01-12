@@ -8,19 +8,25 @@ import TabelaConsultasRealizadas from "@/components/TableConsultasRealizadas/pag
 import { ComboboxDemo } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApi } from "@/hooks/useApi";
-import { CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreateUpdateArquivoConsultas, ReadConsultasRealizadasDto, TipoConsultaLabel, UpdateConsultasRealizadasDto } from "@/interfaces/interfacesDto";
 import { Calendar, LoaderCircle, PlusCircle, Table, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CreateUpdateArquivoConsultas } from "@/interfaces/CreateDtos/CreateUpdateArquivoConsultasDto";
+import { CreateConsultasRealizadasDto } from "@/interfaces/CreateDtos/CreateConsultasRealizadasDto";
+import { CreateConsultaEArquivosDto } from "@/interfaces/CreateDtos/CreateConsultaEArquivosDto";
+import { ReadConsultasRealizadasDto } from "@/interfaces/ReadDtos/ReadConsultasRealizadasDto";
+import { UpdateConsultasRealizadasDto } from "@/interfaces/UpdateDtos/UpdateConsultasRealizadasDto";
+import { ReadTipoConsultaDto } from "@/interfaces/ReadDtos/ReadTipoConsultaDto";
 
 
 const ConsutasRealizadas = () =>{
-     const { getPacientes, postCriaArquivoEConsulta, putEditarConsulta} = useApi();
+     const { getPacientes, postCriaArquivoEConsulta, putEditarConsulta, getTiposConsultas} = useApi();
      const [modoDeVisualizacao, setModoDeVisualizacao] = useState(false);
      const [carregando, setCarregando] = useState(false);
      const [editando, setEditando] = useState(false);
      const [mensagemErro, setMensagemErro] = useState("");
      const [mensagemSucesso, setMensagemSucesso] = useState("");
      const [opcoesPaciente, setOpcoesPaciente] = useState<{ value: string; label: string }[]>([]);
+     const [opcoesTipoConsultas, setOpcoesTipoConsultas] = useState<{ value: string; label: string }[]>([]);
      const [reloadTabela, setReloadTabela] = useState(0);
      const [mostrarModal, setMostrarModal] = useState(false); 
      const [mostrarModalErro, setMostrarModalErro] = useState(false); 
@@ -36,6 +42,17 @@ const ConsutasRealizadas = () =>{
      }])
      ;
 
+     const carregarTiposConsultas = async () => {
+               const dados = await getTiposConsultas();
+               const formatadas = dados.map((p: ReadTipoConsultaDto) => ({
+                    value: p.id.toString(),
+                    label: p.descricao
+               }));
+
+               setOpcoesTipoConsultas(formatadas);
+               console.log(dados);
+     };
+
      const carregarPacientes = async () => {
       const dados = await getPacientes();
      const formatadas = dados.map((p) => ({
@@ -47,16 +64,6 @@ const ConsutasRealizadas = () =>{
 
       console.log(dados);
     };
-
-    const opcoesTipoConsulta = Object.entries(TipoConsultaLabel).map(([value, label]) => ({
-          value,
-          label,
-     }));
-
-     // const confirmaCriacaoDeConsultaRealizada = () => {
-     //      setCarregando(true);
-     //      setMostrarModal(true);
-     // }
 
      const onCloseModal = () => {
           setCarregando(false);
@@ -392,7 +399,7 @@ const ConsutasRealizadas = () =>{
                     <div className="flex flex-col min-w-[250px] flex-1">
                          <label className="text-sm text-slate-600">Tipo consulta*</label>
                          <ComboboxDemo
-                         opcoes={opcoesTipoConsulta}
+                         opcoes={opcoesTipoConsultas}
                          onSelectProp={(value) =>
                               {
                                    const novasConsultas = [...novaConsultaRealizada]

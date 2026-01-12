@@ -4,11 +4,12 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import FileUploader from "@/components/fileUploader/FileUploader";
 import { useApi } from "@/hooks/useApi";
-import { CreateUpdateArquivoConsultas, ReadArquivoConsultasDto } from "@/interfaces/interfacesDto";
 import TabelaArquivosConsultasRealizadas from "@/components/TableArquivosConsultasRealizadas/page";
 import BotaoAmarelo from "@/components/botaoAmarelo/botaoAmarelo";
 import { LoaderCircle, Send } from "lucide-react";
 import { formatDate } from "@/utils/formatDate";
+import { ReadArquivoConsultasDto } from "@/interfaces/ReadDtos/ReadArquivoConsultasDto";
+import { CreateUpdateArquivoConsultas } from "@/interfaces/CreateDtos/CreateUpdateArquivoConsultasDto";
 
 const Page = () => {
      const params = useParams();
