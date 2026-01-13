@@ -31,7 +31,7 @@ const Agendamento = () =>{
      const [idAgendamento, setIdAgendamento] = useState<number>(0);
      const [novoAgendamento, setNovoAgendamento] = useState<CreateAgendamentoDto>({
           dataHoraConsulta: new Date(),
-          tipoConsulta: 0,
+          tipoConsultaId: 0,
           pacienteId: 0
      });
 
@@ -81,7 +81,7 @@ const Agendamento = () =>{
                     setCarregando(false);
                     setNovoAgendamento({
                          dataHoraConsulta: new Date(),
-                         tipoConsulta: 0,
+                         tipoConsultaId: 0,
                          pacienteId: 0
                     });
                }, 3000);
@@ -111,7 +111,7 @@ const Agendamento = () =>{
           setNovoAgendamento({
                dataHoraConsulta: new Date(),
                pacienteId: 0,
-               tipoConsulta: 1
+               tipoConsultaId: 1
           });
      }
 
@@ -124,7 +124,7 @@ const Agendamento = () =>{
           setNovoAgendamento({
                dataHoraConsulta: agendamentoSelecionado.dataHoraConsulta,
                pacienteId: agendamentoSelecionado.paciente.id,
-               tipoConsulta: Number(agendamentoSelecionado.tipoConsulta)
+               tipoConsultaId: Number(agendamentoSelecionado.tipoConsulta)
           });
 
      };
@@ -135,14 +135,14 @@ const Agendamento = () =>{
                const agendamentoAAtualziar: UpdateAgendamentoDto = {
                     dataHoraConsulta: novoAgendamento.dataHoraConsulta,
                     pacienteId: novoAgendamento.pacienteId,
-                    tipoConsulta: Number(novoAgendamento.tipoConsulta)
+                    tipoConsultaId: Number(novoAgendamento.tipoConsultaId)
                }
                await putEditarAgendamento(idAgendamento, agendamentoAAtualziar);
                setReloadTabela(prev => prev + 1);
                setNovoAgendamento({
                     dataHoraConsulta: new Date(),
                     pacienteId: 0,
-                    tipoConsulta: 1
+                    tipoConsultaId: 1
                });
                setMostrarModalSucesso(true);
                setmostrarModalEdicao(false);
@@ -158,7 +158,7 @@ const Agendamento = () =>{
                setNovoAgendamento({
                     dataHoraConsulta: new Date(),
                     pacienteId: 0,
-                    tipoConsulta: 1
+                    tipoConsultaId: 1
                });;
           }
      };
@@ -171,6 +171,10 @@ const Agendamento = () =>{
         carregarPacientes();
         carregarTiposConsultas();
      }, []);
+
+     useEffect(() => {
+          console.log(novoAgendamento);
+     }, [novoAgendamento]);
 
      return (
      <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
@@ -290,8 +294,8 @@ const Agendamento = () =>{
                          <label className="text-sm text-slate-600">Tipo consulta*</label>
                          <ComboboxDemo
                                    opcoes={opcoesTipoConsultas}
-                                   onSelectProp={(value) => setNovoAgendamento({ ...novoAgendamento, tipoConsulta: Number(value) })}
-                                   value={novoAgendamento.tipoConsulta.toString()}
+                                   onSelectProp={(value) => setNovoAgendamento({ ...novoAgendamento, tipoConsultaId: Number(value) })}
+                                   value={novoAgendamento.tipoConsultaId.toString()}
                               />
                     </div>
                     

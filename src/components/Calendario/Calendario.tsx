@@ -4,8 +4,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { format, parse, startOfWeek, getDay, addDays, addHours } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useEffect, useState } from 'react';
-import { ReadAgendamentoDto } from '@/interfaces/interfacesDto';
 import { useApi } from '@/hooks/useApi';
+import { ReadAgendamentoDto } from '@/interfaces/ReadDtos/ReadAgendamentoDto';
 
 const locales = {
   'pt-BR': ptBR,

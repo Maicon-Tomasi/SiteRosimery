@@ -106,7 +106,7 @@ export const useApi = () => {
     const agendamentoDto: ReadAgendamentoDto[] = response.data.map((agendamento: ReadAgendamentoDto) => ({
       id: Number(agendamento.id),
       dataHoraConsulta: agendamento.dataHoraConsulta,
-      tipoConsulta: Number(agendamento.tipoConsulta),
+      tipoConsulta: agendamento.tipoConsulta,
       paciente: {
         id: agendamento.paciente.id,
         nome: agendamento.paciente.nome,
@@ -321,7 +321,7 @@ export const useApi = () => {
 
     const novoAgendamento: CreateAgendamentoDto[] = [{
       dataHoraConsulta: dataUtc,
-      tipoConsulta: agendamento.tipoConsulta,
+      tipoConsultaId: agendamento.tipoConsultaId,
       pacienteId: agendamento.pacienteId
     }];
 
@@ -356,7 +356,7 @@ export const useApi = () => {
 
     const novaConsultaRealizada: CreateConsultasRealizadasDto[] = [{
       dataHoraConsulta: dataUtc,
-      tipoConsulta: consultaRealizada.tipoConsulta,
+      tipoConsultaId: consultaRealizada.tipoConsultaId,
       pacienteId: consultaRealizada.pacienteId,
       descricao: consultaRealizada.descricao
     }];
@@ -446,7 +446,7 @@ export const useApi = () => {
       formData.append("dataHoraConsulta", dataUtc.toISOString());
       formData.append("pacienteId", primeiraConsulta.pacienteId.toString());
       formData.append("descricao", primeiraConsulta.descricao.toString());
-      formData.append("tipoConsulta", primeiraConsulta.tipoConsulta.toString());
+      formData.append("tipoConsulta", primeiraConsulta.tipoConsultaId.toString());
 
       // Adiciona os arquivos
       consultaRealizada.arquivos.forEach((item) => {
@@ -487,7 +487,7 @@ export const useApi = () => {
 
     const agendamentoEditado: UpdateAgendamentoDto = {
       dataHoraConsulta: dataUtc,
-      tipoConsulta: agendamento.tipoConsulta,
+      tipoConsultaId: agendamento.tipoConsultaId,
       pacienteId: agendamento.pacienteId
     };
 

@@ -1,5 +1,5 @@
 export interface UpdateAgendamentoDto {
     dataHoraConsulta: Date;
-    tipoConsulta: number;
+    tipoConsultaId: number;
     pacienteId: number;
 }

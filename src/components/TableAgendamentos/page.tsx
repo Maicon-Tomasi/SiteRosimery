@@ -9,6 +9,7 @@ import { ReadAgendamentoDto } from "@/interfaces/ReadDtos/ReadAgendamentoDto";
 import { CreateUpdateArquivoConsultas } from "@/interfaces/CreateDtos/CreateUpdateArquivoConsultasDto";
 import { CreateConsultasRealizadasDto } from "@/interfaces/CreateDtos/CreateConsultasRealizadasDto";
 import { CreateConsultaEArquivosDto } from "@/interfaces/CreateDtos/CreateConsultaEArquivosDto";
+import { aplicarMascaraTelefone } from "@/utils/mascaras";
 
 interface TableProps {
      atualizarTabela: number,
@@ -117,7 +118,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
       {
         dataHoraConsulta: data,
         pacienteId: paciente,
-        tipoConsulta: tipoConsulta,
+        tipoConsultaId: tipoConsulta,
         descricao: ""
       }
     ]);
@@ -321,7 +322,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
             {agendamentos.map((agendamento) => (
               <TableRow key={agendamento.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.paciente.nome}</TableCell>
-                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.paciente.telefone}</TableCell>
+                <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{aplicarMascaraTelefone(agendamento.paciente.telefone)}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{formatDate(agendamento.dataHoraConsulta)}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{agendamento.tipoConsulta.descricao}</TableCell>
                 <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">R$ 00,00</TableCell>

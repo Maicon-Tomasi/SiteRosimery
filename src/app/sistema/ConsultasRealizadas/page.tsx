@@ -36,7 +36,7 @@ const ConsutasRealizadas = () =>{
      const [arquivosSelecionados, setArquivosSelecionados] = useState<CreateUpdateArquivoConsultas[]>([]);
      const [novaConsultaRealizada, setNovaConsultaRealizada] = useState<CreateConsultasRealizadasDto[]>([{
           dataHoraConsulta: new Date(),
-          tipoConsulta: 0,
+          tipoConsultaId: 0,
           pacienteId: 0,
           descricao: ""
      }])
@@ -125,14 +125,14 @@ const ConsutasRealizadas = () =>{
                          ...novoArray[0],
                          dataHoraConsulta: consultaRealizada.dataHoraConsulta,
                          pacienteId: consultaRealizada.paciente.id,
-                         tipoConsulta: Number(consultaRealizada.tipoConsulta),
+                         tipoConsultaId: Number(consultaRealizada.tipoConsulta.id),
                          descricao: consultaRealizada.descricao
                     };
                } else {
                     novoArray[0] = {
                          dataHoraConsulta: consultaRealizada.dataHoraConsulta,
                          pacienteId: consultaRealizada.paciente.id,
-                         tipoConsulta: Number(consultaRealizada.tipoConsulta),
+                         tipoConsultaId: Number(consultaRealizada.tipoConsulta.id),
                          descricao: consultaRealizada.descricao
                     };
                }
@@ -149,7 +149,7 @@ const ConsutasRealizadas = () =>{
                          ...novoArray[0],
                          dataHoraConsulta: new Date(),
                          pacienteId: 0,
-                         tipoConsulta: 1,
+                         tipoConsultaId: 1,
                          descricao: ""
                     } 
                }
@@ -157,7 +157,7 @@ const ConsutasRealizadas = () =>{
                     novoArray[0] = {
                          dataHoraConsulta: new Date(),
                          pacienteId: 0,
-                         tipoConsulta: 1,
+                         tipoConsultaId: 1,
                          descricao: ""
                     };
                }
@@ -175,7 +175,7 @@ const ConsutasRealizadas = () =>{
                const consultaAAtualziar: UpdateConsultasRealizadasDto = {
                     dataHoraConsulta: novaConsultaRealizada[0].dataHoraConsulta,
                     pacienteId: novaConsultaRealizada[0].pacienteId,
-                    tipoConsulta: Number(novaConsultaRealizada[0].tipoConsulta),
+                    tipoConsulta: Number(novaConsultaRealizada[0].tipoConsultaId),
                     descricao: novaConsultaRealizada[0].descricao
                }
                await putEditarConsulta(idConsultaRealizada, consultaAAtualziar);
@@ -187,7 +187,7 @@ const ConsutasRealizadas = () =>{
                               ...novoArray[0],
                               dataHoraConsulta: new Date(),
                               pacienteId: 0,
-                              tipoConsulta: 1,
+                              tipoConsultaId: 1,
                               descricao: ""
                          } 
                     }
@@ -195,7 +195,7 @@ const ConsutasRealizadas = () =>{
                          novoArray[0] = {
                               dataHoraConsulta: new Date(),
                               pacienteId: 0,
-                              tipoConsulta: 1,
+                              tipoConsultaId: 1,
                               descricao: ""
                          };
                     }
@@ -220,7 +220,7 @@ const ConsutasRealizadas = () =>{
                               ...novoArray[0],
                               dataHoraConsulta: new Date(),
                               pacienteId: 0,
-                              tipoConsulta: 1,
+                              tipoConsultaId: 1,
                               descricao: ""
                          } 
                     }
@@ -228,7 +228,7 @@ const ConsutasRealizadas = () =>{
                          novoArray[0] = {
                               dataHoraConsulta: new Date(),
                               pacienteId: 0,
-                              tipoConsulta: 1,
+                              tipoConsultaId: 1,
                               descricao: ""
                          };
                     }
@@ -403,11 +403,11 @@ const ConsutasRealizadas = () =>{
                          onSelectProp={(value) =>
                               {
                                    const novasConsultas = [...novaConsultaRealizada]
-                                   novasConsultas[0].tipoConsulta = Number(value);
+                                   novasConsultas[0].tipoConsultaId = Number(value);
                                    setNovaConsultaRealizada(novaConsultaRealizada);     
                               }
                          }
-                         value={novaConsultaRealizada[0].tipoConsulta.toString()}
+                         value={novaConsultaRealizada[0].tipoConsultaId.toString()}
                          />
                     </div>
                </div>
