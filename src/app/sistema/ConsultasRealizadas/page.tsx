@@ -72,46 +72,6 @@ const ConsutasRealizadas = () =>{
           setmostrarModalEdicao(false);
      }
 
-     const onConfimarConsultaRealizada = async () =>{
-         const criaERelacionaArquivos: CreateConsultaEArquivosDto = {
-           consultas: novaConsultaRealizada ? novaConsultaRealizada : [],
-           arquivos: arquivosSelecionados
-         }
-     
-         console.log(novaConsultaRealizada);
-         console.log(arquivosSelecionados);
-         console.log("cria", criaERelacionaArquivos);
-         try
-         {
-           const response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
-           if (response.status == 200 || response.status == 204) {
-             setMensagemSucesso("Sua consulta foi confirmada e salva com sucesso");
-             setMostrarModalSucesso(true);
-             setArquivosSelecionados([]);
-             setReloadTabela((prev) => prev + 1);
-           }
-           console.log(response);
-         }
-         catch (error: any) // eslint-disable-line @typescript-eslint/no-explicit-any
-         {
-           // setCarregando(false);
-           if (error.response) {
-               // Erro de resposta da API
-               if (error.status === 400) {
-                     setMensagemErro(error.response.data);
-               } else {
-                     setMensagemErro("Erro ao realizar consulta, verifique as informações");
-               }
-               setMostrarModalErro(true);
-           } else {
-               // Erro de rede ou outro
-               setMostrarModalErro(true);
-               setMensagemErro("Erro de conexão ou inesperado.");
-           }
-         }
-     
-     };
-
      const onEditar = async (consultaRealizada: ReadConsultasRealizadasDto) => {
           console.log(consultaRealizada);
           setEditando(true);
@@ -239,6 +199,7 @@ const ConsutasRealizadas = () =>{
 
     useEffect(() => {
         carregarPacientes();
+        carregarTiposConsultas();
      }, []);
     
      useEffect(() => {
@@ -276,12 +237,12 @@ const ConsutasRealizadas = () =>{
                     </DialogDescription>
                     </DialogHeader>
                          <div className="flex justify-end gap-4 mt-4">
-                              <button
+                              {/* <button
                               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                               onClick={onConfimarConsultaRealizada}
                               >
                                    Confirmar
-                              </button>
+                              </button> */}
                               <button
                               className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
                               onClick={onCloseModal}
