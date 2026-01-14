@@ -124,7 +124,7 @@ const Agendamento = () =>{
           setNovoAgendamento({
                dataHoraConsulta: agendamentoSelecionado.dataHoraConsulta,
                pacienteId: agendamentoSelecionado.paciente.id,
-               tipoConsultaId: Number(agendamentoSelecionado.tipoConsulta)
+               tipoConsultaId: agendamentoSelecionado.tipoConsulta.id
           });
 
      };

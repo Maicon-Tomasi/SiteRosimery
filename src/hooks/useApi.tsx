@@ -72,7 +72,7 @@ export const useApi = () => {
       throw new Error('Erro ao buscar agendamentos');
     }
 
-    return Number(response.data.result);
+    return Number(response.data);
   };
   
   const getAgendamentos = async (skip: number | null, take: number | null) => {
@@ -420,7 +420,7 @@ export const useApi = () => {
 
   }
 
-  const postCriaArquivoEConsulta = async (consultaRealizada: CreateConsultaEArquivosDto) => {
+  const postCriaArquivoEConsulta = async (consultaRealizada: CreateConsultaEArquivosDto, agendamentoId: Number) => {
     const token = Cookies.get('token'); // nome do cookie
 
     if (!token) throw new Error('Token não encontrado nos cookies');
@@ -446,8 +446,9 @@ export const useApi = () => {
       formData.append("dataHoraConsulta", dataUtc.toISOString());
       formData.append("pacienteId", primeiraConsulta.pacienteId.toString());
       formData.append("descricao", primeiraConsulta.descricao.toString());
-      formData.append("tipoConsulta", primeiraConsulta.tipoConsultaId.toString());
-
+      formData.append("tipoConsultaId", primeiraConsulta.tipoConsultaId.toString());
+      formData.append("agendamentoId", agendamentoId.toString());
+      
       // Adiciona os arquivos
       consultaRealizada.arquivos.forEach((item) => {
         formData.append("arquivo", item.arquivo); // o backend espera só `arquivo` se for 1 único
@@ -596,27 +597,6 @@ export const useApi = () => {
       }
       return response.status;
   }
-  
-  // const deletarConsultaRealizada = async (id: number) => {
-  //   const token = Cookies.get('token');
-  //   const response = await api.delete(`/api/Agendamentos/${id}`, {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   });
-
-  //   if (response.status !== 200) {
-  //     throw new Error('Erro ao buscar agendamentos');
-  //   }
-
-  //     let agendamento = response.data.result;
-
-  //     if (Array.isArray(agendamento)) {
-  //       // Se for array, pegue o primeiro ou trate como lista
-  //       agendamento = agendamento[0];
-  //     }
-  //     return response.status;
-  // }
   
   const deletarArquivo = async (id: number) => {
     const token = Cookies.get('token');

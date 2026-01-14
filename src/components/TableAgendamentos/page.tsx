@@ -10,6 +10,7 @@ import { CreateUpdateArquivoConsultas } from "@/interfaces/CreateDtos/CreateUpda
 import { CreateConsultasRealizadasDto } from "@/interfaces/CreateDtos/CreateConsultasRealizadasDto";
 import { CreateConsultaEArquivosDto } from "@/interfaces/CreateDtos/CreateConsultaEArquivosDto";
 import { aplicarMascaraTelefone } from "@/utils/mascaras";
+import { set } from "date-fns";
 
 interface TableProps {
      atualizarTabela: number,
@@ -19,14 +20,13 @@ interface TableProps {
 const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps) => {
   const { getAgendamentos, deleteAgendamento, postCriaArquivoEConsulta } = useApi();
   const [agendamentos, setAgendamentos] = useState<ReadAgendamentoDto[]>([]);
-  // const [pesquisaNome, setPesquisaNome] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [mostrarModalSucesso, setMostrarModalSucesso] = useState(false);
   const [mensagemErro, setMensagemErro] = useState("");
   const [mensagemSucesso, setMensagemSucesso] = useState("");
   const [mostrarModalSubirArquivos, setmostrarModalSubirArquivos] = useState(false); 
-  const [idParaExcluir, setIdParaExcluir] = useState<number>(0); 
+  const [idAgendamento, setIdAgendamento] = useState<number>(0); 
   const [arquivosSelecionados, setArquivosSelecionados] = useState<CreateUpdateArquivoConsultas[]>([]);
   const [consultaRealizadaSelecionada, setConsultaRealizadaSelecionada] = useState<CreateConsultasRealizadasDto[]>();
   const [skip, setSkip] = useState(0);
@@ -49,11 +49,11 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
 
   const onDeletarAgendamento = async () => {
       try {
-        await deleteAgendamento(idParaExcluir);
+        await deleteAgendamento(idAgendamento);
 
         carregarAgendamentos();
         setMostrarModal(false); // Fecha a modal após a exclusão
-        setIdParaExcluir(0); // Reseta o ID após a exclusão
+        setIdAgendamento(0); // Reseta o ID após a exclusão
         atualizarTabela++;
       } catch (error) {
         console.error("Erro ao excluir cidade:", error);
@@ -71,7 +71,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
     console.log("cria", criaERelacionaArquivos);
     try
     {
-      const response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
+      const response = await postCriaArquivoEConsulta(criaERelacionaArquivos, idAgendamento);
       if (response.status == 200 || response.status == 204) {
         setMensagemSucesso("Sua consulta foi confirmada e salva com sucesso");
         setMostrarModalSucesso(true);
@@ -84,9 +84,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
     }
     catch (error: any)
     {
-      // setCarregando(false);
       if (error.response) {
-          // Erro de resposta da API
           if (error.status === 400) {
                 setMensagemErro(error.response.data);
           } else {
@@ -94,7 +92,6 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
           }
           setMostrarModalErro(true);
       } else {
-          // Erro de rede ou outro
           setMostrarModalErro(true);
           setMensagemErro("Erro de conexão ou inesperado.");
       }
@@ -103,11 +100,11 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
   };
 
   const abrirModalExclusao = (id: number) => {
-    setIdParaExcluir(id); // Define o ID da entrada a ser excluída
+    setIdAgendamento(id); // Define o ID da entrada a ser excluída
     setMostrarModal(true); // Exibe a modal
   };
   
-  const abriModalConfirmarConsulta = (data: Date, paciente: number, tipoConsulta: number) => {
+  const abriModalConfirmarConsulta = (data: Date, paciente: number, tipoConsulta: number, agendamentoId: number) => {
     if (new Date(data) > new Date()) {
       setMensagemErro("Você nao pode confirmar uma consulta que está no futuro");
       setMostrarModalErro(true);
@@ -123,11 +120,13 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
       }
     ]);
 
+    setIdAgendamento(agendamentoId);
+
     setmostrarModalSubirArquivos(true); // Exibe a modal
   };
 
   const cancelarModal = () => {
-    setIdParaExcluir(0); // Reseta o ID
+    setIdAgendamento(0); // Reseta o ID
     setMostrarModal(false); // Fecha a modal
   };
 
@@ -352,7 +351,7 @@ const TabelaAgendamentos = ({ atualizarTabela, onEditarAgendamento } :TableProps
                       <button
                         title="Excluir"
                         className="p-2 rounded-md bg-red-100 text-green-700 hover:bg-red-200 transition cursor-pointer"
-                        onClick={() => abriModalConfirmarConsulta(agendamento.dataHoraConsulta, Number(agendamento.paciente.id), Number(agendamento.tipoConsulta))}
+                        onClick={() => abriModalConfirmarConsulta(agendamento.dataHoraConsulta, Number(agendamento.paciente.id), Number(agendamento.tipoConsulta.id), Number(agendamento.id))}
                       >
                         <Check />
                       </button>
