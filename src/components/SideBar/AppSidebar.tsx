@@ -31,6 +31,7 @@ const menuSections = [
     items: [
       { title: "Agendamentos", url: "/sistema/Agendamentos", icon: Calendar },
       { title: "Consultas Realizadas", url: "/sistema/ConsultasRealizadas", icon: Stethoscope },
+      { title: "Blog", url: "/sistema/Blog", icon: Tags },
     ],
   },
   {

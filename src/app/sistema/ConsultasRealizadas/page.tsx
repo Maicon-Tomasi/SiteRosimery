@@ -53,16 +53,12 @@ const ConsutasRealizadas = () =>{
           label,
      }));
 
-     // const confirmaCriacaoDeConsultaRealizada = () => {
-     //      setCarregando(true);
-     //      setMostrarModal(true);
-     // }
-
      const onCloseModal = () => {
           setCarregando(false);
           setMostrarModal(false);
           setMostrarModalErro(false);
           setmostrarModalEdicao(false);
+          setMostrarModalSucesso(false);
      }
 
      const onConfimarConsultaRealizada = async () =>{
@@ -71,9 +67,6 @@ const ConsutasRealizadas = () =>{
            arquivos: arquivosSelecionados
          }
      
-         console.log(novaConsultaRealizada);
-         console.log(arquivosSelecionados);
-         console.log("cria", criaERelacionaArquivos);
          try
          {
            const response = await postCriaArquivoEConsulta(criaERelacionaArquivos);
@@ -83,13 +76,10 @@ const ConsutasRealizadas = () =>{
              setArquivosSelecionados([]);
              setReloadTabela((prev) => prev + 1);
            }
-           console.log(response);
          }
-         catch (error: any) // eslint-disable-line @typescript-eslint/no-explicit-any
+         catch (error: any)
          {
-           // setCarregando(false);
            if (error.response) {
-               // Erro de resposta da API
                if (error.status === 400) {
                      setMensagemErro(error.response.data);
                } else {
@@ -97,65 +87,32 @@ const ConsutasRealizadas = () =>{
                }
                setMostrarModalErro(true);
            } else {
-               // Erro de rede ou outro
                setMostrarModalErro(true);
                setMensagemErro("Erro de conexão ou inesperado.");
            }
          }
-     
      };
 
      const onEditar = async (consultaRealizada: ReadConsultasRealizadasDto) => {
-          console.log(consultaRealizada);
           setEditando(true);
-
           setIdConsultaRealizada(consultaRealizada.id);
 
-          setNovaConsultaRealizada((prev) => {
-               const novoArray = [...prev];
-               if (novoArray.length > 0) {
-                    novoArray[0] = {
-                         ...novoArray[0],
-                         dataHoraConsulta: consultaRealizada.dataHoraConsulta,
-                         pacienteId: consultaRealizada.paciente.id,
-                         tipoConsulta: Number(consultaRealizada.tipoConsulta),
-                         descricao: consultaRealizada.descricao
-                    };
-               } else {
-                    novoArray[0] = {
-                         dataHoraConsulta: consultaRealizada.dataHoraConsulta,
-                         pacienteId: consultaRealizada.paciente.id,
-                         tipoConsulta: Number(consultaRealizada.tipoConsulta),
-                         descricao: consultaRealizada.descricao
-                    };
-               }
-               return novoArray;
-          });
+          setNovaConsultaRealizada([{
+               dataHoraConsulta: new Date(consultaRealizada.dataHoraConsulta),
+               pacienteId: consultaRealizada.paciente.id,
+               tipoConsulta: Number(consultaRealizada.tipoConsulta),
+               descricao: consultaRealizada.descricao
+          }]);
      };
 
      const onPararEdicao = () => {
           setEditando(false);
-          setNovaConsultaRealizada((prev) => {
-               const novoArray = [...prev];
-               if (novoArray.length > 0) {
-                    novoArray[0] = {
-                         ...novoArray[0],
-                         dataHoraConsulta: new Date(),
-                         pacienteId: 0,
-                         tipoConsulta: 1,
-                         descricao: ""
-                    } 
-               }
-               else {
-                    novoArray[0] = {
-                         dataHoraConsulta: new Date(),
-                         pacienteId: 0,
-                         tipoConsulta: 1,
-                         descricao: ""
-                    };
-               }
-               return novoArray;
-          });  
+          setNovaConsultaRealizada([{
+               dataHoraConsulta: new Date(),
+               pacienteId: 0,
+               tipoConsulta: 0,
+               descricao: ""
+          }]);
      }
 
      const onConfirmarEdicao = () => {
@@ -173,27 +130,7 @@ const ConsutasRealizadas = () =>{
                }
                await putEditarConsulta(idConsultaRealizada, consultaAAtualziar);
                setReloadTabela(prev => prev + 1);
-               setNovaConsultaRealizada((prev) => {
-                    const novoArray = [...prev];
-                    if (novoArray.length > 0) {
-                         novoArray[0] = {
-                              ...novoArray[0],
-                              dataHoraConsulta: new Date(),
-                              pacienteId: 0,
-                              tipoConsulta: 1,
-                              descricao: ""
-                         } 
-                    }
-                    else {
-                         novoArray[0] = {
-                              dataHoraConsulta: new Date(),
-                              pacienteId: 0,
-                              tipoConsulta: 1,
-                              descricao: ""
-                         };
-                    }
-                    return novoArray;
-               });
+               onPararEdicao();
                setMensagemSucesso("Sucesso!! Sua consulta foi editada!")
                setMostrarModalSucesso(true);
                setmostrarModalEdicao(false);
@@ -201,46 +138,15 @@ const ConsutasRealizadas = () =>{
           catch (error: unknown) {
                setMensagemErro('Verifique os campos preenchidos');
                setMostrarModalErro(true)
-               console.log(error);
           }
           finally {
                setCarregando(false);
-               setEditando(false);
-               setNovaConsultaRealizada((prev) => {
-                    const novoArray = [...prev];
-                    if (novoArray.length > 0) {
-                         novoArray[0] = {
-                              ...novoArray[0],
-                              dataHoraConsulta: new Date(),
-                              pacienteId: 0,
-                              tipoConsulta: 1,
-                              descricao: ""
-                         } 
-                    }
-                    else {
-                         novoArray[0] = {
-                              dataHoraConsulta: new Date(),
-                              pacienteId: 0,
-                              tipoConsulta: 1,
-                              descricao: ""
-                         };
-                    }
-                    return novoArray;
-               });  
           }
      };
 
     useEffect(() => {
         carregarPacientes();
      }, []);
-    
-     useEffect(() => {
-        console.log(novaConsultaRealizada);
-     }, [novaConsultaRealizada]);
-     
-     useEffect(() => {
-        console.log(arquivosSelecionados);
-     }, [arquivosSelecionados]);
 
      return (
      <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
@@ -250,13 +156,17 @@ const ConsutasRealizadas = () =>{
                     <DialogHeader>
                     <DialogTitle>Sucesso!</DialogTitle>
                     <DialogDescription>
-                    {
-                         typeof mensagemSucesso === "string"
-                         ? mensagemSucesso
-                         : JSON.stringify(mensagemSucesso, null, 2)
-                         }
+                         {mensagemSucesso}
                     </DialogDescription>
                     </DialogHeader>
+                    <div className="flex justify-end gap-4 mt-4">
+                         <button
+                         className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                         onClick={onCloseModal}
+                         >
+                              OK
+                         </button>
+                    </div>
                </DialogContent>
           </Dialog>
 
@@ -298,20 +208,9 @@ const ConsutasRealizadas = () =>{
                                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
                                    onClick={onCloseModal}
                                    >
-                                        Cancelar
+                                        Fechar
                                    </button>
                               </div>
-                    </DialogContent>
-               </Dialog>
-
-                <Dialog open={mostrarModeSucesso} onOpenChange={setMostrarModalSucesso}>
-                    <DialogContent>
-                         <DialogHeader>
-                              <DialogTitle>Sucesso</DialogTitle>
-                         <DialogDescription>
-                             {mensagemSucesso}
-                         </DialogDescription>
-                         </DialogHeader>
                     </DialogContent>
                </Dialog>
 
@@ -357,7 +256,7 @@ const ConsutasRealizadas = () =>{
                          onSelectProp={(value) =>{
                                    const novasConsultas = [...novaConsultaRealizada];
                                    novasConsultas[0].pacienteId = Number(value);
-                                   setNovaConsultaRealizada(novaConsultaRealizada);
+                                   setNovaConsultaRealizada(novasConsultas);
                               }
                          }
                          value={novaConsultaRealizada[0].pacienteId.toString()}
@@ -372,7 +271,7 @@ const ConsutasRealizadas = () =>{
                          onChange={(value) =>{
                               const novasConsultas = [...novaConsultaRealizada]
                               novasConsultas[0].dataHoraConsulta = value;
-                              setNovaConsultaRealizada(novaConsultaRealizada);
+                              setNovaConsultaRealizada(novasConsultas);
                          }}
                          />
                     </div>
@@ -397,7 +296,7 @@ const ConsutasRealizadas = () =>{
                               {
                                    const novasConsultas = [...novaConsultaRealizada]
                                    novasConsultas[0].tipoConsulta = Number(value);
-                                   setNovaConsultaRealizada(novaConsultaRealizada);     
+                                   setNovaConsultaRealizada(novasConsultas);     
                               }
                          }
                          value={novaConsultaRealizada[0].tipoConsulta.toString()}

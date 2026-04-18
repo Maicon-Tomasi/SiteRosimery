@@ -1,6 +1,9 @@
 import { CreateAgendamentoDto, CreateConsultaEArquivosDto, CreateConsultasRealizadasDto, CreatePacienteDto, CreateUpdateArquivoConsultas, LoginUsuarioDto, ReadAgendamentoDto, ReadArquivoConsultasDto, ReadConsultasRealizadasDto, ReadPacienteDto, RespoLogin, UpdateAgendamentoDto, UpdateConsultasRealizadasDto, UpdatePacienteDto } from "@/interfaces/interfacesDto";
 import { useApiContext } from "../context/ApiContext";
 import Cookies from 'js-cookie';
+import { ReadBlogPostDto } from "@/interfaces/ReadDtos/ReadBlogPostDto";
+import { CreateBlogPostDto } from "@/interfaces/CreateDtos/CreateBlogPostDto";
+import { UpdateBlogPostDto } from "@/interfaces/UpdateDtos/UpdateBlogPostDto";
 
 export const useApi = () => {
   const { api } = useApiContext();
@@ -194,7 +197,7 @@ export const useApi = () => {
       id: consulta.id,
       dataHoraConsulta: consulta.dataHoraConsulta,
       descricao: consulta.descricao,
-      tipoConsulta: Number(consulta.tipoConsulta),
+      tipoConsulta: consulta.tipoConsulta,
       paciente: {
         id: consulta.paciente.id,
         nome: consulta.paciente.nome,
@@ -620,6 +623,74 @@ export const useApi = () => {
     return response.status;
   }
 
+  const getTiposConsultas = async () => {
+    const token = Cookies.get('token');
+    const response = await api.get(`/api/tipoConsulta`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar Arquivos');
+    }
+
+    return response.data;
+  };
+
+  const getPosts = async () => {
+    const response = await api.get('/api/Blog');
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar posts');
+    }
+    return response.data as ReadBlogPostDto[];
+  };
+
+  const getPostById = async (id: number) => {
+    const response = await api.get(`/api/Blog/${id}`);
+    if (response.status !== 200) {
+      throw new Error('Erro ao buscar post');
+    }
+    return response.data as ReadBlogPostDto;
+  };
+
+  const postBlog = async (post: CreateBlogPostDto) => {
+    const token = Cookies.get('token');
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const response = await api.post('/api/Blog', post, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data as ReadBlogPostDto;
+  };
+
+  const putBlog = async (id: number, post: UpdateBlogPostDto) => {
+    const token = Cookies.get('token');
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const response = await api.put(`/api/Blog/${id}`, post, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  };
+
+  const deleteBlog = async (id: number) => {
+    const token = Cookies.get('token');
+    if (!token) throw new Error('Token não encontrado nos cookies');
+
+    const response = await api.delete(`/api/Blog/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.status;
+  };
+
+
   return {
     getQuantidadeTotalAgendamentos,
     getQuantidadeTotalConsultasRealizadas,
@@ -630,18 +701,24 @@ export const useApi = () => {
     getQuantidadeTotalConsultasRealizadasPorTipoConsulta,
     getConsutlasRealizadas,
     getArquivosConsutlasRealizadas,
+    getTiposConsultas,
+    getPosts,
+    getPostById,
     postUsuarioLogin,
     postConsultaRealizada,
     postArquivosConsulta,
     postCriaArquivoEConsulta,
     postAgendamento,
     postPaciente,
+    postBlog,
     putEditarAgendamento,
     putEditarConsulta,
     putEditarPaciente,
+    putBlog,
     deleteAgendamento,
     deletarArquivo,
     deletePaciente,
+    deleteBlog,
     downloadArquivoConsulta
   };
 };

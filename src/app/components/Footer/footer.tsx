@@ -41,8 +41,7 @@ export const Footer = () => {
         <div>
           <h4 className="font-semibold text-sm mb-3">Informações De Contato</h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li className="flex items-center"><Phone className="w-4 h-4 mr-2" /> (66) 9 9698-9912</li>
-            <li className="flex items-center"><Mail className="w-4 h-4 mr-2" /> rosimery@gmail.com</li>
+            <li className="flex items-center"><Phone className="w-4 h-4 mr-2" /> (66) 9 9659-8423</li>
             <li className="flex items-start"><MapPin className="w-4 h-4 mr-2 mt-1" />Av. Paulo César Aranda, 814 - Jardim Riva, Primavera do Leste - MT, 78850-000</li>
           </ul>
         </div>
