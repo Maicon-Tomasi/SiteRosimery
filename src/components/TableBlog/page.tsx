@@ -88,6 +88,7 @@ const TabelaBlog = ({ atualizarTabela, onEditarPost } :TableProps) => {
             <TableHeader className="bg-slate-100 dark:bg-slate-800">
               <TableRow>
                 <TableHead className="text-slate-700 dark:text-slate-300">Título</TableHead>
+                <TableHead className="text-slate-700 dark:text-slate-300">Tipo</TableHead>
                 <TableHead className="text-slate-700 dark:text-slate-300">Data Publicação</TableHead>
                 <TableHead className="text-slate-700 dark:text-slate-300">Avaliação</TableHead>
                 <TableHead className="text-slate-700 dark:text-slate-300">Ações</TableHead>
@@ -98,6 +99,7 @@ const TabelaBlog = ({ atualizarTabela, onEditarPost } :TableProps) => {
               {posts.map((post) => (
                 <TableRow key={post.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                   <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{post.titulo}</TableCell>
+                  <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{post.tipo || "-"}</TableCell>
                   <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{formatDate(post.dataPublicacao)}</TableCell>
                   <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{post.mediaAvaliacao} ({post.totalAvaliacoes})</TableCell>
                   <TableCell>

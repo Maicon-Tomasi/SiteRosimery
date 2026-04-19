@@ -1,5 +1,5 @@
 'use client'
-import { Mail, MapPin, Phone, Heart } from "lucide-react";
+import { MapPin, Phone, Heart } from "lucide-react";
 import Link from "next/link";
 
 export const Footer = () => {

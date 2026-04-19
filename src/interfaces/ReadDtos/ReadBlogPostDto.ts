@@ -3,6 +3,7 @@ export interface ReadBlogPostDto {
   titulo: string;
   conteudo: string;
   imagemUrl: string;
+  tipo: string;
   dataPublicacao: string;
   mediaAvaliacao: number;
   totalAvaliacoes: number;

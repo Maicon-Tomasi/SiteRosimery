@@ -9,7 +9,13 @@ import { CreateBlogPostDto } from "@/interfaces/CreateDtos/CreateBlogPostDto";
 import { ReadBlogPostDto } from "@/interfaces/ReadDtos/ReadBlogPostDto";
 import { UpdateBlogPostDto } from "@/interfaces/UpdateDtos/UpdateBlogPostDto";
 import { LoaderCircle, PlusCircle, Send, X, Image as ImageIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { useState, useMemo, useRef, useCallback } from "react";
+
+// Importação dinâmica do ReactQuill para evitar erro de SSR
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
+// @ts-expect-error - Ignorando o erro de tipagem do CSS do pacote novo 
+import "react-quill-new/dist/quill.snow.css";
 
 const Blog = () => {
   const { postBlog, putBlog } = useApi();
@@ -24,11 +30,13 @@ const Blog = () => {
   const [mostrarModalEdicao, setMostrarModalEdicao] = useState(false);
   const [idPost, setIdPost] = useState<number>(0);
   const [imagemSelecionada, setImagemSelecionada] = useState<File | null>(null);
+  const quillRef = useRef<any>(null);
   
   const [novoPost, setNovoPost] = useState<CreateBlogPostDto>({
     titulo: "",
     conteudo: "",
-    imagemUrl: ""
+    imagemUrl: "",
+    tipo: ""
   });
 
   const onConfirmarCadastroPost = () => {
@@ -43,11 +51,9 @@ const Blog = () => {
     setMostrarModalSucesso(false);
   };
 
-  const uploadImagem = async (blogId: string) => {
-    if (!imagemSelecionada) return novoPost.imagemUrl;
-
+  const uploadImagem = async (blogId: string, file: File) => {
     const formData = new FormData();
-    formData.append("file", imagemSelecionada);
+    formData.append("file", file);
     formData.append("blogId", blogId);
 
     const response = await fetch("/api/upload-blog-image", {
@@ -66,18 +72,13 @@ const Blog = () => {
   const onCadastraPost = async () => {
     setCarregando(true);
     try {
-      // Primeiro cria o post para ter um ID (ou usa 'temp' se preferir)
-      // O backend retorna o ReadBlogPostDto que tem o ID.
-      // Mas o usuário quer as imagens em pastas com o ID.
-      // Então talvez devêssemos criar o post primeiro com imagem vazia, depois atualizar?
-      // Ou gerar um ID aleatório/temporário.
-      
+      // Cria o post inicial
       const postCriado = await postBlog(novoPost);
       
       let finalImagemUrl = novoPost.imagemUrl;
       if (imagemSelecionada) {
-        finalImagemUrl = await uploadImagem(postCriado.id.toString());
-        // Atualiza o post com a URL final
+        finalImagemUrl = await uploadImagem(postCriado.id.toString(), imagemSelecionada);
+        // Atualiza o post com a URL final da capa
         await putBlog(postCriado.id, { ...novoPost, imagemUrl: finalImagemUrl });
       }
 
@@ -85,7 +86,7 @@ const Blog = () => {
       setMostrarModalSucesso(true);
       setMostrarModal(false);
       setReloadTabela(reloadTabela + 1);
-      setNovoPost({ titulo: "", conteudo: "", imagemUrl: "" });
+      setNovoPost({ titulo: "", conteudo: "", imagemUrl: "", tipo: "" });
       setImagemSelecionada(null);
     } catch (error: any) {
       setMensagemErro("Erro ao publicar post. " + (error.message || ""));
@@ -101,13 +102,14 @@ const Blog = () => {
     setNovoPost({
       titulo: post.titulo,
       conteudo: post.conteudo,
-      imagemUrl: post.imagemUrl
+      imagemUrl: post.imagemUrl,
+      tipo: post.tipo || ""
     });
   };
 
   const onParaEdicao = () => {
     setEditando(false);
-    setNovoPost({ titulo: "", conteudo: "", imagemUrl: "" });
+    setNovoPost({ titulo: "", conteudo: "", imagemUrl: "", tipo: "" });
     setImagemSelecionada(null);
   };
 
@@ -120,7 +122,7 @@ const Blog = () => {
     try {
       let finalImagemUrl = novoPost.imagemUrl;
       if (imagemSelecionada) {
-        finalImagemUrl = await uploadImagem(idPost.toString());
+        finalImagemUrl = await uploadImagem(idPost.toString(), imagemSelecionada);
       }
 
       const postAAtualizar: UpdateBlogPostDto = {
@@ -141,6 +143,61 @@ const Blog = () => {
       setCarregando(false);
     }
   };
+
+  // Handler para upload de imagens dentro do editor
+  const imageHandler = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file) {
+        try {
+          // Usamos 'temp' se estivermos criando um novo post, ou idPost se estivermos editando
+          const blogId = editando ? idPost.toString() : "temp";
+          const url = await uploadImagem(blogId, file);
+          
+          const quill = quillRef.current?.getEditor();
+          const range = quill?.getSelection();
+          if (range) {
+            quill?.insertEmbed(range.index, "image", url);
+          }
+        } catch (error) {
+          console.error("Erro ao inserir imagem no editor:", error);
+        }
+      }
+    };
+  }, [editando, idPost]);
+
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ align: [] }],
+        ["link", "image"],
+        ["clean"],
+      ],
+      handlers: {
+        image: imageHandler,
+      },
+    },
+  }), [imageHandler]);
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "align",
+    "link",
+    "image",
+  ];
 
   return (
     <div className="w-full flex flex-col gap-6 p-6 min-h-screen">
@@ -200,15 +257,28 @@ const Blog = () => {
       </header>
 
       <section className="bg-white p-6 rounded-md shadow-sm border border-slate-200 flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-slate-700">Título do Post</label>
-          <Input
-            type="text"
-            placeholder="Digite o título do post"
-            valueParam={novoPost.titulo}
-            onChangeParam={(val) => setNovoPost({ ...novoPost, titulo: val })}
-            classes="w-full border border-slate-300 rounded px-3 py-2"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-slate-700">Título do Post</label>
+            <Input
+              type="text"
+              placeholder="Ex: Como lidar com a ansiedade"
+              valueParam={novoPost.titulo}
+              onChangeParam={(val) => setNovoPost({ ...novoPost, titulo: val })}
+              classes="w-full border border-slate-300 rounded px-3 py-2"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-slate-700">Tipo do Post</label>
+            <Input
+              type="text"
+              placeholder="Ex: Artigo, Notícia, Dica"
+              valueParam={novoPost.tipo}
+              onChangeParam={(val) => setNovoPost({ ...novoPost, tipo: val })}
+              classes="w-full border border-slate-300 rounded px-3 py-2"
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -226,22 +296,27 @@ const Blog = () => {
               className="flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-300 rounded cursor-pointer hover:bg-slate-200 transition"
             >
               <ImageIcon size={18} />
-              {imagemSelecionada ? imagemSelecionada.name : "Selecionar Imagem"}
+              {imagemSelecionada ? imagemSelecionada.name : "Selecionar Imagem de Capa"}
             </label>
             {novoPost.imagemUrl && !imagemSelecionada && (
-              <span className="text-xs text-slate-500">Imagem atual: {novoPost.imagemUrl}</span>
+              <span className="text-xs text-slate-500 truncate max-w-xs">Capa atual: {novoPost.imagemUrl}</span>
             )}
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-slate-700">Conteúdo (HTML)</label>
-          <textarea
-            className="w-full min-h-[300px] border border-slate-300 rounded px-3 py-2 font-mono text-sm"
-            placeholder="Escreva o conteúdo do post em HTML..."
-            value={novoPost.conteudo}
-            onChange={(e) => setNovoPost({ ...novoPost, conteudo: e.target.value })}
-          />
+          <label className="text-sm font-semibold text-slate-700">Conteúdo do Post</label>
+          <div className="min-h-[400px] mb-12">
+            <ReactQuill
+              theme="snow"
+              value={novoPost.conteudo}
+              onChange={(content: string) => setNovoPost({ ...novoPost, conteudo: content })}
+              modules={modules}
+              formats={formats}
+              ref={quillRef}
+              style={{ height: "350px" }}
+            />
+          </div>
         </div>
 
         <div className="flex gap-4 mt-2 justify-end">
