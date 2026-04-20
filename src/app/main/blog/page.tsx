@@ -54,8 +54,8 @@ export default function BlogList() {
             </div>
             <div className="p-6 flex flex-col flex-grow">
               <div className="flex justify-between items-center text-xs text-gray-400 mb-3">
-                <span>{formatDate(post.dataPublicacao)}</span>
-                <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">Artigo</span>
+                <span>{formatDate(new Date(post.dataPublicacao))}</span>
+                <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">{post.tipo}</span>
               </div>
               <h2 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2">{post.titulo}</h2>
               <div className="text-gray-600 text-sm mb-6 line-clamp-3" dangerouslySetInnerHTML={{ __html: post.conteudo.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...' }} />

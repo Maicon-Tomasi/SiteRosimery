@@ -65,8 +65,8 @@ export default function BlogPostDetail() {
           {post.titulo}
         </h1>
         <div className="flex justify-center items-center text-sm text-gray-500 gap-4">
-          <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-medium">Artigo</span>
-          <time dateTime={post.dataPublicacao}>{formatDate(post.dataPublicacao)}</time>
+          <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-medium">{post.tipo}</span>
+          <time dateTime={post.dataPublicacao}>{formatDate(new Date(post.dataPublicacao))}</time>
         </div>
       </header>
 
@@ -89,34 +89,114 @@ export default function BlogPostDetail() {
       </div>
 
       <style jsx global>{`
+        .blog-content-container {
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
         .blog-content-container p {
           margin-bottom: 1.5rem;
+          font-size: 1.125rem;
+          line-height: 1.75;
         }
-        .blog-content-container h2 {
-          font-size: 1.875rem;
-          font-weight: 700;
+        .blog-content-container h1,
+        .blog-content-container h2,
+        .blog-content-container h3,
+        .blog-content-container h4 {
           color: #1e293b;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
+          font-weight: 700;
+          margin-top: 2.5rem;
+          margin-bottom: 1.25rem;
+          line-height: 1.2;
         }
-        .blog-content-container h3 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #334155;
-          margin-top: 1.5rem;
-          margin-bottom: 0.75rem;
-        }
+        .blog-content-container h1 { font-size: 2.25rem; }
+        .blog-content-container h2 { font-size: 1.875rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .blog-content-container h3 { font-size: 1.5rem; }
+        .blog-content-container h4 { font-size: 1.25rem; }
+
         .blog-content-container img {
           max-width: 100%;
+          height: auto !important;
           border-radius: 0.75rem;
-          margin: 2rem 0;
+          margin: 2.5rem auto;
+          display: block;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
+
+        .blog-content-container figure {
+          margin: 2.5rem 0;
+        }
+
+        .blog-content-container figcaption {
+          text-align: center;
+          color: #64748b;
+          font-size: 0.875rem;
+          margin-top: 0.75rem;
+        }
+
         .blog-content-container ul, .blog-content-container ol {
           margin-left: 1.5rem;
           margin-bottom: 1.5rem;
+          list-style-position: outside;
         }
+        .blog-content-container ul { list-style-type: disc; }
+        .blog-content-container ol { list-style-type: decimal; }
+        
         .blog-content-container li {
           margin-bottom: 0.5rem;
+          padding-left: 0.5rem;
+        }
+
+        .blog-content-container blockquote {
+          border-left: 4px solid #eab308;
+          padding-left: 1.5rem;
+          font-style: italic;
+          color: #475569;
+          margin: 2rem 0;
+        }
+
+        .blog-content-container table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 2rem 0;
+          overflow-x: auto;
+          display: block;
+        }
+
+        .blog-content-container th, .blog-content-container td {
+          border: 1px solid #e2e8f0;
+          padding: 0.75rem;
+          text-align: left;
+        }
+
+        .blog-content-container th {
+          background-color: #f8fafc;
+          font-weight: 600;
+        }
+
+        /* Responsividade para vídeos (IFrames como YouTube) */
+        .blog-content-container iframe {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          height: auto;
+          border-radius: 0.75rem;
+          margin: 2.5rem 0;
+        }
+
+        .blog-content-container a {
+          color: #ca8a04;
+          text-decoration: underline;
+          transition: color 0.2s;
+        }
+
+        .blog-content-container a:hover {
+          color: #a16207;
+        }
+
+        @media (max-width: 768px) {
+          .blog-content-container h1 { font-size: 1.875rem; }
+          .blog-content-container h2 { font-size: 1.5rem; }
+          .blog-content-container h3 { font-size: 1.25rem; }
+          .blog-content-container p { font-size: 1rem; }
         }
       `}</style>
     </article>
