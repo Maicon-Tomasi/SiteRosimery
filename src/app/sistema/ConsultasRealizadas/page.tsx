@@ -135,7 +135,7 @@ const ConsutasRealizadas = () =>{
                setMostrarModalSucesso(true);
                setmostrarModalEdicao(false);
           }
-          catch (error: unknown) {
+          catch (error: any) {
                setMensagemErro('Verifique os campos preenchidos');
                setMostrarModalErro(true)
           }

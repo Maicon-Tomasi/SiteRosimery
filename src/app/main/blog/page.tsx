@@ -64,7 +64,7 @@ export default function BlogList() {
                   href={`/main/blog/${post.id}`}
                   className="inline-block text-yellow-600 font-semibold hover:text-yellow-700 transition-colors"
                 >
-                  Ler artigo completo →
+                  Ler post completo →
                 </Link>
               </div>
             </div>
