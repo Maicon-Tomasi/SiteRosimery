@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import AOS from "aos";
-// @ts-ignore
+// @ts-expect-error
 import "aos/dist/aos.css";
 import { Element } from 'react-scroll';
 
