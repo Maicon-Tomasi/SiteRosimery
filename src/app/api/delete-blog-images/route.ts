@@ -1,6 +1,5 @@
+import { del, list } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 
 export async function DELETE(req: NextRequest) {
   try {
@@ -11,15 +10,27 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'ID do blog não fornecido' }, { status: 400 });
     }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'imgsBlog', blogId);
+    const prefix = `imgsBlog/${blogId}/`;
 
-    if (fs.existsSync(uploadDir)) {
-      // Remove o diretório e todo o seu conteúdo
-      fs.rmSync(uploadDir, { recursive: true, force: true });
-      return NextResponse.json({ message: 'Imagens deletadas com sucesso' });
+    // 1. Adicione o token aqui na função list
+    const { blobs } = await list({ 
+      prefix,
+      token: process.env.BLOB_READ_WRITE_TOKEN 
+    });
+
+    if (blobs.length === 0) {
+      return NextResponse.json({ message: 'Nenhuma imagem encontrada para este post' });
     }
 
-    return NextResponse.json({ message: 'Nenhuma imagem encontrada para este post' });
+    const urlsToDelete = blobs.map((blob) => blob.url);
+
+    // 2. Adicione o token aqui na função del
+    await del(urlsToDelete, {
+      token: process.env.BLOB_READ_WRITE_TOKEN 
+    });
+
+    return NextResponse.json({ message: 'Imagens deletadas com sucesso do Vercel Blob' });
+    
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
 
     // Faz o upload direto para o Vercel Blob
     const blob = await put(pathName, file, {
-      access: 'public', // Torna a imagem acessível via URL
+      access: 'public',
+      token: process.env.BLOB_READ_WRITE_TOKEN, // Torna a imagem acessível via URL
     });
 
     // O blob.url já é a URL absoluta da imagem pronta para ser salva no banco de dados e usada na tag <img>
