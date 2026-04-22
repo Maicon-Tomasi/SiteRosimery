@@ -1,6 +1,5 @@
+import { put } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,20 +11,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const fileName = file.name;
-    const uploadDir = path.join(process.cwd(), 'public', 'imgsBlog', blogId || 'temp');
+    // Cria o caminho organizando por blogId
+    const pathName = `imgsBlog/${blogId || 'temp'}/${file.name}`;
 
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+    // Faz o upload direto para o Vercel Blob
+    const blob = await put(pathName, file, {
+      access: 'public', // Torna a imagem acessível via URL
+    });
 
-    const filePath = path.join(uploadDir, fileName);
-    fs.writeFileSync(filePath, buffer);
-
-    const relativePath = `/imgsBlog/${blogId || 'temp'}/${fileName}`;
-
-    return NextResponse.json({ url: relativePath });
+    // O blob.url já é a URL absoluta da imagem pronta para ser salva no banco de dados e usada na tag <img>
+    return NextResponse.json({ url: blob.url });
+    
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
