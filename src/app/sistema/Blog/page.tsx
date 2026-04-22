@@ -14,7 +14,7 @@ import { useState, useMemo, useRef, useCallback } from "react";
 
 // Importação dinâmica do ReactQuill para evitar erro de SSR
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
-// @ts-expect-error - Ignorando o erro de tipagem do CSS do pacote novo 
+// @ts-ignore
 import "react-quill-new/dist/quill.snow.css";
 
 const Blog = () => {
