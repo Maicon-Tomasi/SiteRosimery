@@ -100,7 +100,7 @@ const TabelaBlog = ({ atualizarTabela, onEditarPost } :TableProps) => {
                 <TableRow key={post.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                   <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{post.titulo}</TableCell>
                   <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{post.tipo || "-"}</TableCell>
-                  <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{formatDate(post.dataPublicacao)}</TableCell>
+                  <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{formatDate(new Date(post.dataPublicacao))}</TableCell>
                   <TableCell className="text-slate-800 dark:text-slate-100 whitespace-nowrap">{post.mediaAvaliacao} ({post.totalAvaliacoes})</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">

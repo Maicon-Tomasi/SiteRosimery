@@ -682,6 +682,16 @@ export const useApi = () => {
     const token = Cookies.get('token');
     if (!token) throw new Error('Token não encontrado nos cookies');
 
+    // Primeiro deleta as imagens locais no servidor Next.js
+    try {
+      await fetch(`/api/delete-blog-images?blogId=${id}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error("Erro ao deletar imagens locais:", error);
+      // Continuamos a exclusão do post mesmo se houver erro nas imagens
+    }
+
     const response = await api.delete(`/api/Blog/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
