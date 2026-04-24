@@ -16,6 +16,14 @@ import { useState, useMemo, useRef, useCallback } from "react";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
 import "react-quill-new/dist/quill.snow.css";
 
+const cleanHtmlContent = (html: string) => {
+  if (!html) return "";
+  return html
+    .replace(/&nbsp;/g, " ") // Troca espaços não-separáveis por normais
+    .replace(/<p[^>]*>(?:\s|<br\s*\/?>)*<\/p>/gi, "") // Remove parágrafos vazios (<p><br></p>)
+    .replace(/-\s*<\/p>\s*<p[^>]*>/gi, ""); // Junta palavras quebradas com hífen em parágrafos diferentes
+};
+
 const Blog = () => {
   const { postBlog, putBlog } = useApi();
   const [carregando, setCarregando] = useState(false);
@@ -71,14 +79,20 @@ const Blog = () => {
   const onCadastraPost = async () => {
     setCarregando(true);
     try {
-      // Cria o post inicial
-      const postCriado = await postBlog(novoPost);
+      // 2. APLICAMOS A LIMPEZA NO CONTEÚDO ANTES DE ENVIAR PARA A API
+      const postLimpo: CreateBlogPostDto = {
+        ...novoPost,
+        conteudo: cleanHtmlContent(novoPost.conteudo)
+      };
+
+      // Cria o post inicial com o conteúdo já limpo
+      const postCriado = await postBlog(postLimpo);
       
       let finalImagemUrl = novoPost.imagemUrl;
       if (imagemSelecionada) {
         finalImagemUrl = await uploadImagem(postCriado.id.toString(), imagemSelecionada);
         // Atualiza o post com a URL final da capa
-        await putBlog(postCriado.id, { ...novoPost, imagemUrl: finalImagemUrl });
+        await putBlog(postCriado.id, { ...postLimpo, imagemUrl: finalImagemUrl });
       }
 
       setMensagemSucesso("Sucesso! Seu post foi publicado");
@@ -124,8 +138,10 @@ const Blog = () => {
         finalImagemUrl = await uploadImagem(idPost.toString(), imagemSelecionada);
       }
 
+      // 3. APLICAMOS A LIMPEZA TAMBÉM NA EDIÇÃO DO POST
       const postAAtualizar: UpdateBlogPostDto = {
         ...novoPost,
+        conteudo: cleanHtmlContent(novoPost.conteudo),
         imagemUrl: finalImagemUrl
       };
 
