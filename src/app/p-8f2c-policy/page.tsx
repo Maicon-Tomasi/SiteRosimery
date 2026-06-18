@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-3">1. Introdução</h2>
           <p className="mb-3">
-            O aplicativo <strong>TrafegoPagoMae</strong> ("nós", "nosso") leva a sua privacidade a sério. 
+            O aplicativo <strong>TrafegoPagoMae</strong> (&quot;nós&quot;, &quot;nosso&quot;) leva a sua privacidade a sério. 
             Este aplicativo foi desenvolvido para <strong>uso estritamente pessoal e interno</strong>. 
             Esta Política de Privacidade explica como coletamos, usamos, compartilhamos e protegemos as 
             suas informações pessoais e dados do Meta ao utilizar nossos serviços.
