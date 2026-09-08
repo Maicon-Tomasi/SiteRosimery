@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const url = request.nextUrl;
-  const hostname = request.headers.get('host') || '';
+  // const hostname = request.headers.get('host') || '';
 
   // Intercepta o subdomínio da NR1 (ajustar de acordo com o subdomínio escolhido, ex: nr1.psicologarosimery.com.br)
   // Ocultado temporariamente a pedido do usuário
