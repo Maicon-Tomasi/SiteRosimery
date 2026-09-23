@@ -1,0 +1,13 @@
+export { default as SiteIdentidadeOriginal } from "./SiteIdentidadeOriginal";
+export { default as HeaderIdentidade } from "./HeaderIdentidade";
+export { default as HeroIdentidade } from "./HeroIdentidade";
+export { default as ExpertiseStrip } from "./ExpertiseStrip";
+export { default as ConcernsSection } from "./ConcernsSection";
+export { default as CareSection } from "./CareSection";
+export { default as PerinatalSection } from "./PerinatalSection";
+export { default as AboutSection } from "./AboutSection";
+export { default as ProcessSection } from "./ProcessSection";
+export { default as FaqSection } from "./FaqSection";
+export { default as FinalCtaSection } from "./FinalCtaSection";
+export { default as FooterIdentidade } from "./FooterIdentidade";
+export { default as WhatsAppFloat } from "./WhatsAppFloat";

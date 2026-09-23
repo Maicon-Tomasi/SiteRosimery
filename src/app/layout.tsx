@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Cormorant_Garamond, Roboto_Condensed } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -13,9 +13,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+});
+
+const robotoCondensed = Roboto_Condensed({
+  variable: "--font-roboto-condensed",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
-  title: "Psicóloga Rosiméry",
-  description: "",
+  title: "Rosiméry Tomasi | Psicóloga Clínica e Obstétrica",
+  description:
+    "Psicoterapia com Rosiméry Tomasi para ansiedade, sobrecarga e saúde emocional da mulher. Atendimento presencial em Primavera do Leste e online.",
+  icons: {
+    icon: "/assets/site-obstetrica/logo-mark.png",
+  },
 };
 
 export default function RootLayout({
@@ -41,7 +58,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable} ${robotoCondensed.variable} antialiased`}
       >
         {children}
       </body>

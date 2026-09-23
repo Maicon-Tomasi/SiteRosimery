@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/identidade-original",
+        destination: "/",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
@@ -10,10 +19,6 @@ const nextConfig: NextConfig = {
       {
         source: "/nr1",
         destination: "/nr1-implementacao/index.html",
-      },
-      {
-        source: "/identidade-original",
-        destination: "/identidade-original/index.html",
       },
     ];
   },
